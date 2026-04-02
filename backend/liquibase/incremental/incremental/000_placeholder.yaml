@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - changeSet:
+      id: 000-placeholder
+      author: system
+      changes:
+        - comment: "Placeholder para que includeAll no falle"

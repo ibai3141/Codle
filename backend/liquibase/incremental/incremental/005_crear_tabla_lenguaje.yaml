@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-crear-tabla-lenguaje
+      author: ibai
+      changes:
+        - createTable:
+            tableName: lenguaje
+            columns:
+              - column: {name: id, type: UUID, defaultValueComputed: gen_random_uuid(), constraints: {primaryKey: true, nullable: false}}
+              - column: {name: nombre, type: VARCHAR(100), constraints: {unique: true, nullable: false}}
+              - column: {name: anio_creacion, type: INT, constraints: {nullable: false}}
+              - column: {name: ejecucion_id, type: UUID, constraints: {nullable: false}}
+              - column: {name: paradigma_id, type: UUID, constraints: {nullable: false}}
+              - column: {name: tipado_id, type: UUID, constraints: {nullable: false}}
+        
+        # Foreign keys
+        - addForeignKeyConstraint:
+            constraintName: fk_lenguaje_ejecucion
+            baseTableName: lenguaje
+            baseColumnNames: ejecucion_id
+            referencedTableName: ejecucion
+            referencedColumnNames: id
+            onDelete: RESTRICT
+        
+        - addForeignKeyConstraint:
+            constraintName: fk_lenguaje_paradigma
+            baseTableName: lenguaje
+            baseColumnNames: paradigma_id
+            referencedTableName: paradigma
+            referencedColumnNames: id
+            onDelete: RESTRICT
+        
+        - addForeignKeyConstraint:
+            constraintName: fk_lenguaje_tipado
+            baseTableName: lenguaje
+            baseColumnNames: tipado_id
+            referencedTableName: tipado
+            referencedColumnNames: id
+            onDelete: RESTRICT
+        
+        # Índices para mejorar rendimiento
+        - createIndex:
+            indexName: idx_lenguaje_ejecucion
+            tableName: lenguaje
+            columns:
+              - column: {name: ejecucion_id}
+        
+        - createIndex:
+            indexName: idx_lenguaje_paradigma
+            tableName: lenguaje
+            columns:
+              - column: {name: paradigma_id}
+        
+        - createIndex:
+            indexName: idx_lenguaje_tipado
+            tableName: lenguaje
+            columns:
+              - column: {name: tipado_id}

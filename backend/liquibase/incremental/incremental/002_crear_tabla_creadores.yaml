@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-crear-tabla-creadores
+      author: ibai
+      changes:
+        - createTable:
+            tableName: creadores
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: nombre
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: apellido
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false

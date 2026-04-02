@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-crear-tabla-creador
+      author: ibai
+      changes:
+        - createTable:
+            tableName: creador
+            columns:
+              - column: {name: id, type: UUID, defaultValueComputed: gen_random_uuid(), constraints: {primaryKey: true, nullable: false}}
+              - column: {name: nombre, type: VARCHAR(100), constraints: {nullable: false}}
+              - column: {name: apellido, type: VARCHAR(100), constraints: {nullable: false}}

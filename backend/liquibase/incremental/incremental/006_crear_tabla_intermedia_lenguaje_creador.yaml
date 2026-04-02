@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-crear-tabla-lenguaje-creador
+      author: ibai
+      changes:
+        - createTable:
+            tableName: lenguaje_creador
+            columns:
+              - column: {name: lenguaje_id, type: UUID, constraints: {nullable: false}}
+              - column: {name: creador_id, type: UUID, constraints: {nullable: false}}
+        
+        # Primary key compuesta (evita duplicados)
+        - addPrimaryKey:
+            constraintName: pk_lenguaje_creador
+            tableName: lenguaje_creador
+            columnNames: lenguaje_id, creador_id
+        
+        # Foreign keys
+        - addForeignKeyConstraint:
+            constraintName: fk_lc_lenguaje
+            baseTableName: lenguaje_creador
+            baseColumnNames: lenguaje_id
+            referencedTableName: lenguaje
+            referencedColumnNames: id
+            onDelete: CASCADE
+        
+        - addForeignKeyConstraint:
+            constraintName: fk_lc_creador
+            baseTableName: lenguaje_creador
+            baseColumnNames: creador_id
+            referencedTableName: creador
+            referencedColumnNames: id
+            onDelete: CASCADE
+        
+        # Índices
+        - createIndex:
+            indexName: idx_lc_lenguaje
+            tableName: lenguaje_creador
+            columns:
+              - column: {name: lenguaje_id}
+        
+        - createIndex:
+            indexName: idx_lc_creador
+            tableName: lenguaje_creador
+            columns:
+              - column: {name: creador_id}

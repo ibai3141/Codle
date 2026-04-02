@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-crear-tabla-usuario
+      author: ibai
+      changes:
+        - createTable:
+            tableName: usuario
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              
+              - column:
+                  name: email
+                  type: VARCHAR(150)
+                  constraints:
+                    unique: true
+                    nullable: false
+              
+              - column:
+                  name: password_hash
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false

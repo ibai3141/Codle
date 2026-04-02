@@ -1,0 +1,70 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-insertar-datos-iniciales
+      author: ibai
+      changes:
+        # Paradigmas
+        - insert:
+            tableName: paradigma
+            columns:
+              - column: {name: id, valueComputed: gen_random_uuid()}
+              - column: {name: nombre, value: "Orientado a objetos"}
+        - insert:
+            tableName: paradigma
+            columns:
+              - column: {name: id, valueComputed: gen_random_uuid()}
+              - column: {name: nombre, value: "Funcional"}
+        - insert:
+            tableName: paradigma
+            columns:
+              - column: {name: id, valueComputed: gen_random_uuid()}
+              - column: {name: nombre, value: "Imperativo"}
+        - insert:
+            tableName: paradigma
+            columns:
+              - column: {name: id, valueComputed: gen_random_uuid()}
+              - column: {name: nombre, value: "Declarativo"}
+        - insert:
+            tableName: paradigma
+            columns:
+              - column: {name: id, valueComputed: gen_random_uuid()}
+              - column: {name: nombre, value: "Multiparadigma"}
+        
+        # Tipados
+        - insert:
+            tableName: tipado
+            columns:
+              - column: {name: id, valueComputed: gen_random_uuid()}
+              - column: {name: nombre, value: "Estático"}
+        - insert:
+            tableName: tipado
+            columns:
+              - column: {name: id, valueComputed: gen_random_uuid()}
+              - column: {name: nombre, value: "Dinámico"}
+        - insert:
+            tableName: tipado
+            columns:
+              - column: {name: id, valueComputed: gen_random_uuid()}
+              - column: {name: nombre, value: "Fuerte"}
+        - insert:
+            tableName: tipado
+            columns:
+              - column: {name: id, valueComputed: gen_random_uuid()}
+              - column: {name: nombre, value: "Débil"}
+        
+        # Ejecuciones
+        - insert:
+            tableName: ejecucion
+            columns:
+              - column: {name: id, valueComputed: gen_random_uuid()}
+              - column: {name: nombre, value: "Compilado"}
+        - insert:
+            tableName: ejecucion
+            columns:
+              - column: {name: id, valueComputed: gen_random_uuid()}
+              - column: {name: nombre, value: "Interpretado"}
+        - insert:
+            tableName: ejecucion
+            columns:
+              - column: {name: id, valueComputed: gen_random_uuid()}
+              - column: {name: nombre, value: "Híbrido"}
