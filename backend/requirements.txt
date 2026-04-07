@@ -1,0 +1,12 @@
+#framework web
+fastapi
+uvicorn
+
+#base de datos y supabase
+supabase
+httpx
+
+#variables de entorno
+python-dotenv
+
+
