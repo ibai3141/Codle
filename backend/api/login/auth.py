@@ -41,7 +41,7 @@ def registrar(datos: SolicitudRegistro):
 @router.post("/auth/login")
 def iniciar_sesion(datos: SolicitudLogin):
     # Buscar el usuario por email
-    resultado = supabase.table("users").select("*").eq("email", datos.email).execute()
+    resultado = supabase.table("usuario").select("*").eq("email", datos.email).execute()
     if not resultado.data:
         raise HTTPException(status_code=401, detail="Email no encontrado")
 
