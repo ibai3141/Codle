@@ -18,7 +18,7 @@ class SolicitudLogin(BaseModel):
 
 
 # Ruta para registrar un nuevo usuario
-@router.post("/auth/register")
+@router.post("/register")
 def registrar(datos: SolicitudRegistro):
     # Comprobar si el usuario existe antes de intentar crear uno nuevo
     usuario_existente = supabase.table("usuario").select("*").eq("email", datos.email).execute()
@@ -38,7 +38,7 @@ def registrar(datos: SolicitudRegistro):
     return {"message": "Usuario registrado correctamente"}
 
 # Ruta para iniciar sesión, al iniciar sesión se obtiene un token de acceso
-@router.post("/auth/login")
+@router.post("/login")
 def iniciar_sesion(datos: SolicitudLogin):
     # Buscar el usuario por email
     resultado = supabase.table("usuario").select("*").eq("email", datos.email).execute()
