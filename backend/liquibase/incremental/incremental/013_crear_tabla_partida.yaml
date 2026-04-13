@@ -1,0 +1,123 @@
+databaseChangeLog:
+  - changeSet:
+      id: 012-crear-tabla-partida
+      author: ibai
+      changes:
+        - createTable:
+            tableName: partida
+            columns:
+              - column:
+                  name: id
+                  type: SMALLSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: usuario_id
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: modo
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lenguaje_objetivo_id
+                  type: SMALLINT
+              - column:
+                  name: reto_codigo_id
+                  type: SMALLINT
+              - column:
+                  name: estado
+                  type: VARCHAR(20)
+                  defaultValue: en_curso
+                  constraints:
+                    nullable: false
+              - column:
+                  name: fase_actual
+                  type: VARCHAR(20)
+                  defaultValue: lenguaje
+                  constraints:
+                    nullable: false
+              - column:
+                  name: max_intentos
+                  type: SMALLINT
+                  defaultValueNumeric: 6
+                  constraints:
+                    nullable: false
+              - column:
+                  name: intentos_usados
+                  type: SMALLINT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: puntuacion
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: iniciada_en
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: finalizada_en
+                  type: TIMESTAMP
+
+        - addForeignKeyConstraint:
+            constraintName: fk_partida_usuario
+            baseTableName: partida
+            baseColumnNames: usuario_id
+            referencedTableName: usuario
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            constraintName: fk_partida_lenguaje_objetivo
+            baseTableName: partida
+            baseColumnNames: lenguaje_objetivo_id
+            referencedTableName: lenguaje
+            referencedColumnNames: id
+            onDelete: SET NULL
+
+        - addForeignKeyConstraint:
+            constraintName: fk_partida_reto_codigo
+            baseTableName: partida
+            baseColumnNames: reto_codigo_id
+            referencedTableName: reto_codigo
+            referencedColumnNames: id
+            onDelete: SET NULL
+
+        - createIndex:
+            indexName: idx_partida_usuario
+            tableName: partida
+            columns:
+              - column: {name: usuario_id}
+
+        - createIndex:
+            indexName: idx_partida_modo
+            tableName: partida
+            columns:
+              - column: {name: modo}
+
+        - createIndex:
+            indexName: idx_partida_estado
+            tableName: partida
+            columns:
+              - column: {name: estado}
+
+        - createIndex:
+            indexName: idx_partida_lenguaje_objetivo
+            tableName: partida
+            columns:
+              - column: {name: lenguaje_objetivo_id}
+
+        - createIndex:
+            indexName: idx_partida_reto_codigo
+            tableName: partida
+            columns:
+              - column: {name: reto_codigo_id}

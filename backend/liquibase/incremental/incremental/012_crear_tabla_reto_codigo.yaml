@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - changeSet:
+      id: 011-crear-tabla-reto-codigo
+      author: ibai
+      changes:
+        - createTable:
+            tableName: reto_codigo
+            columns:
+              - column:
+                  name: id
+                  type: SMALLSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: lenguaje_id
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: titulo
+                  type: VARCHAR(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: snippet
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: salida_esperada
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: explicacion
+                  type: TEXT
+              - column:
+                  name: activo
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_reto_codigo_lenguaje
+            baseTableName: reto_codigo
+            baseColumnNames: lenguaje_id
+            referencedTableName: lenguaje
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - createIndex:
+            indexName: idx_reto_codigo_lenguaje
+            tableName: reto_codigo
+            columns:
+              - column: {name: lenguaje_id}
+
+        - createIndex:
+            indexName: idx_reto_codigo_activo
+            tableName: reto_codigo
+            columns:
+              - column: {name: activo}

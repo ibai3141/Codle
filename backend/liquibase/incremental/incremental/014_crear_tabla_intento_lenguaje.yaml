@@ -1,0 +1,82 @@
+databaseChangeLog:
+  - changeSet:
+      id: 013-crear-tabla-intento-lenguaje
+      author: ibai
+      changes:
+        - createTable:
+            tableName: intento_lenguaje
+            columns:
+              - column:
+                  name: id
+                  type: SMALLSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: partida_id
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: numero_intento
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lenguaje_intentado_id
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: es_correcto
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: feedback_json
+                  type: TEXT
+              - column:
+                  name: creado_en
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_intento_lenguaje_partida
+            baseTableName: intento_lenguaje
+            baseColumnNames: partida_id
+            referencedTableName: partida
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            constraintName: fk_intento_lenguaje_lenguaje
+            baseTableName: intento_lenguaje
+            baseColumnNames: lenguaje_intentado_id
+            referencedTableName: lenguaje
+            referencedColumnNames: id
+            onDelete: RESTRICT
+
+        - addUniqueConstraint:
+            tableName: intento_lenguaje
+            columnNames: partida_id, numero_intento
+            constraintName: uk_intento_lenguaje_partida_numero
+
+        - createIndex:
+            indexName: idx_intento_lenguaje_partida
+            tableName: intento_lenguaje
+            columns:
+              - column: {name: partida_id}
+
+        - createIndex:
+            indexName: idx_intento_lenguaje_lenguaje
+            tableName: intento_lenguaje
+            columns:
+              - column: {name: lenguaje_intentado_id}
+
+        - createIndex:
+            indexName: idx_intento_lenguaje_correcto
+            tableName: intento_lenguaje
+            columns:
+              - column: {name: es_correcto}

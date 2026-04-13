@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - changeSet:
+      id: 014-crear-tabla-intento-codigo
+      author: ibai
+      changes:
+        - createTable:
+            tableName: intento_codigo
+            columns:
+              - column:
+                  name: id
+                  type: SMALLSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: partida_id
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: numero_intento
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: respuesta_usuario
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: respuesta_normalizada
+                  type: TEXT
+              - column:
+                  name: es_correcto
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creado_en
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_intento_codigo_partida
+            baseTableName: intento_codigo
+            baseColumnNames: partida_id
+            referencedTableName: partida
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            tableName: intento_codigo
+            columnNames: partida_id, numero_intento
+            constraintName: uk_intento_codigo_partida_numero
+
+        - createIndex:
+            indexName: idx_intento_codigo_partida
+            tableName: intento_codigo
+            columns:
+              - column: {name: partida_id}
+
+        - createIndex:
+            indexName: idx_intento_codigo_correcto
+            tableName: intento_codigo
+            columns:
+              - column: {name: es_correcto}
