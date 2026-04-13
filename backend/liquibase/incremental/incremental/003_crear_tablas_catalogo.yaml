@@ -7,19 +7,19 @@ databaseChangeLog:
         - createTable:
             tableName: paradigma
             columns:
-              - column: {name: id, type: UUID, defaultValueComputed: gen_random_uuid(), constraints: {primaryKey: true, nullable: false}}
+              - column: {name: id, type: SMALLSERIAL, constraints: {primaryKey: true, nullable: false}}
               - column: {name: nombre, type: VARCHAR(50), constraints: {unique: true, nullable: false}}
         
         # Tabla tipado
         - createTable:
             tableName: tipado
             columns:
-              - column: {name: id, type: UUID, defaultValueComputed: gen_random_uuid(), constraints: {primaryKey: true, nullable: false}}
+              - column: {name: id, type: SMALLSERIAL, constraints: {primaryKey: true, nullable: false}}
               - column: {name: nombre, type: VARCHAR(50), constraints: {unique: true, nullable: false}}
         
         # Tabla ejecucion
         - createTable:
             tableName: ejecucion
             columns:
-              - column: {name: id, type: UUID, defaultValueComputed: gen_random_uuid(), constraints: {primaryKey: true, nullable: false}}
+              - column: {name: id, type: SMALLSERIAL, constraints: {primaryKey: true, nullable: false}}
               - column: {name: nombre, type: VARCHAR(50), constraints: {unique: true, nullable: false}}

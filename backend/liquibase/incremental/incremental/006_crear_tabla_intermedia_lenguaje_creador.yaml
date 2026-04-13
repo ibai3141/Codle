@@ -6,8 +6,8 @@ databaseChangeLog:
         - createTable:
             tableName: lenguaje_creador
             columns:
-              - column: {name: lenguaje_id, type: UUID, constraints: {nullable: false}}
-              - column: {name: creador_id, type: UUID, constraints: {nullable: false}}
+              - column: {name: lenguaje_id, type: SMALLINT, constraints: {nullable: false}}
+              - column: {name: creador_id, type: SMALLINT, constraints: {nullable: false}}
         
         # Primary key compuesta (evita duplicados)
         - addPrimaryKey:

@@ -6,12 +6,12 @@ databaseChangeLog:
         - createTable:
             tableName: lenguaje
             columns:
-              - column: {name: id, type: UUID, defaultValueComputed: gen_random_uuid(), constraints: {primaryKey: true, nullable: false}}
+              - column: {name: id, type: SMALLSERIAL, constraints: {primaryKey: true, nullable: false}}
               - column: {name: nombre, type: VARCHAR(100), constraints: {unique: true, nullable: false}}
               - column: {name: anio_creacion, type: INT, constraints: {nullable: false}}
-              - column: {name: ejecucion_id, type: UUID, constraints: {nullable: false}}
-              - column: {name: paradigma_id, type: UUID, constraints: {nullable: false}}
-              - column: {name: tipado_id, type: UUID, constraints: {nullable: false}}
+              - column: {name: ejecucion_id, type: SMALLINT, constraints: {nullable: false}}
+              - column: {name: paradigma_id, type: SMALLINT, constraints: {nullable: false}}
+              - column: {name: tipado_id, type: SMALLINT, constraints: {nullable: false}}
         
         # Foreign keys
         - addForeignKeyConstraint:

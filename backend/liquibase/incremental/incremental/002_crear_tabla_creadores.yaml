@@ -8,8 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: UUID
-                  defaultValueComputed: gen_random_uuid()
+                  type: SMALLSERIAL
                   constraints:
                     primaryKey: true
                     nullable: false
