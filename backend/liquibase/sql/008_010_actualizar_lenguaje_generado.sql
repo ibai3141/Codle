@@ -1,0 +1,15 @@
+﻿-- Lock Database
+UPDATE public.databasechangeloglock SET LOCKED = TRUE, LOCKEDBY = 'ibai (192.168.1.187)', LOCKGRANTED = NOW() WHERE ID = 1 AND LOCKED = FALSE;
+
+-- *********************************************************************
+-- Update Database Script
+-- *********************************************************************
+-- Change Log: db.changelog-master.yaml
+-- Ran at: 13/4/26, 10:37
+-- Against: postgres.jhpcifbntjoclvxdfnpr@jdbc:postgresql://aws-0-eu-west-1.pooler.supabase.com:5432/postgres?sslmode=require
+-- Liquibase version: 5.0.2
+-- *********************************************************************
+
+-- Release Database Lock
+UPDATE public.databasechangeloglock SET LOCKED = FALSE, LOCKEDBY = NULL, LOCKGRANTED = NULL WHERE ID = 1;
+

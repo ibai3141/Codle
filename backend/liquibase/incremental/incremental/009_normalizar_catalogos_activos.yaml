@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-normalizar-catalogos-activos
+      author: ibai
+      changes:
+        - update:
+            tableName: ejecucion
+            columns:
+              - column:
+                  name: nombre
+                  value: "Hibrido"
+            where: "nombre IN ('HÃ­brido', 'Híbrido')"

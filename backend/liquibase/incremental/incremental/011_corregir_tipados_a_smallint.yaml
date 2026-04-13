@@ -1,0 +1,188 @@
+databaseChangeLog:
+  - changeSet:
+      id: 010-corregir-tipados-a-smallint
+      author: ibai
+      preConditions:
+        - onFail: HALT
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM lenguaje
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM lenguaje_alias
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: lenguaje
+            constraintName: fk_lenguaje_tipado_tiempo
+
+        - dropForeignKeyConstraint:
+            baseTableName: lenguaje
+            constraintName: fk_lenguaje_fortaleza_tipado
+
+        - dropIndex:
+            indexName: idx_lenguaje_tipado_tiempo
+            tableName: lenguaje
+
+        - dropIndex:
+            indexName: idx_lenguaje_fortaleza_tipado
+            tableName: lenguaje
+
+        - dropColumn:
+            tableName: lenguaje
+            columnName: tipado_tiempo_id
+
+        - dropColumn:
+            tableName: lenguaje
+            columnName: fortaleza_tipado_id
+
+        - dropTable:
+            tableName: lenguaje_alias
+
+        - dropTable:
+            tableName: tipado_tiempo
+
+        - dropTable:
+            tableName: fortaleza_tipado
+
+        - createTable:
+            tableName: tipado_tiempo
+            columns:
+              - column:
+                  name: id
+                  type: SMALLSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: nombre
+                  type: VARCHAR(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+
+        - createTable:
+            tableName: fortaleza_tipado
+            columns:
+              - column:
+                  name: id
+                  type: SMALLSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: nombre
+                  type: VARCHAR(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+
+        - insert:
+            tableName: tipado_tiempo
+            columns:
+              - column: {name: nombre, value: "Estatico"}
+        - insert:
+            tableName: tipado_tiempo
+            columns:
+              - column: {name: nombre, value: "Dinamico"}
+
+        - insert:
+            tableName: fortaleza_tipado
+            columns:
+              - column: {name: nombre, value: "Fuerte"}
+        - insert:
+            tableName: fortaleza_tipado
+            columns:
+              - column: {name: nombre, value: "Debil"}
+
+        - addColumn:
+            tableName: lenguaje
+            columns:
+              - column:
+                  name: tipado_tiempo_id
+                  type: SMALLINT
+              - column:
+                  name: fortaleza_tipado_id
+                  type: SMALLINT
+
+        - addNotNullConstraint:
+            tableName: lenguaje
+            columnName: tipado_tiempo_id
+            columnDataType: SMALLINT
+
+        - addNotNullConstraint:
+            tableName: lenguaje
+            columnName: fortaleza_tipado_id
+            columnDataType: SMALLINT
+
+        - addForeignKeyConstraint:
+            constraintName: fk_lenguaje_tipado_tiempo
+            baseTableName: lenguaje
+            baseColumnNames: tipado_tiempo_id
+            referencedTableName: tipado_tiempo
+            referencedColumnNames: id
+            onDelete: RESTRICT
+
+        - addForeignKeyConstraint:
+            constraintName: fk_lenguaje_fortaleza_tipado
+            baseTableName: lenguaje
+            baseColumnNames: fortaleza_tipado_id
+            referencedTableName: fortaleza_tipado
+            referencedColumnNames: id
+            onDelete: RESTRICT
+
+        - createIndex:
+            indexName: idx_lenguaje_tipado_tiempo
+            tableName: lenguaje
+            columns:
+              - column: {name: tipado_tiempo_id}
+
+        - createIndex:
+            indexName: idx_lenguaje_fortaleza_tipado
+            tableName: lenguaje
+            columns:
+              - column: {name: fortaleza_tipado_id}
+
+        - createTable:
+            tableName: lenguaje_alias
+            columns:
+              - column:
+                  name: id
+                  type: SMALLSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: lenguaje_id
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: alias
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: alias_normalizado
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_lenguaje_alias_lenguaje
+            baseTableName: lenguaje_alias
+            baseColumnNames: lenguaje_id
+            referencedTableName: lenguaje
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            tableName: lenguaje_alias
+            columnNames: alias_normalizado
+            constraintName: uk_lenguaje_alias_normalizado
+
+        - createIndex:
+            indexName: idx_lenguaje_alias_lenguaje
+            tableName: lenguaje_alias
+            columns:
+              - column: {name: lenguaje_id}

@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009-crear-tabla-lenguaje-alias
+      author: ibai
+      changes:
+        - createTable:
+            tableName: lenguaje_alias
+            columns:
+              - column:
+                  name: id
+                  type: SMALLSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: lenguaje_id
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: alias
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: alias_normalizado
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_lenguaje_alias_lenguaje
+            baseTableName: lenguaje_alias
+            baseColumnNames: lenguaje_id
+            referencedTableName: lenguaje
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            tableName: lenguaje_alias
+            columnNames: alias_normalizado
+            constraintName: uk_lenguaje_alias_normalizado
+
+        - createIndex:
+            indexName: idx_lenguaje_alias_lenguaje
+            tableName: lenguaje_alias
+            columns:
+              - column: {name: lenguaje_id}
