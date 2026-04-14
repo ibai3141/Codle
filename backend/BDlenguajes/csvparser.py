@@ -3,7 +3,7 @@ import json
 import re
 
 ARCHIVO_CSV = "leng.csv"
-ARCHIVO_JSON = "lenguajes.json"
+ARCHIVO_JSON = "lenguajes2.json"
 
 # Funciones para parsear los campos del CSV
 
@@ -46,9 +46,8 @@ lenguajes = []
 
 with open(ARCHIVO_CSV, encoding="utf-8") as archivoCsv:
     reader = csv.DictReader(archivoCsv)
-
     for fila in reader:
-
+        
         # Solo queremos lenguajes de programacion
         if fila["type"] != "pl":
             # El continue hace que se salte el resto del código dentro del bucle y pase a la siguiente fila del bucle
@@ -87,7 +86,6 @@ with open(ARCHIVO_CSV, encoding="utf-8") as archivoCsv:
             "activo": True, # De momento se ponen todos los lenguajes como activos para jugar
             "logo_path": None, # El logo se añadirá a mano
         }
-
         lenguajes.append(lenguaje)
 
 
