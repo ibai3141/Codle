@@ -1,0 +1,829 @@
+[
+  {
+    "nombre": "Java",
+    "anio_creacion": 1995,
+    "descripcion": "Java es un lenguaje de programacion de proposito general, concurrente, basado en clases y orientado a objetos, diseñado para tener el menor numero posible de dependencias de implementacion. Su filosofia es 'escribe una vez, ejecuta en cualquier lugar', lo que significa que el codigo compilado puede ejecutarse en cualquier plataforma que soporte Java sin necesidad de recompilacion. Las aplicaciones Java se compilan a bytecode que puede ejecutarse en cualquier maquina virtual Java (JVM) independientemente de la arquitectura del ordenador. Fue desarrollado originalmente por James Gosling en Sun Microsystems y lanzado en 1995.",
+    "language_rank": 0,
+    "creadores": [
+      "James Gosling"
+    ],
+    "ejecucion": "Hibrido",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "JavaScript",
+    "anio_creacion": 1995,
+    "descripcion": "JavaScript, abreviado frecuentemente como JS, es un lenguaje de programacion de alto nivel, dinamico, debilmente tipado, basado en prototipos, multiparadigma e interpretado. Junto con HTML y CSS, JavaScript es una de las tres tecnologias fundamentales de la web. Se utiliza para hacer paginas web interactivas y todos los navegadores modernos lo ejecutan de forma nativa. Como lenguaje multiparadigma, soporta programacion orientada a eventos, funcional e imperativa. Fue creado por Brendan Eich en 1995 mientras trabajaba en Netscape.",
+    "language_rank": 1,
+    "creadores": [
+      "Brendan Eich"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "C",
+    "anio_creacion": 1972,
+    "descripcion": "C es un lenguaje de programacion de proposito general e imperativo que soporta programacion estructurada, ambito lexico de variables y recursion. Fue desarrollado originalmente por Dennis Ritchie entre 1969 y 1973 en Bell Labs para reimplementar el sistema operativo Unix. Desde entonces se ha convertido en uno de los lenguajes mas utilizados de todos los tiempos, con compiladores disponibles para la gran mayoria de arquitecturas y sistemas operativos existentes. Su diseño permite un acceso eficiente a bajo nivel de la memoria, lo que lo hace ideal para sistemas operativos, sistemas embebidos y aplicaciones de alto rendimiento.",
+    "language_rank": 2,
+    "creadores": [
+      "Dennis Ritchie"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Imperativo",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Python",
+    "anio_creacion": 1991,
+    "descripcion": "Python es un lenguaje de programacion de alto nivel y proposito general, creado por Guido van Rossum y lanzado por primera vez en 1991. Es un lenguaje interpretado cuya filosofia de diseño enfatiza la legibilidad del codigo, usando indentacion para delimitar bloques en lugar de llaves. Permite expresar conceptos en menos lineas de codigo que lenguajes como C++ o Java. Soporta multiples paradigmas de programacion, incluyendo orientado a objetos, imperativo, funcional y procedural, y cuenta con una amplia libreria estandar.",
+    "language_rank": 3,
+    "creadores": [
+      "Guido van Rossum"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "SQL",
+    "anio_creacion": 1974,
+    "descripcion": "SQL (Structured Query Language) es un lenguaje especifico de dominio utilizado para gestionar y consultar datos en sistemas de gestion de bases de datos relacionales. Desarrollado en IBM por Donald D. Chamberlin y Raymond F. Boyce, se convirtio en estandar ANSI en 1986 y sigue siendo el lenguaje de bases de datos mas utilizado en el mundo.",
+    "language_rank": 4,
+    "creadores": [
+      "Donald D. Chamberlin",
+      "Raymond F. Boyce"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Declarativo",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "C++",
+    "anio_creacion": 1985,
+    "descripcion": "C++ es un lenguaje de programacion de proposito general con caracteristicas de programacion imperativa, orientada a objetos y generica, ademas de facilidades para la manipulacion de memoria a bajo nivel. Fue disenado con enfasis en la programacion de sistemas y aplicaciones con recursos limitados, priorizando el rendimiento y la eficiencia. Fue desarrollado por Bjarne Stroustrup en Bell Labs desde 1979 como una extension del lenguaje C. Es ampliamente utilizado en sistemas operativos, videojuegos, motores graficos y aplicaciones de alto rendimiento.",
+    "language_rank": 6,
+    "creadores": [
+      "Bjarne Stroustrup"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "PHP",
+    "anio_creacion": 1995,
+    "descripcion": "PHP es un lenguaje de scripting del lado del servidor diseñado principalmente para el desarrollo web, aunque tambien se usa como lenguaje de proposito general. Fue creado originalmente por Rasmus Lerdorf en 1994. El codigo PHP puede integrarse directamente en HTML y es procesado por un interprete en el servidor web. Es uno de los lenguajes mas utilizados en el desarrollo web, siendo la base de plataformas como WordPress, Drupal o Laravel.",
+    "language_rank": 8,
+    "creadores": [
+      "Rasmus Lerdorf"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Perl",
+    "anio_creacion": 1987,
+    "descripcion": "Perl es una familia de lenguajes de programacion de alto nivel, proposito general, interpretados y dinamicos. Fue desarrollado originalmente por Larry Wall en 1987 como un lenguaje de scripting Unix para facilitar el procesamiento de informes. Destaca por sus potentes capacidades de procesamiento de texto y expresiones regulares. Perl 5 gano gran popularidad a finales de los 90 como lenguaje para scripting CGI y sigue siendo usado en administracion de sistemas, bioinformatica y programacion de redes.",
+    "language_rank": 9,
+    "creadores": [
+      "Larry Wall"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "MATLAB",
+    "anio_creacion": 1984,
+    "descripcion": "MATLAB (matrix laboratory) es un entorno de computacion numerica multiparadigma y un lenguaje de programacion propietario desarrollado por MathWorks. Permite la manipulacion de matrices, la representacion grafica de funciones y datos, la implementacion de algoritmos y la creacion de interfaces de usuario. Aunque esta pensado principalmente para computacion numerica, dispone de una caja de herramientas simbolica opcional. Es ampliamente utilizado en ingenieria, ciencias y economia, con mas de dos millones de usuarios en todo el mundo.",
+    "language_rank": 10,
+    "creadores": [
+      "Cleve Moler"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Imperativo",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "C#",
+    "anio_creacion": 2000,
+    "descripcion": "C# (pronunciado 'C sharp') es un lenguaje de programacion multiparadigma de tipado fuerte que abarca programacion imperativa, declarativa, funcional, generica y orientada a objetos. Fue desarrollado por Microsoft dentro de su iniciativa .NET y aprobado como estandar por ECMA e ISO. Es de proposito general y orientado a objetos, y su equipo de desarrollo ha sido liderado por Anders Hejlsberg. Es el lenguaje principal del motor de videojuegos Unity y se usa ampliamente en aplicaciones de escritorio y servicios web.",
+    "language_rank": 11,
+    "creadores": [
+      "Anders Hejlsberg"
+    ],
+    "ejecucion": "Hibrido",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Ruby",
+    "anio_creacion": 1995,
+    "descripcion": "Ruby es un lenguaje de programacion dinamico, reflexivo, orientado a objetos y de proposito general. Fue diseñado y desarrollado a mediados de los años 90 por Yukihiro Matsumoto en Japon. Segun su creador, Ruby fue influenciado por Perl, Smalltalk, Eiffel, Ada y Lisp. Soporta multiples paradigmas de programacion, incluyendo funcional, orientado a objetos e imperativo. Cuenta con un sistema de tipos dinamico y gestion automatica de memoria. Es especialmente conocido por el framework web Ruby on Rails.",
+    "language_rank": 12,
+    "creadores": [
+      "Yukihiro Matsumoto"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Fortran",
+    "anio_creacion": 1957,
+    "descripcion": "Fortran, derivado de Formula Translation, es un lenguaje de programacion imperativo y de proposito general especialmente adecuado para la computacion numerica y cientifica. Fue desarrollado originalmente por IBM en los años 50 para aplicaciones cientificas y de ingenieria, y ha sido utilizado de forma continua durante mas de medio siglo en areas de alta computacion como prediccion meteorologica, analisis de elementos finitos, dinamica de fluidos computacional y quimica computacional. Es uno de los lenguajes con mayor longevidad en la historia de la informatica.",
+    "language_rank": 13,
+    "creadores": [
+      "John Backus"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Imperativo",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Assembly",
+    "anio_creacion": 1949,
+    "descripcion": "El lenguaje ensamblador es un lenguaje de programacion de bajo nivel con una correspondencia directa entre sus instrucciones y las instrucciones de codigo maquina. Es especifico de cada arquitectura de ordenador y se utiliza en aplicaciones criticas en cuanto a rendimiento, sistemas embebidos y nucleos de sistemas operativos. Al trabajar tan cerca del hardware, permite un control total sobre los recursos del procesador, aunque a costa de una mayor complejidad de desarrollo.",
+    "language_rank": 14,
+    "creadores": [
+      "Kathleen Booth"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Imperativo",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "R",
+    "anio_creacion": 1993,
+    "descripcion": "R es un lenguaje de programacion de codigo abierto y un entorno de software para computacion estadistica y graficos, mantenido por la R Foundation for Statistical Computing. Es ampliamente utilizado entre estadisticos y analistas de datos para desarrollar software estadistico y realizar analisis de datos. R es un paquete GNU, disponible bajo la Licencia Publica General GNU. Aunque dispone de una interfaz de linea de comandos, existen varios entornos graficos disponibles como RStudio.",
+    "language_rank": 15,
+    "creadores": [
+      "Ross Ihaka",
+      "Robert Gentleman"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Go",
+    "anio_creacion": 2009,
+    "descripcion": "Go, frecuentemente denominado Golang, es un lenguaje de programacion creado en Google en 2009 por Robert Griesemer, Rob Pike y Ken Thompson. Es un lenguaje compilado y estaticamente tipado, con recolector de basura, tipado estructural limitado y caracteristicas de programacion concurrente al estilo CSP. El compilador y el resto de herramientas del lenguaje son libres y de codigo abierto. Se usa ampliamente en el desarrollo de servidores, herramientas de linea de comandos e infraestructura en la nube.",
+    "language_rank": 17,
+    "creadores": [
+      "Rob Pike",
+      "Ken Thompson",
+      "Robert Griesemer"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Imperativo",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "COBOL",
+    "anio_creacion": 1959,
+    "descripcion": "COBOL, acronimo de Common Business-Oriented Language, es un lenguaje de programacion compilado, similar al ingles, diseñado para uso empresarial. Es imperativo, procedural y, desde 2002, orientado a objetos. Se utiliza principalmente en sistemas de negocio, finanzas y administracion de empresas y gobiernos. Fue diseñado en 1959 por CODASYL y se baso en parte en el trabajo de Grace Hopper. A pesar de su antigüedad, sigue siendo ampliamente utilizado en sistemas heredados de grandes empresas y administraciones publicas.",
+    "language_rank": 18,
+    "creadores": [
+      "Grace Hopper",
+      "Howard Bromberg",
+      "Vernon Reeves",
+      "Jean E. Sammet",
+      "William Selden",
+      "Gertrude Tierney"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Imperativo",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Scala",
+    "anio_creacion": 2004,
+    "descripcion": "Scala es un lenguaje de programacion de proposito general que combina programacion orientada a objetos y programacion funcional en un sistema de tipos estatico. Fue diseñado para ser conciso y resolver muchas de las criticas a Java. El codigo fuente de Scala se compila a bytecode de Java y puede ejecutarse en la JVM. Ofrece interoperabilidad con Java y caracteristicas funcionales como evaluacion perezosa, inferencia de tipos y reconocimiento de patrones. Su nombre es una combinacion de 'scalable' y 'language'.",
+    "language_rank": 20,
+    "creadores": [
+      "Martin Odersky"
+    ],
+    "ejecucion": "Hibrido",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Ada",
+    "anio_creacion": 1980,
+    "descripcion": "Ada es un lenguaje de programacion estructurado, estaticamente tipado, imperativo y orientado a objetos de alto nivel, derivado de Pascal. Tiene soporte nativo para diseño por contrato, tipado extremadamente fuerte, concurrencia explicita y no determinismo. Fue diseñado originalmente por un equipo liderado por Jean Ichbiah bajo contrato con el Departamento de Defensa de Estados Unidos entre 1977 y 1983. El lenguaje recibe su nombre en honor a Ada Lovelace, considerada la primera programadora de la historia.",
+    "language_rank": 21,
+    "creadores": [
+      "Jean Ichbiah"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Swift",
+    "anio_creacion": 2014,
+    "descripcion": "Swift es un lenguaje de programacion de proposito general, multiparadigma y compilado, desarrollado por Apple para iOS, macOS, watchOS, tvOS y Linux. Esta diseñado para funcionar con los frameworks Cocoa y Cocoa Touch de Apple y con el codigo Objective-C existente. Fue presentado en la Conferencia Mundial de Desarrolladores de Apple en 2014 y se convirtio en software de codigo abierto en diciembre de 2015. Su diseño prioriza la seguridad, evitando errores comunes como punteros nulos, y la productividad del desarrollador.",
+    "language_rank": 22,
+    "creadores": [
+      "Chris Lattner"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Kotlin",
+    "anio_creacion": 2011,
+    "descripcion": "Kotlin es un lenguaje de programacion estaticamente tipado que se ejecuta sobre la maquina virtual de Java y tambien puede compilarse a codigo fuente JavaScript o usar la infraestructura del compilador LLVM. Fue desarrollado principalmente por un equipo de JetBrains con base en San Petersburgo. Aunque su sintaxis no es compatible con Java, Kotlin esta diseñado para interoperar con codigo Java. Desde Android Studio 3.0 es el lenguaje oficialmente recomendado por Google para el desarrollo de aplicaciones Android.",
+    "language_rank": 24,
+    "creadores": [
+      "Andrey Breslav"
+    ],
+    "ejecucion": "Hibrido",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Rust",
+    "anio_creacion": 2010,
+    "descripcion": "Rust es un lenguaje de programacion de sistemas orientado a la seguridad de memoria y al rendimiento, desarrollado inicialmente por Mozilla Research. Sus creadores lo describen como un lenguaje 'seguro, concurrente y practico' que soporta paradigmas funcionales e imperativos-procedurales. Es sintacticamente similar a C++, pero su sistema de tipos garantiza la seguridad de memoria sin necesidad de un recolector de basura. Gano el primer puesto como 'lenguaje mas querido' en la encuesta de desarrolladores de Stack Overflow durante varios anos consecutivos.",
+    "language_rank": 25,
+    "creadores": [
+      "Graydon Hoare"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "PowerShell",
+    "anio_creacion": 2006,
+    "descripcion": "PowerShell es un framework de automatizacion de tareas y gestion de configuracion de Microsoft, formado por un interprete de comandos y un lenguaje de scripting asociado. Inicialmente era exclusivo de Windows, pero en agosto de 2016 se convirtio en codigo abierto y multiplataforma con la introduccion de PowerShell Core. Las tareas administrativas se realizan mediante cmdlets, que son clases .NET especializadas que implementan una operacion particular. Es ampliamente utilizado por administradores de sistemas en entornos Windows y en la nube.",
+    "language_rank": 27,
+    "creadores": [
+      "Jeffrey Snover"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Pascal",
+    "anio_creacion": 1970,
+    "descripcion": "Pascal es un lenguaje de programacion imperativo y procedural diseñado por Niklaus Wirth entre 1968 y 1969, publicado en 1970. Fue concebido como un lenguaje pequeño y eficiente para fomentar buenas practicas de programacion estructurada. Recibe su nombre en honor al matematico, filosofo y fisico frances Blaise Pascal. Una variante orientada a objetos conocida como Object Pascal fue desarrollada en 1985 y fue utilizada por Apple y Borland, evolucionando posteriormente hacia Delphi en la plataforma Windows.",
+    "language_rank": 28,
+    "creadores": [
+      "Niklaus Wirth"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Imperativo",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Haskell",
+    "anio_creacion": 1990,
+    "descripcion": "Haskell es un lenguaje de programacion puramente funcional, estandarizado y de proposito general, con semantica no estricta y tipado estatico fuerte. Recibe su nombre del logico Haskell Curry. El estandar mas reciente es Haskell 2010. Cuenta con un sistema de tipos con inferencia de tipos y evaluacion perezosa. Las clases de tipos aparecieron por primera vez en Haskell. Su implementacion principal es el compilador Glasgow Haskell Compiler (GHC). Es ampliamente utilizado en academia e industria, especialmente en aplicaciones que requieren alta corrección formal.",
+    "language_rank": 30,
+    "creadores": [
+      "Paul Hudak",
+      "John Hughes"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Funcional",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "TypeScript",
+    "anio_creacion": 2012,
+    "descripcion": "TypeScript es un lenguaje de programacion libre y de codigo abierto desarrollado y mantenido por Microsoft. Es un superconjunto sintatico estricto de JavaScript que añade tipado estatico opcional al lenguaje. Anders Hejlsberg, arquitecto principal de C# y creador de Delphi y Turbo Pascal, trabajo en el desarrollo de TypeScript. Esta diseñado para el desarrollo de grandes aplicaciones y se compila a JavaScript. Al ser un superconjunto de JavaScript, cualquier programa JavaScript valido es tambien un programa TypeScript valido.",
+    "language_rank": 31,
+    "creadores": [
+      "Anders Hejlsberg"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Lisp",
+    "anio_creacion": 1958,
+    "descripcion": "Lisp es una familia de lenguajes de programacion con una larga historia y una notacion de prefijo totalmente parentizada muy caracteristica. Especificado originalmente en 1958, es el segundo lenguaje de programacion de alto nivel mas antiguo que sigue en uso. Fue concebido por John McCarthy como una notacion matematica practica para programas de ordenador, influenciado por el calculo lambda de Alonzo Church. Se convirtio rapidamente en el lenguaje preferido para la investigacion en inteligencia artificial. Como uno de los primeros lenguajes de programacion, Lisp introdujo muchas ideas fundamentales en informatica.",
+    "language_rank": 32,
+    "creadores": [
+      "John McCarthy"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Funcional",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Lua",
+    "anio_creacion": 1993,
+    "descripcion": "Lua es un lenguaje de programacion ligero y multiparadigma diseñado principalmente para sistemas embebidos y como lenguaje de extension. Su nombre significa 'luna' en portugues. Es multiplataforma, ya que su interprete esta escrito en ANSI C, y tiene una API de C relativamente sencilla. Fue diseñado originalmente en 1993 para extender aplicaciones de software. Sus creadores priorizaron la velocidad, portabilidad y facilidad de integracion. Es ampliamente utilizado en videojuegos como lenguaje de scripting.",
+    "language_rank": 33,
+    "creadores": [
+      "Roberto Ierusalimschy",
+      "Waldemar Celes",
+      "Luiz Henrique de Figueiredo"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Julia",
+    "anio_creacion": 2012,
+    "descripcion": "Julia es un lenguaje de programacion dinamico de alto nivel diseñado para cubrir las necesidades del analisis numerico de alto rendimiento y la computacion cientifica. Permite computacion concurrente, paralela y distribuida, y la llamada directa a librerias de C y Fortran sin codigo intermedio. Incluye librerias eficientes para calculo en punto flotante, algebra lineal, generacion de numeros aleatorios y transformadas de Fourier. Es conocido por combinar la facilidad de uso de lenguajes como Python con el rendimiento cercano al de C.",
+    "language_rank": 34,
+    "creadores": [
+      "Jeff Bezanson",
+      "Alan Edelman",
+      "Stefan Karpinski",
+      "Viral B. Shah"
+    ],
+    "ejecucion": "Hibrido",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "SAS",
+    "anio_creacion": 1976,
+    "descripcion": "SAS es un lenguaje de programacion utilizado para el analisis estadistico, creado por Anthony James Barr en la Universidad Estatal de Carolina del Norte. Permite leer datos de hojas de calculo y bases de datos comunes, y generar resultados de analisis estadisticos en tablas, graficos y documentos RTF, HTML y PDF. El lenguaje SAS se ejecuta mediante compiladores disponibles para Microsoft Windows, Linux y otros sistemas Unix y mainframe. Es especialmente popular en sectores como la farmaceutica, las finanzas y la investigacion clinica.",
+    "language_rank": 35,
+    "creadores": [
+      "Anthony James Barr"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Imperativo",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Prolog",
+    "anio_creacion": 1972,
+    "descripcion": "Prolog es un lenguaje de programacion logico de proposito general asociado con la inteligencia artificial y la linguistica computacional. Tiene sus raices en la logica de primer orden y, a diferencia de muchos otros lenguajes, esta concebido principalmente como un lenguaje declarativo: la logica del programa se expresa en terminos de relaciones representadas como hechos y reglas. Fue concebido por Alain Colmerauer en Marsella a principios de los años 70. Es el lenguaje de programacion logico mas popular y se usa en sistemas expertos, procesamiento del lenguaje natural y demostracion de teoremas.",
+    "language_rank": 38,
+    "creadores": [
+      "Alain Colmerauer"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Declarativo",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Bash",
+    "anio_creacion": 1989,
+    "descripcion": "Bash es un interprete de comandos Unix y lenguaje de scripting escrito por Brian Fox para el Proyecto GNU como reemplazo libre del shell Bourne. Lanzado por primera vez en 1989, se ha distribuido ampliamente como el shell de inicio de sesion predeterminado en la mayoria de distribuciones Linux y en macOS. Es un procesador de comandos que normalmente se ejecuta en una ventana de texto, donde el usuario escribe comandos. Bash puede leer y ejecutar comandos desde un archivo, llamado script. Su nombre es un acronimo de Bourne-again shell.",
+    "language_rank": 39,
+    "creadores": [
+      "Brian Fox"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Imperativo",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Clojure",
+    "anio_creacion": 2007,
+    "descripcion": "Clojure es un dialecto del lenguaje de programacion Lisp con enfasis en la programacion funcional. Es un lenguaje de proposito general que se ejecuta en la maquina virtual Java y en el Common Language Runtime. Como otros Lisps, trata el codigo como datos y dispone de un sistema de macros. Fomenta la inmutabilidad y las estructuras de datos inmutables. Aunque su sistema de tipos es completamente dinamico, se han realizando esfuerzos para implementar tipado gradual. Es utilizado por empresas como Funding Circle, Walmart y Puppet.",
+    "language_rank": 40,
+    "creadores": [
+      "Rich Hickey"
+    ],
+    "ejecucion": "Hibrido",
+    "paradigma": "Funcional",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Objective-C",
+    "anio_creacion": 1984,
+    "descripcion": "Objective-C es un lenguaje de programacion de proposito general y orientado a objetos que añade mensajeria al estilo Smalltalk al lenguaje C. Fue el lenguaje de programacion principal utilizado por Apple para los sistemas operativos OS X e iOS, y sus APIs Cocoa y Cocoa Touch, antes de la introduccion de Swift. Fue desarrollado originalmente a principios de los años 80 y seleccionado por NeXT para su sistema operativo NeXTSTEP, del que derivan OS X e iOS. Los archivos de implementacion de Objective-C usan la extension .m.",
+    "language_rank": 42,
+    "creadores": [
+      "Brad Cox"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Orientado a objetos",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Elixir",
+    "anio_creacion": 2011,
+    "descripcion": "Elixir es un lenguaje de programacion funcional, concurrente y de proposito general que se ejecuta en la maquina virtual de Erlang (BEAM). Se basa en Erlang y comparte sus abstracciones para construir aplicaciones distribuidas y tolerantes a fallos. Tambien ofrece herramientas productivas y un diseño extensible mediante metaprogramacion en tiempo de compilacion con macros. Es utilizado por empresas como Pinterest, Discord y Bleacher Report. Cuenta con una comunidad activa que organiza conferencias anuales en todo el mundo.",
+    "language_rank": 45,
+    "creadores": [
+      "José Valim"
+    ],
+    "ejecucion": "Hibrido",
+    "paradigma": "Funcional",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Visual Basic",
+    "anio_creacion": 1991,
+    "descripcion": "Visual Basic es un lenguaje de programacion orientado a eventos de tercera generacion y un entorno de desarrollo integrado de Microsoft para su modelo de programacion COM, lanzado por primera vez en 1991. Microsoft lo diseño para ser relativamente facil de aprender y usar. Deriva de BASIC y permite el desarrollo rapido de aplicaciones de interfaz grafica, acceso a bases de datos y creacion de controles ActiveX. La version final fue la 6 en 1998. Un dialecto, Visual Basic for Applications, se usa como lenguaje de macros en Microsoft Office.",
+    "language_rank": 46,
+    "creadores": [
+      "Alan Cooper",
+      "Microsoft"
+    ],
+    "ejecucion": "Hibrido",
+    "paradigma": "Orientado a objetos",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Erlang",
+    "anio_creacion": 1986,
+    "descripcion": "Erlang es un lenguaje de programacion de proposito general, concurrente y funcional, junto con un sistema de ejecucion con recolector de basura. El termino Erlang se usa indistintamente con Erlang/OTP, que consiste en el sistema de ejecucion de Erlang, componentes listos para usar y principios de diseño. Es conocido por sus diseños ideales para sistemas distribuidos, tolerantes a fallos, con alta disponibilidad y capacidad de actualizacion en caliente sin detener el sistema. Fue desarrollado originalmente por Joe Armstrong, Robert Virding y Mike Williams en Ericsson en 1986.",
+    "language_rank": 47,
+    "creadores": [
+      "Joe Armstrong",
+      "Robert Virding",
+      "Mike Williams"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Funcional",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Scheme",
+    "anio_creacion": 1970,
+    "descripcion": "Scheme es un lenguaje de programacion funcional y uno de los dos principales dialectos de Lisp. A diferencia de Common Lisp, sigue una filosofia de diseño minimalista que especifica un nucleo estandar pequeño con herramientas potentes para la extension del lenguaje. Fue creado en los años 70 en el MIT AI Lab por Guy Steele y Gerald Jay Sussman. Fue el primer dialecto de Lisp en elegir ambito lexico y el primero en requerir optimizacion de llamadas en cola, lo que da un mayor soporte a la programacion funcional.",
+    "language_rank": 49,
+    "creadores": [
+      "Guy Steele",
+      "Gerald Jay Sussman"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Funcional",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Dart",
+    "anio_creacion": 2011,
+    "descripcion": "Dart es un lenguaje de programacion de proposito general desarrollado originalmente por Google y aprobado como estandar por Ecma. Se utiliza para construir aplicaciones web, de servidor y moviles, y para dispositivos IoT. Es un lenguaje orientado a objetos con herencia simple y sintaxis similar a C que puede compilarse opcionalmente a JavaScript. Soporta interfaces, mixins, clases abstractas, genericos y un sistema de tipos solido. Es el lenguaje base del framework Flutter para el desarrollo de aplicaciones moviles multiplataforma.",
+    "language_rank": 50,
+    "creadores": [
+      "Lars Bak"
+    ],
+    "ejecucion": "Hibrido",
+    "paradigma": "Orientado a objetos",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Tcl",
+    "anio_creacion": 1988,
+    "descripcion": "Tcl es un lenguaje de programacion de alto nivel, proposito general, interpretado y dinamico. Fue diseñado con el objetivo de ser muy sencillo pero potente. En Tcl todo se trata como un comando, incluso las construcciones de programacion como la asignacion de variables o la definicion de procedimientos. Soporta multiples paradigmas de programacion, incluyendo orientado a objetos, imperativo y funcional. Se usa habitualmente integrado en aplicaciones C, para prototipado rapido, aplicaciones con scripts, interfaces graficas y pruebas. La combinacion popular de Tcl con la extension Tk, denominada Tcl/Tk, permite construir interfaces graficas.",
+    "language_rank": 52,
+    "creadores": [
+      "John Ousterhout"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "ActionScript",
+    "anio_creacion": 1998,
+    "descripcion": "ActionScript es un lenguaje de programacion orientado a objetos desarrollado originalmente por Macromedia y posteriormente adquirido por Adobe Systems. Es un dialecto de ECMAScript, lo que significa que es un superconjunto de la sintaxis y semantica de JavaScript. Se utiliza principalmente para el desarrollo de sitios web y software destinados a la plataforma Adobe Flash Player. ActionScript 3 tambien se usa con Adobe AIR para el desarrollo de aplicaciones de escritorio y moviles. La especificacion del lenguaje es de codigo abierto.",
+    "language_rank": 53,
+    "creadores": [
+      "Gary Grossman"
+    ],
+    "ejecucion": "Hibrido",
+    "paradigma": "Orientado a objetos",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "VBA",
+    "anio_creacion": 1993,
+    "descripcion": "Visual Basic for Applications (VBA) es una implementacion del lenguaje de programacion orientado a eventos Visual Basic 6 de Microsoft. Permite crear funciones definidas por el usuario, automatizar procesos y acceder a la API de Windows y otras funcionalidades de bajo nivel a traves de librerias de enlace dinamico. Puede controlar muchos aspectos de la aplicacion anfitriona, incluyendo menus, barras de herramientas y formularios personalizados. Esta integrado en la mayoria de las aplicaciones de Microsoft Office y se usa ampliamente para la automatizacion de tareas en entornos empresariales.",
+    "language_rank": 54,
+    "creadores": [
+      "Microsoft"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Orientado a objetos",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "BASIC",
+    "anio_creacion": 1964,
+    "descripcion": "BASIC, acronimo de Beginner's All-purpose Symbolic Instruction Code, es una familia de lenguajes de programacion de alto nivel y proposito general cuya filosofia de diseño enfatiza la facilidad de uso. Fue diseñado originalmente en 1964 por John G. Kemeny y Thomas E. Kurtz en el Dartmouth College para permitir que estudiantes de campos distintos a las ciencias y las matematicas pudieran usar ordenadores. Las versiones de BASIC se generalizaron en los microordenadores de los años 70 y 80, en los que era habitual que viniera preinstalado.",
+    "language_rank": 59,
+    "creadores": [
+      "John G. Kemeny",
+      "Thomas E. Kurtz"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Imperativo",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "AWK",
+    "anio_creacion": 1977,
+    "descripcion": "AWK es un lenguaje de programacion diseñado para el procesamiento de texto y utilizado tipicamente como herramienta de extraccion de datos e informes. Es una caracteristica estandar de la mayoria de sistemas operativos tipo Unix. El lenguaje AWK es un lenguaje de scripting orientado a datos formado por un conjunto de acciones que se aplican sobre flujos de texto, ya sea directamente sobre archivos o como parte de una tuberia de comandos. Su nombre proviene de los apellidos de sus autores: Alfred Aho, Peter Weinberger y Brian Kernighan.",
+    "language_rank": 60,
+    "creadores": [
+      "Alfred Aho",
+      "Peter J. Weinberger",
+      "Brian Kernighan"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Imperativo",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Delphi",
+    "anio_creacion": 1995,
+    "descripcion": "Delphi es un entorno de desarrollo integrado para aplicaciones de escritorio, moviles, web y consola, desarrollado originalmente por Borland como herramienta de desarrollo rapido de aplicaciones para Windows. Utiliza su propio dialecto de Object Pascal y genera codigo nativo para varias plataformas, incluyendo Windows, macOS, iOS, Android y Linux. Ofrece un editor de codigo con completado inteligente, un diseñador visual de formularios, un depurador integrado y soporte para bases de datos. Se caracteriza por su velocidad de compilacion, siendo capaz de compilar cientos de miles de lineas por segundo.",
+    "language_rank": 61,
+    "creadores": [
+      "Anders Hejlsberg",
+      "Borland"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Orientado a objetos",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "CoffeeScript",
+    "anio_creacion": 2009,
+    "descripcion": "CoffeeScript es un lenguaje de programacion que se transpila a JavaScript. Añade azucar sintatico inspirado en Ruby, Python y Haskell con el objetivo de mejorar la brevedad y legibilidad de JavaScript. Entre sus caracteristicas adicionales especificas se incluyen la comprension de listas y el reconocimiento de patrones. El soporte para CoffeeScript se incluyo en Ruby on Rails 3.1 y en el framework Play. En 2011, Brendan Eich lo menciono como una influencia en sus reflexiones sobre el futuro de JavaScript.",
+    "language_rank": 63,
+    "creadores": [
+      "Jeremy Ashkenas"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Debil",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "F#",
+    "anio_creacion": 2005,
+    "descripcion": "F# es un lenguaje de programacion fuertemente tipado y multiparadigma que abarca metodos de programacion funcional, imperativo y orientado a objetos. Se usa principalmente como lenguaje Common Language Infrastructure multiplataforma, aunque tambien puede generar codigo JavaScript y GPU. Es desarrollado por la F# Software Foundation, Microsoft y colaboradores de codigo abierto. Tiene un compilador de codigo abierto y multiplataforma. F# es miembro de la familia de lenguajes ML y surgio como una implementacion de OCaml para .NET Framework.",
+    "language_rank": 64,
+    "creadores": [
+      "Don Syme"
+    ],
+    "ejecucion": "Hibrido",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "OCaml",
+    "anio_creacion": 1996,
+    "descripcion": "OCaml, originalmente llamado Objective Caml, es la implementacion principal del lenguaje de programacion Caml, creado por Xavier Leroy, Jerome Vouillon, Damien Doligez, Didier Remy y otros en 1996. Miembro de la familia de lenguajes ML, OCaml extiende el lenguaje Caml con construcciones de programacion orientada a objetos. Sus herramientas incluyen un interprete interactivo, un compilador de bytecode, un depurador reversible, un gestor de paquetes (OPAM) y un compilador de codigo nativo optimizado. A principios de los años 2000, muchos nuevos lenguajes adoptaron elementos de OCaml, entre ellos F# y Scala.",
+    "language_rank": 68,
+    "creadores": [
+      "Xavier Leroy",
+      "Damien Doligez",
+      "Didier Rémy",
+      "Jérôme Vouillon"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Eiffel",
+    "anio_creacion": 1986,
+    "descripcion": "Eiffel es un lenguaje de programacion orientado a objetos diseñado por Bertrand Meyer y Eiffel Software. Meyer concibio el lenguaje en 1985 con el objetivo de aumentar la fiabilidad del desarrollo de software comercial, siendo la primera version disponible en 1986. En 2005 se convirtio en un lenguaje estandarizado por ISO. El diseño del lenguaje esta estrechamente vinculado al metodo de programacion Eiffel y se basa en principios como el diseño por contrato, la separacion comando-consulta y el principio de acceso uniforme. Muchos conceptos introducidos por Eiffel influyeron posteriormente en Java y C#.",
+    "language_rank": 70,
+    "creadores": [
+      "Bertrand Meyer"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Orientado a objetos",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Racket",
+    "anio_creacion": 1994,
+    "descripcion": "Racket es un lenguaje de programacion de proposito general y multiparadigma de la familia Lisp-Scheme. Uno de sus objetivos de diseño es servir como plataforma para la creacion, diseño e implementacion de lenguajes. Se utiliza en contextos variados como scripting, programacion de proposito general, educacion en ciencias de la computacion e investigacion. La plataforma incluye una implementacion del lenguaje Racket y un entorno de desarrollo llamado DrRacket. Destaca por su extenso sistema de macros que permite crear lenguajes embebidos y de dominio especifico.",
+    "language_rank": 74,
+    "creadores": [
+      "Matthias Felleisen",
+      "Matthew Flatt",
+      "Robert Bruce Findler",
+      "Shriram Krishnamurthi"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Smalltalk",
+    "anio_creacion": 1972,
+    "descripcion": "Smalltalk es un lenguaje de programacion orientado a objetos, dinamicamente tipado y reflexivo. Fue creado en parte con fines educativos en el Learning Research Group de Xerox PARC por Alan Kay, Dan Ingalls, Adele Goldberg y otros durante los años 70. El lenguaje fue lanzado por primera vez de forma general como Smalltalk-80. ANSI Smalltalk fue ratificado en 1998 y representa la version estandar del lenguaje. Smalltalk fue pionero en conceptos como la programacion orientada a objetos, los entornos de desarrollo graficos y la metaprogramacion, influyendo en lenguajes posteriores como Java, Ruby o Python.",
+    "language_rank": 76,
+    "creadores": [
+      "Alan Kay",
+      "Dan Ingalls",
+      "Adele Goldberg"
+    ],
+    "ejecucion": "Interpretado",
+    "paradigma": "Orientado a objetos",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Groovy",
+    "anio_creacion": 2003,
+    "descripcion": "Apache Groovy es un lenguaje de programacion orientado a objetos para la plataforma Java. Es un lenguaje dinamico con caracteristicas similares a las de Python, Ruby, Perl y Smalltalk. Puede usarse como lenguaje de scripting para la plataforma Java, se compila dinamicamente a bytecode de la JVM e interopera con otro codigo y librerias Java. La mayor parte del codigo Java es tambien sintacticamente valido en Groovy. Desde la version 2 tambien puede compilarse estaticamente, ofreciendo inferencia de tipos y un rendimiento cercano al de Java.",
+    "language_rank": 78,
+    "creadores": [
+      "James Strachan"
+    ],
+    "ejecucion": "Hibrido",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Dinamico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "D",
+    "anio_creacion": 2001,
+    "descripcion": "El lenguaje de programacion D es un lenguaje de programacion de sistemas orientado a objetos, imperativo y multiparadigma, creado por Walter Bright de Digital Mars y lanzado en 2001. Aunque tuvo su origen como una reingeneria de C++, D es un lenguaje distinto que rediseño algunas caracteristicas fundamentales de C++ tomando inspiracion de otros lenguajes como Java, Python, Ruby, C# y Eiffel. Sus objetivos de diseño intentan combinar el rendimiento y la seguridad de los lenguajes compilados con el poder expresivo de los lenguajes dinamicos modernos.",
+    "language_rank": 80,
+    "creadores": [
+      "Walter Bright",
+      "Andrei Alexandrescu"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Multiparadigma",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  },
+  {
+    "nombre": "Solidity",
+    "anio_creacion": 2014,
+    "descripcion": "Solidity es un lenguaje de programacion orientado a contratos y estaticamente tipado, diseñado para implementar contratos inteligentes en plataformas blockchain, principalmente Ethereum. Fue desarrollado por el equipo de Ethereum y se ha convertido en el lenguaje principal para el desarrollo de aplicaciones descentralizadas. Su sintaxis esta influenciada por JavaScript, Python y C++, y se compila a bytecode ejecutable en la Maquina Virtual de Ethereum (EVM).",
+    "language_rank": null,
+    "creadores": [
+      "Gavin Wood"
+    ],
+    "ejecucion": "Compilado",
+    "paradigma": "Orientado a objetos",
+    "tipado_tiempo": "Estatico",
+    "fortaleza_tipado": "Fuerte",
+    "activo": true,
+    "logo_path": null
+  }
+]
