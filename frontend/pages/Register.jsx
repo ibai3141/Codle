@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { register as registerApi } from "../api/api";
+import "./Register.css";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -30,7 +31,7 @@ export default function Register() {
   };
 
   return (
-    <section style={{ maxWidth: 420, margin: "2rem auto" }}>
+    <section className="register-page">
       <h1>Registro</h1>
 
       <form onSubmit={handleSubmit}>
@@ -42,7 +43,7 @@ export default function Register() {
           onChange={(e) => setEmail(e.target.value)}
           required
           autoComplete="email"
-          style={{ width: "100%", marginBottom: "1rem" }}
+          className="register-input"
         />
 
         <label htmlFor="password">Contrasena</label>
@@ -53,7 +54,7 @@ export default function Register() {
           onChange={(e) => setPassword(e.target.value)}
           required
           autoComplete="new-password"
-          style={{ width: "100%", marginBottom: "1rem" }}
+          className="register-input"
         />
 
         <button type="submit" disabled={loading}>
@@ -61,17 +62,17 @@ export default function Register() {
         </button>
       </form>
 
-      <p style={{ marginTop: "0.75rem" }}>
+      <p className="register-login-link">
         Ya tienes cuenta? <Link to="/login">Iniciar sesion</Link>
       </p>
-      <p style={{ marginTop: "0.5rem" }}>
+      <p className="register-back">
         <Link to="/">
           <button type="button">Volver al inicio</button>
         </Link>
       </p>
 
-      {error ? <p style={{ color: "crimson" }}>{error}</p> : null}
-      {success ? <p style={{ color: "green" }}>{success}</p> : null}
+      {error ? <p className="register-error">{error}</p> : null}
+      {success ? <p className="register-success">{success}</p> : null}
     </section>
   );
 }

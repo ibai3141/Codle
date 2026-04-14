@@ -1,0 +1,10 @@
+.home-page {
+  max-width: 420px;
+  margin: 2rem auto;
+}
+
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+}
