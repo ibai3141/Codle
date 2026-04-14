@@ -5,6 +5,7 @@ import Home from "../pages/Home";
 import Clasico from "../pages/Clasico";
 import Logo from "../pages/Logo";
 import Codigo from "../pages/Codigo";
+import CodeBackdrop from "./components/CodeBackdrop";
 import "./AppPage.css";
 
 
@@ -29,19 +30,22 @@ function AuthHome() {
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Rutas principales de autenticacion */}
-        <Route path="/" element={<AuthHome />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/clasico" element={<Clasico />} />
-        <Route path="/logo" element={<Logo />} />
-        <Route path="/codigo" element={<Codigo />} />
-        <Route path="/home" element={<Home />} />
-
-
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <div className="app-shell">
+        <CodeBackdrop />
+        <div className="app-content">
+          <Routes>
+            {/* Rutas principales de autenticacion */}
+            <Route path="/" element={<AuthHome />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/clasico" element={<Clasico />} />
+            <Route path="/logo" element={<Logo />} />
+            <Route path="/codigo" element={<Codigo />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      </div>
     </BrowserRouter>
   );
 }
