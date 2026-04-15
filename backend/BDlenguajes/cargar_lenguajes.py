@@ -16,6 +16,29 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 with open("lenguajes_final.json","r", encoding="utf-8") as f:
     read = json.load(f)
 
+ALIASES_PREDEFINIDOS = {
+    "Java": ["java"],
+    "JavaScript": ["javascript", "js"],
+    "C": ["c"],
+    "Python": ["python", "py"],
+    "SQL": ["sql"],
+    "C++": ["c++", "cpp"],
+    "PHP": ["php"],
+    "Perl": ["perl", "pl"],
+    "MATLAB": ["matlab"],
+    "C#": ["c#", "csharp", "c sharp"],
+    "Ruby": ["ruby", "rb"],
+    "Fortran": ["fortran"],
+    "Assembly": ["assembly", "asm"],
+    "R": ["r"],
+    "Go": ["go", "golang"],
+    "COBOL": ["cobol"],
+    "Scala": ["scala"],
+    "Ada": ["ada"],
+    "Swift": ["swift"],
+    "Kotlin": ["kotlin", "kt"],
+}
+
 
 
 def normalizar_alias(texto):
@@ -130,6 +153,42 @@ def alta_lenguaje_creador(nombre_lenguaje, creadores):
         print(e)
 
 
+def alta_alias(nombre_lenguaje):
+    try:
+        lenguaje = (
+            supabase.table("lenguaje")
+            .select("id")
+            .eq("nombre", nombre_lenguaje)
+            .execute()
+        )
+
+        if not lenguaje.data:
+            return
+
+        lenguaje_id = lenguaje.data[0]["id"]
+        aliases = ALIASES_PREDEFINIDOS.get(nombre_lenguaje, [nombre_lenguaje])
+
+        for alias in aliases:
+            alias_normalizado = normalizar_alias(alias)
+            existente = (
+                supabase.table("lenguaje_alias")
+                .select("id")
+                .eq("alias_normalizado", alias_normalizado)
+                .execute()
+            )
+
+            if not existente.data:
+                supabase.table("lenguaje_alias").insert(
+                    {
+                        "lenguaje_id": lenguaje_id,
+                        "alias": alias,
+                        "alias_normalizado": alias_normalizado,
+                    }
+                ).execute()
+    except Exception as e:
+        print(e)
+
+
 
 
 
@@ -148,6 +207,6 @@ for i in range(20):
     alta_creador(creador)
     alta_lenguaje(nombre,anio_creacion, descripcion,ejecucion,paradigma,tiempo_tipado,fortaleza_tipado,activo)
     alta_lenguaje_creador(nombre, creador)
-
+    alta_alias(nombre)
 
 
