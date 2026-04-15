@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.login import auth
+from api.getData import getData
 
 # App principal de FastAPI (punto de entrada del backend).
 app = FastAPI()
@@ -25,7 +26,9 @@ app.add_middleware(
 # Monta las rutas de autenticacion definidas en api/login/auth.py.
 app.include_router(auth.router)
 
+app.include_router(getData.router)
 
-@app.get("/")
+
+@app.get("/test")
 def root():
     return {"mensaje": "funciona"}
