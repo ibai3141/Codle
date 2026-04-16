@@ -3,7 +3,7 @@ from api.utils.keys import SUPABASE_URL, SUPABASE_KEY
 from supabase import create_client
 
 
-router = APIRouter(prefix="/getData", tags=["autenticación"])
+router = APIRouter(prefix="/getData", tags=["datos"])
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
@@ -42,16 +42,8 @@ def lenguajeById(id: int):
 # con el alias
 @router.get("/lengByAlias")
 def lenguajeByAlias(alias: str):
-
     lengId = lengIdByAlias(alias)
-    if not lengId:
-            raise HTTPException(status_code=404, detail="No hay ningun lenguaje con el alias proporcionado: "+alias)
-
-    lenguajeConseguido = lenguajeById(lengId)
-    if not lenguajeConseguido:
-        raise HTTPException(status_code=404, detail="No hay ningun lenguaje con el id conseguido del alias: "+lengId)
-
-    return lenguajeConseguido
+    return lenguajeById(lengId)
 
     
     
@@ -176,24 +168,17 @@ def lengAliasByNom(alias: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al buscar el lenguajeAlias con el alias ({alias}): {str(e)}")
     
-    if not lengAliasConseguido:
+    if not lengAliasConseguido.data:
         raise HTTPException(status_code=404, detail="alias no encontrado")
 
-    return lengAliasConseguido
+    return lengAliasConseguido.data
 
 
 # sacar id lenguaje por el alias
 @router.get("/lengIdByAlias")
 def lengIdByAlias(alias: str):
-    try:
-        alias = lengAliasByNom(alias)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al buscar el lenguaje con el alias ({alias}): {str(e)}")
-
-    if not alias.data:
-        raise HTTPException(status_code=404, detail="alias no encontrado")
-
-    return alias.data[0]['lenguaje_id']
+    alias_conseguido = lengAliasByNom(alias)
+    return alias_conseguido[0]["lenguaje_id"]
 
 
 
