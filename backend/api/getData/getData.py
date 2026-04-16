@@ -14,9 +14,13 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 # con el nombre
 @router.get("/lengByNom")
 def lenguajeByNom(nom: str):
-    lenguajeConseguido = supabase.table("lenguaje").select("*").eq("nombre", nom).execute()
+    try:
+        lenguajeConseguido = supabase.table("lenguaje").select("*").eq("nombre", nom).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al buscar el lenguaje con el nombre ({nom}): {str(e)}")
+
     if not lenguajeConseguido.data:
-        raise HTTPException(status_code=401, detail="Lenguaje no encontrado")
+        raise HTTPException(status_code=404, detail="Lenguaje no encontrado")
 
     return lenguajeConseguido.data
 
@@ -24,9 +28,13 @@ def lenguajeByNom(nom: str):
 # con el id
 @router.get("/lengById")
 def lenguajeById(id: int):
-    lenguajeConseguido = supabase.table("lenguaje").select("*").eq("id", id).execute()
+    try:
+        lenguajeConseguido = supabase.table("lenguaje").select("*").eq("id", id).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al buscar el lenguaje con el id ({id}): {str(e)}")
+    
     if not lenguajeConseguido.data:
-        raise HTTPException(status_code=401, detail="Lenguaje no encontrado")
+        raise HTTPException(status_code=404, detail="Lenguaje no encontrado")
     
     return lenguajeConseguido.data
 
@@ -34,16 +42,19 @@ def lenguajeById(id: int):
 # con el alias
 @router.get("/lengByAlias")
 def lenguajeByAlias(alias: str):
+
     lengId = lengIdByAlias(alias)
     if not lengId:
-        raise HTTPException(status_code=401, detail="No hay ningun lenguaje con el alias proporcionado: "+alias)
+            raise HTTPException(status_code=404, detail="No hay ningun lenguaje con el alias proporcionado: "+alias)
 
     lenguajeConseguido = lenguajeById(lengId)
-    if not lenguajeConseguido.data:
-        raise HTTPException(status_code=401, detail="No hay ningun lenguaje con el id conseguido del alias: "+lengId)
+    if not lenguajeConseguido:
+        raise HTTPException(status_code=404, detail="No hay ningun lenguaje con el id conseguido del alias: "+lengId)
 
-    return lenguajeConseguido.data
+    return lenguajeConseguido
 
+    
+    
 
 
 
@@ -52,9 +63,13 @@ def lenguajeByAlias(alias: str):
 # busca un creador por nombre y apellido
 @router.get("/creadorByNom")
 def creadorByNom(nom: str, ape: str):
-    creadorConseguido = supabase.table("creador").select("*").eq("nombre", nom).eq("apellido", ape).execute()
+    try:
+        creadorConseguido = supabase.table("creador").select("*").eq("nombre", nom).eq("apellido", ape).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al buscar el creador con el nombre ({nom}) y el apellido ({ape}): {str(e)}")
+
     if not creadorConseguido.data:
-        raise HTTPException(status_code=401, detail="Creador no encontrado")
+        raise HTTPException(status_code=404, detail="Creador no encontrado")
 
     return creadorConseguido.data
 
@@ -62,9 +77,13 @@ def creadorByNom(nom: str, ape: str):
 # busca un creador por id
 @router.get("/creadorById")
 def creadorById(id: int):
-    creadorConseguido = supabase.table("creador").select("*").eq("id", id).execute()
+    try:
+        creadorConseguido = supabase.table("creador").select("*").eq("id", id).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al buscar el creador con el id ({id}): {str(e)}")
+
     if not creadorConseguido.data:
-        raise HTTPException(status_code=401, detail="Creador no encontrado")
+        raise HTTPException(status_code=404, detail="Creador no encontrado")
 
     return creadorConseguido.data
 
@@ -75,9 +94,13 @@ def creadorById(id: int):
 # rutas para sacar la ejecucion
 @router.get("/ejecucionById")
 def ejecucionById(id: int):
-    ejecucionConseguido = supabase.table("ejecucion").select("*").eq("id", id).execute()
+    try:
+        ejecucionConseguido = supabase.table("ejecucion").select("*").eq("id", id).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al buscar la ejecucion con el id ({id}): {str(e)}")
+    
     if not ejecucionConseguido.data:
-        raise HTTPException(status_code=401, detail="ejecucion no encontrado")
+        raise HTTPException(status_code=404, detail="ejecucion no encontrado")
     
     return ejecucionConseguido.data
 
@@ -86,9 +109,13 @@ def ejecucionById(id: int):
 # rutas para sacar la fortaleza_tipado
 @router.get("/fortTipadoById")
 def fortTipadoById(id: int):
-    fortalezaTipadoConseguido = supabase.table("fortaleza_tipado").select("*").eq("id", id).execute()
+    try:
+        fortalezaTipadoConseguido = supabase.table("fortaleza_tipado").select("*").eq("id", id).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al buscar el fortaleza_tipado con el id ({id}): {str(e)}")
+    
     if not fortalezaTipadoConseguido.data:
-        raise HTTPException(status_code=401, detail="fortaleza_tipado no encontrado")
+        raise HTTPException(status_code=404, detail="fortaleza_tipado no encontrado")
 
     return fortalezaTipadoConseguido.data
 
@@ -97,9 +124,13 @@ def fortTipadoById(id: int):
 # rutas para sacar el paradigma
 @router.get("/paradigmaById")
 def paradigmaById(id: int):
-    paradigmaCOnseguido = supabase.table("paradigma").select("*").eq("id", id).execute()
+    try:
+        paradigmaCOnseguido = supabase.table("paradigma").select("*").eq("id", id).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al buscar el paradigma con el id ({id}): {str(e)}")
+    
     if not paradigmaCOnseguido.data:
-        raise HTTPException(status_code=401, detail="paradigma no encontrado")
+        raise HTTPException(status_code=404, detail="paradigma no encontrado")
 
     return paradigmaCOnseguido.data
 
@@ -108,9 +139,13 @@ def paradigmaById(id: int):
 # rutas para sacar el tipado_tiempo
 @router.get("/tipadoTiempoById")
 def tipadoTiempoById(id: int):
-    tipadoTiempoConseguido = supabase.table("tipado_tiempo").select("*").eq("id", id).execute()
+    try:
+        tipadoTiempoConseguido = supabase.table("tipado_tiempo").select("*").eq("id", id).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al buscar el tipado_tiempo con el id ({id}): {str(e)}")
+    
     if not tipadoTiempoConseguido.data:
-        raise HTTPException(status_code=401, detail="tipado_tiempo no encontrado")
+        raise HTTPException(status_code=404, detail="tipado_tiempo no encontrado")
     
     return tipadoTiempoConseguido.data
 
@@ -122,9 +157,13 @@ def tipadoTiempoById(id: int):
 # por id
 @router.get("/lengAliasById")
 def lengAliasById(id: int):
-    lengAliasConseguido = supabase.table("lenguaje_alias").select("*").eq("id", id).execute()
+    try:
+        lengAliasConseguido = supabase.table("lenguaje_alias").select("*").eq("id", id).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al buscar el lenguaje_alias con el id ({id}): {str(e)}")
+    
     if not lengAliasConseguido.data:
-        raise HTTPException(status_code=401, detail="alias no encontrado")
+        raise HTTPException(status_code=404, detail="alias no encontrado")
     
     return lengAliasConseguido.data
 
@@ -132,9 +171,13 @@ def lengAliasById(id: int):
 # por alias
 @router.get("/lengAliasByAlias")
 def lengAliasByNom(alias: str):
-    lengAliasConseguido = supabase.table("lenguaje_alias").select("*").eq("alias", alias).execute()
+    try:
+        lengAliasConseguido = supabase.table("lenguaje_alias").select("*").eq("alias", alias).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al buscar el lenguajeAlias con el alias ({alias}): {str(e)}")
+    
     if not lengAliasConseguido:
-        raise HTTPException(status_code=401, detail="alias no encontrado")
+        raise HTTPException(status_code=404, detail="alias no encontrado")
 
     return lengAliasConseguido
 
@@ -142,9 +185,13 @@ def lengAliasByNom(alias: str):
 # sacar id lenguaje por el alias
 @router.get("/lengIdByAlias")
 def lengIdByAlias(alias: str):
-    alias = lengAliasByNom(alias)
+    try:
+        alias = lengAliasByNom(alias)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al buscar el lenguaje con el alias ({alias}): {str(e)}")
+
     if not alias.data:
-        raise HTTPException(status_code=401, detail="alias no encontrado")
+        raise HTTPException(status_code=404, detail="alias no encontrado")
 
     return alias.data[0]['lenguaje_id']
 
