@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api.login import auth
 from api.getData import getData
+from api.clasico import clasico
 
 # App principal de FastAPI (punto de entrada del backend).
 app = FastAPI()
@@ -27,6 +28,8 @@ app.add_middleware(
 app.include_router(auth.router)
 
 app.include_router(getData.router)
+
+app.include_router(clasico.router)
 
 
 @app.get("/test")
