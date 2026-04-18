@@ -53,8 +53,84 @@ def lenguajeByAlias(alias: str):
 
     return lenguajeConseguido
 
+
+# clase para almacenar los datos de un lenguaje
+class Lenguaje:
+    def __init__(self, data: dict):
+        self.nombre = data['nombre']
+        self.anio_creacion = data['anio_creacion']
+        self.idEjecucion = data['ejecucion_id']
+        self.idParadigma = data['paradigma_id']
+        self.idTipado = data['tipado_tiempo_id']
+        self.idFortaleza = data['fortaleza_tipado_id']
     
-    
+    # para comparaciones normales | con ==
+    def __eq__(self, other):
+        return (self.nombre == other.nombre 
+            and self.anio_creacion == other.anio_creacion
+            and self.idEjecucion == other.idEjecucion
+            and self.idParadigma == other.idParadigma
+            and self.idTipado == other.idTipado
+            and self.idFortaleza == other.idFortaleza)
+
+    # para comparaciones con feedback
+    def feedback(self, other):
+        aCreacionRes = "incorrecto"
+        if self.anio_creacion == other.anio_creacion:
+            aCreacionRes = "correcto"
+        elif self.anio_creacion > other.anio_creacion:
+            aCreacionRes = "mayor"
+        elif self.anio_creacion < other.anio_creacion:
+            aCreacionRes = "menor"
+
+        salida = {
+            "correcto": self == other,
+            "lenguaje_intentado": self.nombre,
+            "feedback": {
+                "anio_creacion": aCreacionRes,
+                "ejecucion": self.idEjecucion == other.idEjecucion,
+                "paradigma": self.idParadigma == other.idParadigma,
+                "tipado_tiempo": self.idTipado == other.idTipado,
+                "fortaleza_tipado": self.idFortaleza == other.idFortaleza
+            }
+        }    
+
+        return salida 
+
+
+
+# comparacion de lenguajes | solo true o false
+@router.get("/compLeng")
+def comparaLenguajes(aliasInt: str, aliasObj: str):
+    # saca los datos del intento
+    lengIntData = lenguajeByAlias(aliasInt)[0]
+
+    lengInt = Lenguaje(lengIntData)
+
+
+    #saca los datos del objetivo
+    lengObjData = lenguajeByAlias(aliasObj)[0]
+
+    lengObj = Lenguaje(lengObjData)
+
+    return lengInt == lengObj
+
+
+# comparacion de lenguajes con feedback
+@router.get("/compLengFB")
+def comparaLenguajes(aliasInt: str, aliasObj: str):
+    # saca los datos del intento
+    lengIntData = lenguajeByAlias(aliasInt)[0]
+
+    lengInt = Lenguaje(lengIntData)
+
+
+    #saca los datos del objetivo
+    lengObjData = lenguajeByAlias(aliasObj)[0]
+
+    lengObj = Lenguaje(lengObjData)
+
+    return lengInt.feedback(lengObj)
 
 
 
