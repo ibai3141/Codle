@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 016-permitir-null-max-intentos-partida
+      author: ibai
+      changes:
+        - dropDefaultValue:
+            tableName: partida
+            columnName: max_intentos
+            columnDataType: SMALLINT
+
+        - dropNotNullConstraint:
+            tableName: partida
+            columnName: max_intentos
+            columnDataType: SMALLINT
