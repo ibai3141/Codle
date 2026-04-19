@@ -104,12 +104,16 @@ class Lenguaje:
 def comparaLenguajes(aliasInt: str, aliasObj: str):
     # saca los datos del intento
     lengIntData = lenguajeByAlias(aliasInt)[0]
+    if not lengIntData:
+        raise HTTPException(status_code=404, detail="No hay ningun lenguaje con el id conseguido del alias: "+aliasInt)
 
     lengInt = Lenguaje(lengIntData)
 
 
     #saca los datos del objetivo
     lengObjData = lenguajeByAlias(aliasObj)[0]
+    if not lengObjData:
+        raise HTTPException(status_code=404, detail="No hay ningun lenguaje con el id conseguido del alias: "+aliasObj)
 
     lengObj = Lenguaje(lengObjData)
 
@@ -121,12 +125,16 @@ def comparaLenguajes(aliasInt: str, aliasObj: str):
 def comparaLenguajes(aliasInt: str, aliasObj: str):
     # saca los datos del intento
     lengIntData = lenguajeByAlias(aliasInt)[0]
-
+    if not lengIntData:
+        raise HTTPException(status_code=404, detail="No hay ningun lenguaje con el id conseguido del alias de intento: "+aliasInt)
+    
     lengInt = Lenguaje(lengIntData)
 
 
     #saca los datos del objetivo
     lengObjData = lenguajeByAlias(aliasObj)[0]
+    if not lengObjData:
+        raise HTTPException(status_code=404, detail="No hay ningun lenguaje con el id conseguido del alias de objetivo: "+aliasObj)
 
     lengObj = Lenguaje(lengObjData)
 
