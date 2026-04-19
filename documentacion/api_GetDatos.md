@@ -23,6 +23,20 @@ el alias es pasado como parametro
 /getData/lengByAlias?alias=<aliasLenguaje>
 
 
+## /getData/compLeng
+Devuelve true o false si los alias de los lenguajes recibidos como parametros representan al mismo lenguaje
+
+/getData/compLeng?aliasInt=<aliasLenguaje>&aliasObj=<aliasLenguaje>
+
+
+
+## /getData/compLengFB
+Variante de compLeng que compara dos lenguajes a partir de sus alias, devuelve informacion detallada sobre la comparacion
+
+/getData/compLengFB?aliasInt=<aliasLenguaje>&aliasObj=<aliasLenguaje>
+
+
+
 
 ## /getData/creatorByNom
 Devuelve los datos de un creador que tenga ciertos nombre y apellido pasados por parametros
@@ -34,6 +48,8 @@ Devuelve los datos de un creador que tenga ciertos nombre y apellido pasados por
 Devuelve los datos de un creador que tenga cierto id pasado como parametro
 
 /getData/creatorById?id=<idCreador>
+
+
 
 
 
@@ -58,6 +74,8 @@ Devuelve los datos sobre una paradigma que tenga cierto id pasado como parametro
 Devuelve los datos sobre un tipado_tiempo que tenga cierto id pasado como parametro
 
 /getData/tipadoTiempoById?id=<idTipadoTiempo>
+
+
 
 
 
