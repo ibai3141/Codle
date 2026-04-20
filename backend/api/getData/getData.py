@@ -11,6 +11,15 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # rutas para sacar el lenguaje de programacion
 
+@router.get("/lengAll")
+def lenguajesAll():
+    try:
+        lenguajes = supabase.table("lenguaje").select("*").eq("activo", True).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener los lenguajes activos: {str(e)}")
+
+    return lenguajes.data
+
 # con el nombre
 @router.get("/lengByNom")
 def lenguajeByNom(nom: str):
@@ -44,95 +53,6 @@ def lenguajeById(id: int):
 def lenguajeByAlias(alias: str):
     lengId = lengIdByAlias(alias)
     return lenguajeById(lengId)
-
-
-# clase para almacenar los datos de un lenguaje
-class Lenguaje:
-    def __init__(self, data: dict):
-        self.nombre = data['nombre']
-        self.anio_creacion = data['anio_creacion']
-        self.idEjecucion = data['ejecucion_id']
-        self.idParadigma = data['paradigma_id']
-        self.idTipado = data['tipado_tiempo_id']
-        self.idFortaleza = data['fortaleza_tipado_id']
-    
-    # para comparaciones normales | con ==
-    def __eq__(self, other):
-        return (self.nombre == other.nombre 
-            and self.anio_creacion == other.anio_creacion
-            and self.idEjecucion == other.idEjecucion
-            and self.idParadigma == other.idParadigma
-            and self.idTipado == other.idTipado
-            and self.idFortaleza == other.idFortaleza)
-
-    # para comparaciones con feedback
-    def feedback(self, other):
-        aCreacionRes = "incorrecto"
-        if self.anio_creacion == other.anio_creacion:
-            aCreacionRes = "correcto"
-        elif self.anio_creacion > other.anio_creacion:
-            aCreacionRes = "mayor"
-        elif self.anio_creacion < other.anio_creacion:
-            aCreacionRes = "menor"
-
-        salida = {
-            "correcto": self == other,
-            "lenguaje_intentado": self.nombre,
-            "feedback": {
-                "anio_creacion": aCreacionRes,
-                "ejecucion": self.idEjecucion == other.idEjecucion,
-                "paradigma": self.idParadigma == other.idParadigma,
-                "tipado_tiempo": self.idTipado == other.idTipado,
-                "fortaleza_tipado": self.idFortaleza == other.idFortaleza
-            }
-        }    
-
-        return salida 
-
-
-
-# comparacion de lenguajes | solo true o false
-@router.get("/compLeng")
-def comparaLenguajes(aliasInt: str, aliasObj: str):
-    # saca los datos del intento
-    lengIntData = lenguajeByAlias(aliasInt)[0]
-    if not lengIntData:
-        raise HTTPException(status_code=404, detail="No hay ningun lenguaje con el id conseguido del alias: "+aliasInt)
-
-    lengInt = Lenguaje(lengIntData)
-
-
-    #saca los datos del objetivo
-    lengObjData = lenguajeByAlias(aliasObj)[0]
-    if not lengObjData:
-        raise HTTPException(status_code=404, detail="No hay ningun lenguaje con el id conseguido del alias: "+aliasObj)
-
-    lengObj = Lenguaje(lengObjData)
-
-    return lengInt == lengObj
-
-
-# comparacion de lenguajes con feedback
-@router.get("/compLengFB")
-def comparaLenguajes(aliasInt: str, aliasObj: str):
-    # saca los datos del intento
-    lengIntData = lenguajeByAlias(aliasInt)[0]
-    if not lengIntData:
-        raise HTTPException(status_code=404, detail="No hay ningun lenguaje con el id conseguido del alias de intento: "+aliasInt)
-    
-    lengInt = Lenguaje(lengIntData)
-
-
-    #saca los datos del objetivo
-    lengObjData = lenguajeByAlias(aliasObj)[0]
-    if not lengObjData:
-        raise HTTPException(status_code=404, detail="No hay ningun lenguaje con el id conseguido del alias de objetivo: "+aliasObj)
-
-    lengObj = Lenguaje(lengObjData)
-
-    return lengInt.feedback(lengObj)
-
-
 
 # rutas para sacar el creador
 
