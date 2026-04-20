@@ -100,14 +100,85 @@ def buscar_lenguaje_por_respuesta(respuesta: str):
     return lenguaje.data[0]
 
 
-def construir_feedback(lenguaje_intentado: dict, lenguaje_objetivo: dict):
+def obtener_nombre_catalogo(tabla: str, identificador: int):
+    try:
+        resultado = supabase.table(tabla).select("nombre").eq("id", identificador).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener datos de {tabla}: {str(e)}")
+
+    if not resultado.data:
+        return "Desconocido"
+
+    return resultado.data[0]["nombre"]
+
+
+def obtener_creadores_lenguaje(lenguaje_id: int):
+    try:
+        relaciones = (
+            supabase.table("lenguaje_creador")
+            .select("creador_id")
+            .eq("lenguaje_id", lenguaje_id)
+            .execute()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener los creadores del lenguaje: {str(e)}")
+
+    if not relaciones.data:
+        return []
+
+    nombres_creadores = []
+    for relacion in relaciones.data:
+        try:
+            creador = supabase.table("creador").select("nombre,apellido").eq("id", relacion["creador_id"]).execute()
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error al obtener un creador del lenguaje: {str(e)}")
+
+        if creador.data:
+            nombre = creador.data[0]["nombre"]
+            apellido = creador.data[0]["apellido"]
+            nombres_creadores.append(f"{nombre} {apellido}".strip())
+
+    return nombres_creadores
+
+
+def hayCoincidenciaParcial(listaA, listaB):
+    listaBNormalizada = {valor.lower() for valor in listaB}
+
+    for valor in listaA:
+        if valor.lower() in listaBNormalizada:
+            return True
+
+    return False
+
+
+def formatear_lenguaje_para_frontend(lenguaje: dict, creadores=None):
+    return {
+        "id": lenguaje["id"],
+        "nombre": lenguaje["nombre"],
+        "anioCreacion": lenguaje["anio_creacion"],
+        "ejecucion": obtener_nombre_catalogo("ejecucion", lenguaje["ejecucion_id"]),
+        "paradigma": obtener_nombre_catalogo("paradigma", lenguaje["paradigma_id"]),
+        "tipadoTiempo": obtener_nombre_catalogo("tipado_tiempo", lenguaje["tipado_tiempo_id"]),
+        "fortalezaTipado": obtener_nombre_catalogo("fortaleza_tipado", lenguaje["fortaleza_tipado_id"]),
+        "creadores": creadores if creadores is not None else obtener_creadores_lenguaje(lenguaje["id"]),
+    }
+
+
+def construir_feedback(lenguaje_intentado: dict, lenguaje_objetivo: dict, creadores_intentado=None, creadores_objetivo=None):
     anio_resultado = "incorrecto"
     if lenguaje_intentado["anio_creacion"] == lenguaje_objetivo["anio_creacion"]:
         anio_resultado = "correcto"
     elif lenguaje_intentado["anio_creacion"] > lenguaje_objetivo["anio_creacion"]:
-        anio_resultado = "mayor"
+        anio_resultado = "bajo"
     elif lenguaje_intentado["anio_creacion"] < lenguaje_objetivo["anio_creacion"]:
-        anio_resultado = "menor"
+        anio_resultado = "alto"
+
+    creadores_resultado = "incorrecto"
+    if creadores_intentado is not None and creadores_objetivo is not None:
+        if set(nombre.lower() for nombre in creadores_intentado) == set(nombre.lower() for nombre in creadores_objetivo):
+            creadores_resultado = "correcto"
+        elif hayCoincidenciaParcial(creadores_intentado, creadores_objetivo):
+            creadores_resultado = "parcial"
 
     return {
         "correcto": lenguaje_intentado["id"] == lenguaje_objetivo["id"],
@@ -118,6 +189,7 @@ def construir_feedback(lenguaje_intentado: dict, lenguaje_objetivo: dict):
             "paradigma": lenguaje_intentado["paradigma_id"] == lenguaje_objetivo["paradigma_id"],
             "tipado_tiempo": lenguaje_intentado["tipado_tiempo_id"] == lenguaje_objetivo["tipado_tiempo_id"],
             "fortaleza_tipado": lenguaje_intentado["fortaleza_tipado_id"] == lenguaje_objetivo["fortaleza_tipado_id"],
+            "creadores": creadores_resultado,
         },
     }
 
@@ -198,7 +270,14 @@ def guess_clasico(datos: SolicitudGuess, Authorization: str = Header(...)):
         raise HTTPException(status_code=404, detail="Lenguaje objetivo no encontrado")
 
     lenguaje_objetivo = lenguaje_objetivo.data[0]
-    feedback = construir_feedback(lenguaje_intentado, lenguaje_objetivo)
+    creadores_intentado = obtener_creadores_lenguaje(lenguaje_intentado["id"])
+    creadores_objetivo = obtener_creadores_lenguaje(lenguaje_objetivo["id"])
+    feedback = construir_feedback(
+        lenguaje_intentado,
+        lenguaje_objetivo,
+        creadores_intentado,
+        creadores_objetivo,
+    )
     numero_intento = partida["intentos_usados"] + 1
 
     try:
@@ -231,6 +310,8 @@ def guess_clasico(datos: SolicitudGuess, Authorization: str = Header(...)):
         "numero_intento": numero_intento,
         "estado_partida": "ganada" if feedback["correcto"] else "en_curso",
         "intento": intento.data[0] if intento.data else None,
+        "lenguaje_intentado": formatear_lenguaje_para_frontend(lenguaje_intentado, creadores_intentado),
+        "lenguaje_objetivo": formatear_lenguaje_para_frontend(lenguaje_objetivo, creadores_objetivo),
         "resultado": feedback,
     }
         
