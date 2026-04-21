@@ -7,6 +7,7 @@ import random
 import json
 from datetime import datetime, timezone
 from urllib.parse import quote
+from functools import lru_cache
 
 router = APIRouter(prefix="/clasico", tags=["clasico"])
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -102,6 +103,7 @@ def buscar_lenguaje_por_respuesta(respuesta: str):
     return lenguaje.data[0]
 
 
+@lru_cache(maxsize=256)
 def obtener_nombre_catalogo(tabla: str, identificador: int):
     try:
         resultado = supabase.table(tabla).select("nombre").eq("id", identificador).execute()
@@ -128,17 +130,28 @@ def obtener_creadores_lenguaje(lenguaje_id: int):
     if not relaciones.data:
         return []
 
-    nombres_creadores = []
-    for relacion in relaciones.data:
-        try:
-            creador = supabase.table("creador").select("nombre,apellido").eq("id", relacion["creador_id"]).execute()
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error al obtener un creador del lenguaje: {str(e)}")
+    creador_ids = [relacion["creador_id"] for relacion in relaciones.data]
 
-        if creador.data:
-            nombre = creador.data[0]["nombre"]
-            apellido = creador.data[0]["apellido"]
-            nombres_creadores.append(f"{nombre} {apellido}".strip())
+    try:
+        creadores = (
+            supabase.table("creador")
+            .select("id,nombre,apellido")
+            .in_("id", creador_ids)
+            .execute()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener los creadores del lenguaje: {str(e)}")
+
+    creadores_por_id = {}
+    for creador in creadores.data:
+        nombre = creador["nombre"]
+        apellido = creador["apellido"]
+        creadores_por_id[creador["id"]] = f"{nombre} {apellido}".strip()
+
+    nombres_creadores = []
+    for creador_id in creador_ids:
+        if creador_id in creadores_por_id:
+            nombres_creadores.append(creadores_por_id[creador_id])
 
     return nombres_creadores
 
