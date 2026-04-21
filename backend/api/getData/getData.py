@@ -1,10 +1,35 @@
 from fastapi import APIRouter, HTTPException
 from api.utils.keys import SUPABASE_URL, SUPABASE_KEY
 from supabase import create_client
+from urllib.parse import quote
 
 
 router = APIRouter(prefix="/getData", tags=["datos"])
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+SUPABASE_LOGOS_BUCKET = "imagenes"
+
+
+def construir_logo_url(logo_path):
+    if not logo_path:
+        return None
+
+    logo_limpio = str(logo_path).strip()
+    if not logo_limpio:
+        return None
+
+    if logo_limpio.startswith("http://") or logo_limpio.startswith("https://"):
+        return logo_limpio
+
+    return f"{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_LOGOS_BUCKET}/{quote(logo_limpio)}"
+
+
+def serializar_lenguaje(lenguaje):
+    if not lenguaje:
+        return lenguaje
+
+    lenguaje_serializado = dict(lenguaje)
+    lenguaje_serializado["logo_path"] = construir_logo_url(lenguaje.get("logo_path"))
+    return lenguaje_serializado
 
 
 
@@ -18,7 +43,7 @@ def lenguajesAll():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener los lenguajes activos: {str(e)}")
 
-    return lenguajes.data
+    return [serializar_lenguaje(lenguaje) for lenguaje in lenguajes.data]
 
 # con el nombre
 @router.get("/lengByNom")
@@ -31,7 +56,7 @@ def lenguajeByNom(nom: str):
     if not lenguajeConseguido.data:
         raise HTTPException(status_code=404, detail="Lenguaje no encontrado")
 
-    return lenguajeConseguido.data
+    return [serializar_lenguaje(lenguaje) for lenguaje in lenguajeConseguido.data]
 
 
 # con el id
@@ -45,7 +70,7 @@ def lenguajeById(id: int):
     if not lenguajeConseguido.data:
         raise HTTPException(status_code=404, detail="Lenguaje no encontrado")
     
-    return lenguajeConseguido.data
+    return [serializar_lenguaje(lenguaje) for lenguaje in lenguajeConseguido.data]
 
 
 # con el alias

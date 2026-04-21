@@ -1,24 +1,27 @@
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   crearPartida,
   obtenerPartida,
-  obtenerLenguajeById,
   obtenerLenguajesActivos,
   enviarIntento as enviarIntentoApi,
 } from "../api/api";
 import "./Clasico.css";
 
-// Array de modos disponibles para poder cambiar entre ellos
+// Clave de localStorage usada para recordar la partida en curso del modo clásico.
+// Así si el usuario recarga la página podemos recuperar la sesión y el historial.
+const PARTIDA_STORAGE_KEY = "clasico_partida_id";
+
+// Array de modos disponibles para poder cambiar entre ellos.
 const MODOS = [
   { clave: "clasico", etiqueta: "Clasico", icono: "?", ruta: "/clasico" },
   { clave: "logo", etiqueta: "Logo", icono: "◎", ruta: "/logo" },
   { clave: "codigo", etiqueta: "Codigo", icono: "</>", ruta: "/codigo" },
 ];
 
-// Esta funcion coge el nombre de un lenguaje y saca sus iniciales (máximo 2).
+// Esta función coge el nombre de un lenguaje y saca sus iniciales (máximo 2).
 // Por ejemplo: "Python" da "Py", "JavaScript" da "Ja".
-// Se usa para mostrar en la celda del logo si no tenemos imagen disponible.
+// Se usa como fallback si un lenguaje no tiene imagen disponible.
 function sacarIniciales(texto) {
   return texto
     .split(/\s+/)
@@ -30,105 +33,25 @@ function sacarIniciales(texto) {
     .toUpperCase();
 }
 
-// Comprueba si hay algun elemento en comun entre dos listas (ignora mayusculas/minusculas).
-// En este caso, lo usaremos para ver si hay coincidencia parcial en los creadores.
-function hayCoincidenciaParcial(listaA, listaB) {
-  const listaBNormalizada = new Set(
-    listaB.map(function (valor) {
-      return valor.toLowerCase();
-    }),
-  );
-
-  for (const valor of listaA) {
-    if (listaBNormalizada.has(valor.toLowerCase())) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-// Funcion principal que compara el lenguaje que intento el usuario con el objetivo.
-// Devuelve un objeto con los estados de cada atributo: correcto, parcial, incorrecto, alto (año menor) o bajo (año mayor).
-// Es la lógica principal para el feedback que se muestra cuando aciertas o fallas.
-function construirResultadoIntento(lenguajeIntentado, lenguajeObjetivo) {
-  // Comparamos el año de creacion. Si es menor que el objetivo, es "alto", si es mayor es "bajo".
-  let estadoAnio = "incorrecto";
-  if (lenguajeIntentado.anioCreacion === lenguajeObjetivo.anioCreacion) {
-    estadoAnio = "correcto";
-  } else if (lenguajeIntentado.anioCreacion < lenguajeObjetivo.anioCreacion) {
-    estadoAnio = "alto";
-  } else {
-    estadoAnio = "bajo";
-  }
-
-  // Paradigma: en la base de datos es un string único por lenguaje, sólo puede ser correcto o incorrecto.
-  let estadoParadigma = "incorrecto";
-  if (lenguajeIntentado.paradigma === lenguajeObjetivo.paradigma) {
-    estadoParadigma = "correcto";
-  }
-
-  // Puede haber varios creadores para un mismo lenguaje, por lo que usaremos la función de hay coincidencia parcial.
-  let estadoCreador = "incorrecto";
-  const esCreadorExacto =
-    lenguajeIntentado.creadores.join("|") === lenguajeObjetivo.creadores.join("|");
-  if (esCreadorExacto) {
-    estadoCreador = "correcto";
-  } else {
-    const coincideParcialCreador = hayCoincidenciaParcial(
-      lenguajeIntentado.creadores,
-      lenguajeObjetivo.creadores,
+// Renderiza el logo del lenguaje.
+// Si hay imagen, muestra la imagen real; si no, muestra un recuadro con iniciales.
+// `decorativo` se usa cuando la imagen no aporta información extra para lectores de pantalla.
+function LogoLenguaje({ lenguaje, className = "", decorativo = false }) {
+  if (lenguaje.logoUrl) {
+    return (
+      <img
+        src={lenguaje.logoUrl}
+        alt={decorativo ? "" : `Logo de ${lenguaje.nombre}`}
+        className={className || "classic-logo-imagen"}
+      />
     );
-    if (coincideParcialCreador) {
-      estadoCreador = "parcial";
-    }
   }
 
-  // Devuelve el lenguaje que intentó el usuario y estados, que contiene los valores usados
-  // por la UI: "correcto" / "parcial" / "incorrecto" / "alto" / "bajo".
-  return {
-    // El objeto del lenguaje que el usuario intentó.
-    lenguaje: lenguajeIntentado,
-
-    // Estados por cada propiedad que usamos en la UI.
-    estados: {
-      // Nombre: comparamos por `id` para evitar falsos positivos por nombres similares.
-      // Valor: "correcto" | "incorrecto"
-      nombre:
-        lenguajeIntentado.id === lenguajeObjetivo.id ? "correcto" : "incorrecto",
-
-      // Año de creación: tomamos la variable `estadoAnio` calculada arriba.
-      // Valor: "correcto" | "alto" | "bajo"
-      anioCreacion: estadoAnio,
-
-      // Valor: "correcto" | "incorrecto"
-      ejecucion:
-        lenguajeIntentado.ejecucion === lenguajeObjetivo.ejecucion
-          ? "correcto"
-          : "incorrecto",
-
-      // Paradigma: usamos `estadoParadigma` (puede ser "correcto" o "incorrecto").
-      // En nuestra BD `paradigma` es un string único por lenguaje.
-      paradigma: estadoParadigma,
-
-      // Tipado en tiempo de ejecución (Dinámico/Estático): igualación simple.
-      // Valor: "correcto" | "incorrecto"
-      tipadoTiempo:
-        lenguajeIntentado.tipadoTiempo === lenguajeObjetivo.tipadoTiempo
-          ? "correcto"
-          : "incorrecto",
-
-      // Fortaleza del tipado (por ejemplo "Fuerte" / "Debil").
-      // Valor: "correcto" | "incorrecto"
-      fortalezaTipado:
-        lenguajeIntentado.fortalezaTipado === lenguajeObjetivo.fortalezaTipado
-          ? "correcto"
-          : "incorrecto",
-
-      // Creadores: usamos `estadoCreador` que puede ser "correcto", "parcial" o "incorrecto".
-      creadores: estadoCreador,
-    },
-  };
+  return (
+    <div className={className || "classic-logo-relleno"} aria-hidden={decorativo}>
+      {sacarIniciales(lenguaje.nombre)}
+    </div>
+  );
 }
 
 // Componente que renderiza una celda de estado. Muestra el contenido con el color correspondiente.
@@ -137,7 +60,6 @@ function CeldaEstado(props) {
   const estado = props.estado;
   let flecha = "";
 
-  // Solo mostramos flecha si es alto (año anterior) o bajo (año posterior).
   if (estado === "alto") {
     flecha = "↑";
   }
@@ -153,31 +75,16 @@ function CeldaEstado(props) {
   );
 }
 
-// Componente especial para mostrar el logo del lenguaje en la tabla.
-// Si el lenguaje tiene logoUrl muestra la imagen, si no muestra un cuadradito con las iniciales.
-// Al pasar el ratón encima aparece el nombre completo del lenguaje como tooltip flotante.
+// Componente especial para mostrar el lenguaje en la tabla de resultados.
+// Enseña el logo y el nombre juntos para que el feedback sea más claro visualmente.
 function CeldaLenguaje(props) {
   const lenguaje = props.lenguaje;
-  let logo;
-
-  // Decidimos si mostrar imagen o solo iniciales segun si tenemos URL.
-  if (lenguaje.logoUrl) {
-    logo = (
-      <img
-        src={lenguaje.logoUrl}
-        alt={`Logo de ${lenguaje.nombre}`}
-        className="classic-logo-imagen"
-      />
-    );
-  } else {
-    logo = <div className="classic-logo-relleno">{sacarIniciales(lenguaje.nombre)}</div>;
-  }
 
   return (
     <div className={`classic-cell classic-${props.estado}`}>
-      <div className="classic-logo-zona">
-        {logo}
-        <span className="classic-logo-tooltip">{lenguaje.nombre}</span>
+      <div className="classic-language-chip">
+        <LogoLenguaje lenguaje={lenguaje} className="classic-logo-imagen" />
+        <span className="classic-language-name">{lenguaje.nombre}</span>
       </div>
     </div>
   );
@@ -189,27 +96,43 @@ export default function Clasico() {
   // --- Estados de la interfaz visual ---
   // Almacena el texto que escribe el usuario en el buscador.
   const [textoBusqueda, setTextoBusqueda] = useState("");
-  // Lista de nombres de lenguajes disponibles (sin intentar aún).
-  // Se carga desde /getData/lengAll al inicializar.
-  const [lenguajesDisponibles, setLenguajesDisponibles] = useState([]);
+  // Catálogo completo de lenguajes activos que devuelve el backend.
+  const [catalogoLenguajes, setCatalogoLenguajes] = useState([]);
   // Historial de todos los intentos que hace el usuario. Se muestra en la tabla de abajo.
   const [intentos, setIntentos] = useState([]);
-  // Mensaje de error si algo sale mal (lenguaje no valido, etc).
+  // Mensaje de error si algo sale mal (lenguaje no válido, fallo de red, etc).
   const [mensajeError, setMensajeError] = useState("");
   // Mensaje de acierto cuando el usuario adivina correctamente el lenguaje.
   const [mensajeAcierto, setMensajeAcierto] = useState("");
-
-  // --- Estados de autenticación y partida (conectados al backend) ---
   // Token JWT del usuario autenticado. Se obtiene de localStorage.
   const [token, setToken] = useState("");
-  // ID de la partida creada en el backend. Se usa para identificar la sesión de juego.
+  // ID de la partida actual en backend. Identifica la sesión de juego.
   const [partidaId, setPartidaId] = useState(null);
-  // El lenguaje secreto que el usuario debe adivinar. Se obtiene del backend.
-  const [lenguajeObjetivo, setLenguajeObjetivo] = useState(null);
-  // Indicador de carga mientras se inicializa la partida desde el backend.
+  // Indicador de carga mientras se inicializa la partida desde backend.
   const [cargando, setCargando] = useState(true);
+  // Evita dobles clics o dobles Enter mientras el intento se está enviando.
+  const [enviandoIntento, setEnviandoIntento] = useState(false);
 
-  // useEffect para inicializar partida desde backend
+  // Lista derivada de lenguajes que aún no se han intentado.
+  // Se calcula restando del catálogo completo los IDs que ya aparecen en el historial.
+  const lenguajesDisponibles = useMemo(
+    function () {
+      const idsIntentados = new Set(
+        intentos.map(function (intento) {
+          return intento.lenguaje.id;
+        }),
+      );
+
+      return catalogoLenguajes.filter(function (lenguaje) {
+        return !idsIntentados.has(lenguaje.id);
+      });
+    },
+    [catalogoLenguajes, intentos],
+  );
+
+  // useEffect para inicializar la partida desde backend.
+  // Si existe una partida guardada en localStorage se intenta reanudar.
+  // Si no existe o ya no es válida, se crea una nueva.
   useEffect(
     function () {
       async function inicializarPartida() {
@@ -217,55 +140,61 @@ export default function Clasico() {
           const tokenGuardado = localStorage.getItem("access_token");
           if (!tokenGuardado) {
             setMensajeError("No estás autenticado. Redirigiendo a login...");
-            setTimeout(() => navegar("/"), 2000);
+            setTimeout(function () {
+              navegar("/");
+            }, 2000);
             setCargando(false);
             return;
           }
 
           setToken(tokenGuardado);
 
-          // Crear partida en backend
-          const respuestaPartida = await crearPartida(tokenGuardado);
-          const newPartidaId = respuestaPartida.partida_id;
-          setPartidaId(newPartidaId);
+          // Cargar el catálogo de lenguajes activos. Se usa para sugerencias y validación visual.
+          const lenguajesActivos = await obtenerLenguajesActivos();
+          setCatalogoLenguajes(lenguajesActivos);
 
-          // Obtener datos de la partida
-          const datosPartida = await obtenerPartida(newPartidaId, tokenGuardado);
-          const lenguajeObjetivoId = datosPartida.partida.lenguaje_objetivo_id;
+          // Intentar recuperar una partida anterior guardada en localStorage.
+          const partidaGuardada = localStorage.getItem(PARTIDA_STORAGE_KEY);
+          let partidaActiva = null;
 
-          // Cargar el lenguaje objetivo desde el backend por ID
-          try {
-            const lenguajeObjetivoData = await obtenerLenguajeById(lenguajeObjetivoId);
-            setLenguajeObjetivo(lenguajeObjetivoData[0]);
-          } catch (error) {
-            console.error("Error obtener lenguaje del backend:", error);
-            setMensajeError("Error al cargar el lenguaje objetivo");
+          if (partidaGuardada) {
+            try {
+              partidaActiva = await obtenerPartida(partidaGuardada, tokenGuardado);
+            } catch (error) {
+              // Si la partida guardada ya no existe o falla, la descartamos y empezamos otra.
+              localStorage.removeItem(PARTIDA_STORAGE_KEY);
+              partidaActiva = null;
+            }
+          }
+
+          if (!partidaActiva) {
+            // Si no había partida activa, crear una nueva en backend.
+            const respuestaPartida = await crearPartida(tokenGuardado);
+            const nuevaPartidaId = respuestaPartida.partida_id;
+            localStorage.setItem(PARTIDA_STORAGE_KEY, String(nuevaPartidaId));
+
+            setPartidaId(nuevaPartidaId);
+            setIntentos([]);
+            setMensajeAcierto("");
             setCargando(false);
             return;
           }
 
-          // Cargar todos los lenguajes activos disponibles desde el backend
-          try {
-            const lenguajesActivos = await obtenerLenguajesActivos();
-            const nombres = [];
+          // Si sí había partida activa, restauramos ID e historial.
+          setPartidaId(partidaActiva.partida.id);
+          setIntentos(partidaActiva.intentos ?? []);
 
-            for (const lenguaje of lenguajesActivos) {
-              nombres.push(lenguaje.nombre);
-            }
-
-            setLenguajesDisponibles(nombres);
-          } catch (error) {
-            console.error("Error al obtener lenguajes activos:", error);
-            setMensajeError("Error al cargar la lista de lenguajes");
-            setCargando(false);
-            return;
+          // Si el backend ya marca la partida como ganada, mostramos el mensaje y limpiamos storage.
+          if (partidaActiva.partida.estado === "ganada") {
+            setMensajeAcierto("¡Has acertado el lenguaje!");
+            localStorage.removeItem(PARTIDA_STORAGE_KEY);
           }
 
           setCargando(false);
         } catch (error) {
           console.error("Error al inicializar partida:", error);
           setMensajeError(
-            error.message || "Error al cargar la partida. Intenta de nuevo."
+            error.message || "Error al cargar la partida. Intenta de nuevo.",
           );
           setCargando(false);
         }
@@ -273,12 +202,11 @@ export default function Clasico() {
 
       inicializarPartida();
     },
-    [navegar]
+    [navegar],
   );
 
   // Calcula las sugerencias mientras el usuario escribe en el buscador.
-  // Solo muestra lenguajes disponibles que empiezan por lo que escribio (máximo 8).
-  // Se usa useMemo para evitar recalcular en cada render si no cambian las dependencias.
+  // Solo muestra lenguajes disponibles que empiezan por lo que escribió (máximo 8).
   const sugerencias = useMemo(
     function () {
       const textoNormalizado = textoBusqueda.trim().toLowerCase();
@@ -287,154 +215,150 @@ export default function Clasico() {
       }
 
       return lenguajesDisponibles
-        .filter(function (nombreLenguaje) {
-          return nombreLenguaje.toLowerCase().startsWith(textoNormalizado);
+        .filter(function (lenguaje) {
+          return lenguaje.nombre.toLowerCase().startsWith(textoNormalizado);
         })
         .slice(0, 8);
     },
     [textoBusqueda, lenguajesDisponibles],
   );
 
-  // Maneja cuando se envía un intento de lenguaje válido.
-  // Envía la respuesta al backend, que valida, calcula feedback, persiste y devuelve el resultado.
-  async function procesarIntento(nombreLenguaje) {
-    // Si ya ha acertado, no permitir más intentos.
-    if (mensajeAcierto) {
+  // Maneja cuando se envía un intento.
+  // La validación oficial del lenguaje la hace el backend, que además persiste el intento.
+  async function procesarIntento(respuesta) {
+    // Si ya ha acertado o hay una petición en curso, no permitimos más envíos.
+    if (mensajeAcierto || enviandoIntento) {
       return;
     }
 
-    // Comprobamos que tenemos los datos necesarios cargados.
-    if (!lenguajeObjetivo || !token || !partidaId) {
+    // Comprobamos que tenemos los datos mínimos para seguir.
+    if (!token || !partidaId) {
       setMensajeError("Error en la carga de la partida. Recarga la página.");
       return;
     }
 
-    const nombreNormalizado = nombreLenguaje.trim();
-    if (!nombreNormalizado) {
-      return;
-    }
-
-    // Validar que el lenguaje está en la lista disponible (no se ha intentado ya).
-    const lenguajeExistente = lenguajesDisponibles.find(function (nombre) {
-      return nombre.toLowerCase() === nombreNormalizado.toLowerCase();
-    });
-
-    if (!lenguajeExistente) {
-      setMensajeError("Selecciona un lenguaje valido de la lista.");
+    const respuestaNormalizada = respuesta.trim();
+    if (!respuestaNormalizada) {
       return;
     }
 
     setMensajeError("");
+    setEnviandoIntento(true);
 
     try {
-      // Enviar el intento al backend usando la API. El servidor:
-      // - Resuelve el nombre/alias a un lenguaje
-      // - Calcula el feedback (comparación con objetivo)
-      // - Persiste el intento en BD
-      // - Actualiza la partida (intentos_usados, estado, etc)
-      // - Devuelve el resultado oficial con feedback
-      const resultadoServidor = await enviarIntentoApi(partidaId, nombreNormalizado, token);
+      // El backend resuelve alias/nombre, compara con el objetivo y devuelve el feedback oficial.
+      const resultadoServidor = await enviarIntentoApi(
+        partidaId,
+        respuestaNormalizada,
+        token,
+      );
 
-      // El backend devuelve el lenguaje ya formateado para la UI, así evitamos reconstruirlo aquí.
+      // Adaptamos la respuesta del servidor al formato que usa la UI.
       const intentoData = {
         numeroIntento: resultadoServidor.numero_intento,
         lenguaje: resultadoServidor.lenguaje_intentado,
         estados: {
           nombre: resultadoServidor.resultado.correcto ? "correcto" : "incorrecto",
           anioCreacion: resultadoServidor.resultado.feedback.anio_creacion,
-          ejecucion: resultadoServidor.resultado.feedback.ejecucion ? "correcto" : "incorrecto",
-          paradigma: resultadoServidor.resultado.feedback.paradigma ? "correcto" : "incorrecto",
-          tipadoTiempo: resultadoServidor.resultado.feedback.tipado_tiempo ? "correcto" : "incorrecto",
-          fortalezaTipado: resultadoServidor.resultado.feedback.fortaleza_tipado ? "correcto" : "incorrecto",
+          ejecucion: resultadoServidor.resultado.feedback.ejecucion
+            ? "correcto"
+            : "incorrecto",
+          paradigma: resultadoServidor.resultado.feedback.paradigma
+            ? "correcto"
+            : "incorrecto",
+          tipadoTiempo: resultadoServidor.resultado.feedback.tipado_tiempo
+            ? "correcto"
+            : "incorrecto",
+          fortalezaTipado: resultadoServidor.resultado.feedback.fortaleza_tipado
+            ? "correcto"
+            : "incorrecto",
           creadores: resultadoServidor.resultado.feedback.creadores ?? "incorrecto",
         },
       };
 
-      // Agregar el intento al historial (al principio de la lista).
+      // Agregamos el intento al historial si aún no estaba.
+      // Esto evita duplicados si por cualquier motivo llega dos veces la misma respuesta.
       setIntentos(function (anterior) {
+        const yaExiste = anterior.some(function (intento) {
+          return intento.numeroIntento === intentoData.numeroIntento;
+        });
+
+        if (yaExiste) {
+          return anterior;
+        }
+
         return [intentoData, ...anterior];
       });
 
-      // Quitar el lenguaje de la lista disponible.
-      setLenguajesDisponibles(function (anterior) {
-        return anterior.filter(function (nombre) {
-          return nombre.toLowerCase() !== nombreNormalizado.toLowerCase();
-        });
-      });
-
-      // Limpiar el buscador para el siguiente intento.
+      // Limpiar el buscador para preparar el siguiente intento.
       setTextoBusqueda("");
 
-      // Si el intento es correcto, mostrar mensaje de acierto.
+      // Si el intento es correcto, mostrar mensaje de acierto y cerrar la partida local.
       if (resultadoServidor.resultado.correcto) {
         setMensajeAcierto("¡Has acertado el lenguaje!");
+        localStorage.removeItem(PARTIDA_STORAGE_KEY);
       }
     } catch (error) {
       console.error("Error al enviar intento:", error);
       setMensajeError(error.message || "Error al procesar el intento. Intenta de nuevo.");
+    } finally {
+      setEnviandoIntento(false);
     }
   }
 
-  // Maneja cuando el usuario presiona Enter o hace click en el boton de enviar.
-  // Intenta enviar el intento usando diferentes estrategias de coincidencia.
+  // Maneja cuando el usuario presiona Enter o hace click en el botón de enviar.
+  // Si coincide exactamente con un nombre visible, usamos ese nombre; si no, mandamos
+  // el texto tal cual para que el backend pueda resolver aliases como "js", "py", etc.
   function enviarFormulario(evento) {
     evento.preventDefault();
 
-    if (lenguajesDisponibles.length === 0) {
-      setMensajeError("No hay lenguajes cargados todavia.");
+    if (catalogoLenguajes.length === 0) {
+      setMensajeError("No hay lenguajes cargados todavía.");
       return;
     }
 
     const textoNormalizado = textoBusqueda.trim();
-    
-    // Buscar coincidencia exacta en el nombre del lenguaje (ignora mayúsculas).
-    const coincidenciaExacta = lenguajesDisponibles.find(function (nombreLenguaje) {
-      return nombreLenguaje.toLowerCase() === textoNormalizado.toLowerCase();
+    if (!textoNormalizado) {
+      return;
+    }
+
+    const coincidenciaExacta = lenguajesDisponibles.find(function (lenguaje) {
+      return lenguaje.nombre.toLowerCase() === textoNormalizado.toLowerCase();
     });
 
-    // Si escribio exactamente el nombre de un lenguaje disponible, lo enviamos.
     if (coincidenciaExacta) {
-      procesarIntento(coincidenciaExacta);
+      procesarIntento(coincidenciaExacta.nombre);
       return;
     }
 
-    // Si hay sugerencias, tomamos la primera y la enviamos.
-    // Esto permite que al presionar Enter se envíe la primera sugerencia mostrada.
-    if (sugerencias.length > 0) {
-      procesarIntento(sugerencias[0]);
-      return;
-    }
-
-    setMensajeError("No hay coincidencias para ese lenguaje.");
+    procesarIntento(textoNormalizado);
   }
 
   // Solo mostramos el desplegable de sugerencias si hay texto escrito y tenemos coincidencias.
-  let haySugerencias = false;
-  if (textoBusqueda.trim() && sugerencias.length > 0 && !mensajeAcierto) {
-    haySugerencias = true;
-  }
+  const haySugerencias =
+    textoBusqueda.trim() && sugerencias.length > 0 && !mensajeAcierto;
 
-  // Mostrar estado de carga mientras se inicializa la partida desde el backend
+  // Estado de carga mientras se inicializa la partida.
   if (cargando) {
     return (
       <section className="classic-page">
-        <p style={{ textAlign: "center", padding: "2rem" }}>Cargando partida...</p>
+        <p className="classic-loading-state">Cargando partida...</p>
       </section>
     );
   }
 
-  // Mostrar error si no se pudo cargar la partida
-  if (!lenguajeObjetivo) {
+  // Si no hay partida cargada, mostramos el error general.
+  if (!partidaId) {
     return (
       <section className="classic-page">
-        <p style={{ textAlign: "center", padding: "2rem", color: "red" }}>
+        <p className="classic-error-state">
           {mensajeError || "Error al cargar la partida"}
         </p>
       </section>
     );
   }
 
-  // Seccion visual: layout principal de la página.
+  // Sección visual: layout principal de la página.
   // A continuación se renderizan las distintas zonas: selector de modos, introducción,
   // buscador con sugerencias, mensajes de estado, historial de intentos y leyenda.
   return (
@@ -471,7 +395,7 @@ export default function Clasico() {
       </article>
 
       {/* Buscador: input, botón de enviar y lista de sugerencias.
-          `disabled` se activa cuando el usuario ya ha acertado para bloquear interacción. */}
+          `disabled` se activa cuando el usuario ya ha acertado o hay envío en curso. */}
       <form className="classic-search-wrap" onSubmit={enviarFormulario}>
         <div className="classic-input-shell">
           <input
@@ -483,15 +407,15 @@ export default function Clasico() {
                 setMensajeError("");
               }
             }}
-            placeholder="Escribe el nombre del lenguaje"
+            placeholder="Escribe el nombre o alias del lenguaje"
             aria-label="Buscar lenguaje"
             autoComplete="off"
-            disabled={Boolean(mensajeAcierto)}
+            disabled={Boolean(mensajeAcierto) || enviandoIntento}
           />
           <button
             type="submit"
             className="classic-submit"
-            disabled={Boolean(mensajeAcierto)}
+            disabled={Boolean(mensajeAcierto) || enviandoIntento}
           >
             ▶
           </button>
@@ -504,19 +428,22 @@ export default function Clasico() {
             role="listbox"
             aria-label="Sugerencias de lenguajes"
           >
-            {sugerencias.map(function (nombreLenguaje) {
+            {sugerencias.map(function (lenguaje) {
               return (
-                <li key={nombreLenguaje}>
+                <li key={lenguaje.id}>
                   <button
                     type="button"
                     className="classic-suggestion-item"
                     onClick={function () {
-                      // Al hacer click en una sugerencia enviamos ese intento directamente.
-                      procesarIntento(nombreLenguaje);
+                      procesarIntento(lenguaje.nombre);
                     }}
                   >
-                    <span className="classic-avatar">{sacarIniciales(nombreLenguaje)}</span>
-                    <span>{nombreLenguaje}</span>
+                    <LogoLenguaje
+                      lenguaje={lenguaje}
+                      className="classic-suggestion-logo"
+                      decorativo
+                    />
+                    <span>{lenguaje.nombre}</span>
                   </button>
                 </li>
               );
@@ -529,11 +456,9 @@ export default function Clasico() {
       {mensajeError ? <p className="classic-error">{mensajeError}</p> : null}
       {mensajeAcierto ? <p className="classic-success">{mensajeAcierto}</p> : null}
 
-      {/* Estado cuando no hay lenguajes disponibles, por si hay algún error de backend. */}
-      {lenguajesDisponibles.length === 0 ? (
-        <p className="classic-empty-state-api">
-          Lista de lenguajes vacia.
-        </p>
+      {/* Estado cuando ya no quedan lenguajes disponibles por intentar. */}
+      {lenguajesDisponibles.length === 0 && !mensajeAcierto ? (
+        <p className="classic-empty-state-api">Ya no quedan lenguajes disponibles.</p>
       ) : null}
 
       {/* Historial de intentos: tabla con resultados de cada intento. Cada fila representa
@@ -554,7 +479,10 @@ export default function Clasico() {
         ) : (
           intentos.map(function (intento) {
             return (
-              <div key={intento.numeroIntento ?? intento.lenguaje.id} className="classic-results-row">
+              <div
+                key={intento.numeroIntento ?? intento.lenguaje.id}
+                className="classic-results-row"
+              >
                 <CeldaLenguaje
                   lenguaje={intento.lenguaje}
                   estado={intento.estados.nombre}

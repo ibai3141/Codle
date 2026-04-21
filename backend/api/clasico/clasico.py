@@ -6,9 +6,11 @@ from api.utils import tokens
 import random
 import json
 from datetime import datetime, timezone
+from urllib.parse import quote
 
 router = APIRouter(prefix="/clasico", tags=["clasico"])
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+SUPABASE_LOGOS_BUCKET = "imagenes"
 
 
 class SolicitudGuess(BaseModel):
@@ -151,11 +153,26 @@ def hayCoincidenciaParcial(listaA, listaB):
     return False
 
 
+def construir_logo_url(logo_path):
+    if not logo_path:
+        return None
+
+    logo_limpio = str(logo_path).strip()
+    if not logo_limpio:
+        return None
+
+    if logo_limpio.startswith("http://") or logo_limpio.startswith("https://"):
+        return logo_limpio
+
+    return f"{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_LOGOS_BUCKET}/{quote(logo_limpio)}"
+
+
 def formatear_lenguaje_para_frontend(lenguaje: dict, creadores=None):
     return {
         "id": lenguaje["id"],
         "nombre": lenguaje["nombre"],
         "anioCreacion": lenguaje["anio_creacion"],
+        "logoUrl": construir_logo_url(lenguaje.get("logo_path")),
         "ejecucion": obtener_nombre_catalogo("ejecucion", lenguaje["ejecucion_id"]),
         "paradigma": obtener_nombre_catalogo("paradigma", lenguaje["paradigma_id"]),
         "tipadoTiempo": obtener_nombre_catalogo("tipado_tiempo", lenguaje["tipado_tiempo_id"]),
@@ -190,6 +207,49 @@ def construir_feedback(lenguaje_intentado: dict, lenguaje_objetivo: dict, creado
             "tipado_tiempo": lenguaje_intentado["tipado_tiempo_id"] == lenguaje_objetivo["tipado_tiempo_id"],
             "fortaleza_tipado": lenguaje_intentado["fortaleza_tipado_id"] == lenguaje_objetivo["fortaleza_tipado_id"],
             "creadores": creadores_resultado,
+        },
+    }
+
+
+def formatear_intento_para_frontend(intento: dict):
+    try:
+        lenguaje_resultado = (
+            supabase.table("lenguaje")
+            .select("*")
+            .eq("id", intento["lenguaje_intentado_id"])
+            .execute()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener el lenguaje del intento: {str(e)}")
+
+    if not lenguaje_resultado.data:
+        raise HTTPException(status_code=404, detail="Lenguaje del intento no encontrado")
+
+    lenguaje = lenguaje_resultado.data[0]
+    creadores = obtener_creadores_lenguaje(lenguaje["id"])
+
+    feedback_json = intento.get("feedback_json") or "{}"
+    if isinstance(feedback_json, str):
+        try:
+            feedback_data = json.loads(feedback_json)
+        except json.JSONDecodeError as e:
+            raise HTTPException(status_code=500, detail=f"Error al leer el feedback del intento: {str(e)}")
+    else:
+        feedback_data = feedback_json
+
+    feedback = feedback_data.get("feedback", {})
+
+    return {
+        "numeroIntento": intento["numero_intento"],
+        "lenguaje": formatear_lenguaje_para_frontend(lenguaje, creadores),
+        "estados": {
+            "nombre": "correcto" if intento["es_correcto"] else "incorrecto",
+            "anioCreacion": feedback.get("anio_creacion", "incorrecto"),
+            "ejecucion": "correcto" if feedback.get("ejecucion") else "incorrecto",
+            "paradigma": "correcto" if feedback.get("paradigma") else "incorrecto",
+            "tipadoTiempo": "correcto" if feedback.get("tipado_tiempo") else "incorrecto",
+            "fortalezaTipado": "correcto" if feedback.get("fortaleza_tipado") else "incorrecto",
+            "creadores": feedback.get("creadores", "incorrecto"),
         },
     }
 
@@ -311,7 +371,6 @@ def guess_clasico(datos: SolicitudGuess, Authorization: str = Header(...)):
         "estado_partida": "ganada" if feedback["correcto"] else "en_curso",
         "intento": intento.data[0] if intento.data else None,
         "lenguaje_intentado": formatear_lenguaje_para_frontend(lenguaje_intentado, creadores_intentado),
-        "lenguaje_objetivo": formatear_lenguaje_para_frontend(lenguaje_objetivo, creadores_objetivo),
         "resultado": feedback,
     }
         
@@ -327,8 +386,18 @@ def obtener_partida(partida_id: int, Authorization: str = Header(...)):
     # Devuelve el estado completo de la partida para que el frontend
     # pueda reconstruir la sesion si el usuario vuelve a entrar
     return {
-        "partida": partida,
-        "intentos": intentos.data
+        "partida": {
+            "id": partida["id"],
+            "modo": partida["modo"],
+            "estado": partida["estado"],
+            "fase_actual": partida["fase_actual"],
+            "max_intentos": partida["max_intentos"],
+            "intentos_usados": partida["intentos_usados"],
+            "puntuacion": partida["puntuacion"],
+            "creada_en": partida.get("creada_en"),
+            "finalizada_en": partida.get("finalizada_en"),
+        },
+        "intentos": [formatear_intento_para_frontend(intento) for intento in intentos.data]
     }
 
 
