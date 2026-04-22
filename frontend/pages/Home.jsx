@@ -5,6 +5,11 @@ export default function Home(){
 
     const navigate = useNavigate();
 
+    function cerrarSesion() {
+        localStorage.removeItem("access_token");
+        navigate("/");
+    }
+
     return(
         <div className="home-page">
             <h1>CODLE</h1>
@@ -19,10 +24,12 @@ export default function Home(){
                 <button onClick={() => navigate("/codigo")}>
                     Codigo
                 </button>
+                <button className="home-logout" onClick={cerrarSesion}>
+                    Cerrar sesion
+                </button>
             </div>
 
         </div>
         
     );
 }
-

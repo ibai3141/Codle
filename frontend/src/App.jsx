@@ -27,6 +27,26 @@ function AuthHome() {
   );
 }
 
+function tieneSesionActiva() {
+  return Boolean(localStorage.getItem("access_token"));
+}
+
+function RutaProtegida({ children }) {
+  if (!tieneSesionActiva()) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
+
+function RutaPublica({ children }) {
+  if (tieneSesionActiva()) {
+    return <Navigate to="/home" replace />;
+  }
+
+  return children;
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -35,13 +55,58 @@ function App() {
         <div className="app-content">
           <Routes>
             {/* Rutas principales de autenticacion */}
-            <Route path="/" element={<AuthHome />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/clasico" element={<Clasico />} />
-            <Route path="/logo" element={<Logo />} />
-            <Route path="/codigo" element={<Codigo />} />
-            <Route path="/home" element={<Home />} />
+            <Route
+              path="/"
+              element={<AuthHome />}
+            />
+            <Route
+              path="/login"
+              element={
+                <RutaPublica>
+                  <Login />
+                </RutaPublica>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <RutaPublica>
+                  <Register />
+                </RutaPublica>
+              }
+            />
+            <Route
+              path="/clasico"
+              element={
+                <RutaProtegida>
+                  <Clasico />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="/logo"
+              element={
+                <RutaProtegida>
+                  <Logo />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="/codigo"
+              element={
+                <RutaProtegida>
+                  <Codigo />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="/home"
+              element={
+                <RutaProtegida>
+                  <Home />
+                </RutaProtegida>
+              }
+            />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>

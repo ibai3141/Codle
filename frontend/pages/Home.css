@@ -58,6 +58,11 @@
   border-color: #3c6b54;
 }
 
+.home-actions .home-logout {
+  border-color: #7f1d1d;
+  background: linear-gradient(180deg, #2b1418, #1c0f12);
+}
+
 .home-actions button:hover {
   transform: translateY(-1px);
   box-shadow: 0 18px 28px rgba(2, 6, 23, 0.42);
@@ -76,6 +81,11 @@
 .home-actions button:nth-child(3):hover {
   border-color: #4ade80;
   background: linear-gradient(180deg, #1b3326, #13241b);
+}
+
+.home-actions .home-logout:hover {
+  border-color: #f87171;
+  background: linear-gradient(180deg, #3a171d, #241015);
 }
 
 @media (max-width: 640px) {
