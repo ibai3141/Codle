@@ -2,18 +2,21 @@ from fastapi import APIRouter, HTTPException, Header
 from pydantic import BaseModel
 from api.utils.keys import SUPABASE_URL, SUPABASE_KEY
 from supabase import create_client
-from api.utils import tokens
+from api.utils.helpers import (
+    buscar_lenguaje_por_respuesta,
+    construir_logo_url,
+    historial_partidas,
+    obtener_lenguaje_objetivo,
+    obtener_partida_usuario,
+    obtener_usuario_desde_token,
+)
 import random
 import json
 from datetime import datetime, timezone
-from urllib.parse import quote
 from functools import lru_cache
 
 router = APIRouter(prefix="/clasico", tags=["clasico"])
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-SUPABASE_LOGOS_BUCKET = "imagenes"
-
-
 class SolicitudGuess(BaseModel):
     partida_id: int
     respuesta: str
@@ -31,78 +34,6 @@ def buscar_lenguaje():
 
     lenguaje_elegido = random.choice(resul.data)
     return lenguaje_elegido["id"]
-
-
-def obtener_usuario_desde_token(authorization: str):
-    if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Token no proporcionado correctamente")
-
-    token = authorization.replace("Bearer ", "")
-    info = tokens.decodificar_token_acceso(token)
-    return int(info["sub"])
-
-
-def obtener_partida_usuario(partida_id: int, usuario_id: int):
-    try:
-        result = (
-            supabase.table("partida")
-            .select("*")
-            .eq("usuario_id", usuario_id)
-            .eq("id", partida_id)
-            .execute()
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al obtener la partida: {str(e)}")
-
-    if not result.data:
-        raise HTTPException(status_code=404, detail="Partida no encontrada")
-
-    return result.data[0]
-
-
-def buscar_lenguaje_por_respuesta(respuesta: str):
-    respuesta_normalizada = respuesta.strip().lower()
-
-    try:
-        alias = (
-            supabase.table("lenguaje_alias")
-            .select("lenguaje_id")
-            .eq("alias_normalizado", respuesta_normalizada)
-            .execute()
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al buscar el alias del lenguaje: {str(e)}")
-
-    lenguaje_id = None
-    if alias.data:
-        lenguaje_id = alias.data[0]["lenguaje_id"]
-    else:
-        try:
-            lenguaje = (
-                supabase.table("lenguaje")
-                .select("*")
-                .ilike("nombre", respuesta.strip())
-                .execute()
-            )
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error al buscar el lenguaje por nombre: {str(e)}")
-
-        if not lenguaje.data:
-            raise HTTPException(status_code=400, detail="El lenguaje introducido no existe o no esta soportado")
-
-        return lenguaje.data[0]
-
-    try:
-        lenguaje = supabase.table("lenguaje").select("*").eq("id", lenguaje_id).execute()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al recuperar el lenguaje intentado: {str(e)}")
-
-    if not lenguaje.data:
-        raise HTTPException(status_code=404, detail="Lenguaje no encontrado")
-
-    return lenguaje.data[0]
-
-
 @lru_cache(maxsize=256)
 def obtener_nombre_catalogo(tabla: str, identificador: int):
     try:
@@ -164,22 +95,8 @@ def hayCoincidenciaParcial(listaA, listaB):
             return True
 
     return False
-
-
-def construir_logo_url(logo_path):
-    if not logo_path:
-        return None
-
-    logo_limpio = str(logo_path).strip()
-    if not logo_limpio:
-        return None
-
-    if logo_limpio.startswith("http://") or logo_limpio.startswith("https://"):
-        return logo_limpio
-
-    return f"{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_LOGOS_BUCKET}/{quote(logo_limpio)}"
-
-
+# Convierte los datos crudos del lenguaje a un formato estable y legible
+# para el frontend del modo clásico.
 def formatear_lenguaje_para_frontend(lenguaje: dict, creadores=None):
     return {
         "id": lenguaje["id"],
@@ -192,8 +109,7 @@ def formatear_lenguaje_para_frontend(lenguaje: dict, creadores=None):
         "fortalezaTipado": obtener_nombre_catalogo("fortaleza_tipado", lenguaje["fortaleza_tipado_id"]),
         "creadores": creadores if creadores is not None else obtener_creadores_lenguaje(lenguaje["id"]),
     }
-
-
+# Genera el feedback del modo clásico comparando el intento con el lenguaje objetivo.
 def construir_feedback(lenguaje_intentado: dict, lenguaje_objetivo: dict, creadores_intentado=None, creadores_objetivo=None):
     anio_resultado = "incorrecto"
     if lenguaje_intentado["anio_creacion"] == lenguaje_objetivo["anio_creacion"]:
@@ -222,8 +138,7 @@ def construir_feedback(lenguaje_intentado: dict, lenguaje_objetivo: dict, creado
             "creadores": creadores_resultado,
         },
     }
-
-
+# Reconstruye cada intento con la estructura que espera el frontend al recuperar una partida.
 def formatear_intento_para_frontend(intento: dict):
     try:
         lenguaje_resultado = (
@@ -268,16 +183,16 @@ def formatear_intento_para_frontend(intento: dict):
 
 
     
+# Crea una nueva partida clásica para el usuario autenticado.
 @router.post("/crear_partida")
 def crear_partida(Authorization: str = Header(...)):
     id_usuario = obtener_usuario_desde_token(Authorization)
 
-    # Obtiene el lenguaje secreto que el usuario tendra que adivinar
+    # Obtiene el lenguaje secreto que el usuario tendra que adivinar.
     lenguaje_id = buscar_lenguaje()
 
     try:
-        # Crea la partida en estado inicial. En el modo clasico no hay
-        # limite de intentos, por eso max_intentos se guarda como None
+        # En el clásico no hay limite de intentos, por eso max_intentos queda a null.
         result = supabase.table("partida").insert({
             "usuario_id": id_usuario,
             "modo": "CLASICO",
@@ -292,8 +207,7 @@ def crear_partida(Authorization: str = Header(...)):
         raise HTTPException(status_code=500, detail=f"Error al crear la partida: {str(e)}")
 
     if result.data:
-        # Si la insercion ha ido bien, se devuelve al frontend la informacion
-        # minima necesaria para identificar y seguir la partida
+        # El frontend solo necesita los datos minimos para empezar a jugar.
         partida = result.data[0]
 
         return {
@@ -305,21 +219,11 @@ def crear_partida(Authorization: str = Header(...)):
         raise HTTPException(status_code=500, detail="No se pudo crear la partida")
     
 
-# Recupera todos los intentos que pertenecen a una partida concreta
-# Esto se usa para poder reconstruir el historial de la sesion
-def historial_partidas(id):
-    try:
-        result = supabase.table("intento_lenguaje").select("*").eq("partida_id", id).execute()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al obtener el historial de intentos: {str(e)}")
-
-    return result
-
-
 @router.post("/guess")
 def guess_clasico(datos: SolicitudGuess, Authorization: str = Header(...)):
+    # Primero se comprueba que el usuario autenticado es dueño de la partida.
     id_usuario = obtener_usuario_desde_token(Authorization)
-    partida = obtener_partida_usuario(datos.partida_id, id_usuario)
+    partida = obtener_partida_usuario(supabase, datos.partida_id, id_usuario)
 
     if partida["modo"] != "CLASICO":
         raise HTTPException(status_code=400, detail="La partida no pertenece al modo clasico")
@@ -327,22 +231,11 @@ def guess_clasico(datos: SolicitudGuess, Authorization: str = Header(...)):
     if partida["estado"] != "en_curso":
         raise HTTPException(status_code=400, detail="La partida ya no esta en curso")
 
-    lenguaje_intentado = buscar_lenguaje_por_respuesta(datos.respuesta)
+    # Resuelve el texto escrito por el usuario contra alias y nombres soportados.
+    lenguaje_intentado = buscar_lenguaje_por_respuesta(supabase, datos.respuesta)
 
-    try:
-        lenguaje_objetivo = (
-            supabase.table("lenguaje")
-            .select("*")
-            .eq("id", partida["lenguaje_objetivo_id"])
-            .execute()
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al obtener el lenguaje objetivo: {str(e)}")
-
-    if not lenguaje_objetivo.data:
-        raise HTTPException(status_code=404, detail="Lenguaje objetivo no encontrado")
-
-    lenguaje_objetivo = lenguaje_objetivo.data[0]
+    # Recupera el lenguaje secreto guardado en la partida para compararlo con el intento.
+    lenguaje_objetivo = obtener_lenguaje_objetivo(supabase, partida["lenguaje_objetivo_id"])
     creadores_intentado = obtener_creadores_lenguaje(lenguaje_intentado["id"])
     creadores_objetivo = obtener_creadores_lenguaje(lenguaje_objetivo["id"])
     feedback = construir_feedback(
@@ -351,9 +244,11 @@ def guess_clasico(datos: SolicitudGuess, Authorization: str = Header(...)):
         creadores_intentado,
         creadores_objetivo,
     )
+    # El numero de intento sale del contador actual guardado en la partida.
     numero_intento = partida["intentos_usados"] + 1
 
     try:
+        # Se guarda el intento junto con el feedback para poder reconstruir la sesion.
         intento = (
             supabase.table("intento_lenguaje")
             .insert({
@@ -368,6 +263,7 @@ def guess_clasico(datos: SolicitudGuess, Authorization: str = Header(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al guardar el intento: {str(e)}")
 
+    # Siempre se incrementan los intentos usados; si acierta se cierra la partida.
     update_data = {"intentos_usados": numero_intento}
     if feedback["correcto"]:
         update_data["estado"] = "ganada"
@@ -386,18 +282,15 @@ def guess_clasico(datos: SolicitudGuess, Authorization: str = Header(...)):
         "lenguaje_intentado": formatear_lenguaje_para_frontend(lenguaje_intentado, creadores_intentado),
         "resultado": feedback,
     }
-        
-
 @router.get("/{partida_id}")
 def obtener_partida(partida_id: int, Authorization: str = Header(...)):
     id_usuario = obtener_usuario_desde_token(Authorization)
-    partida = obtener_partida_usuario(partida_id, id_usuario)
+    partida = obtener_partida_usuario(supabase, partida_id, id_usuario)
 
-    # Recupera el historial de intentos ya realizados en esa partida
-    intentos = historial_partidas(partida_id)
+    # Devuelve el historial para que el frontend pueda reconstruir la sesion.
+    intentos = historial_partidas(supabase, partida_id)
 
-    # Devuelve el estado completo de la partida para que el frontend
-    # pueda reconstruir la sesion si el usuario vuelve a entrar
+    # La respuesta incluye el estado actual y todos los intentos ya hechos.
     return {
         "partida": {
             "id": partida["id"],

@@ -331,18 +331,27 @@ La opcion recomendada es una funcion utilitaria en frontend.
 
 ### Cesar
 
-- crear la pantalla del modo logo
-- mostrar la imagen usando `logoUrl`
-- implementar el efecto visual de zoom
-- decidir la tabla o formula exacta del zoom
+- crear la estructura principal de la pantalla del modo logo
 - preparar el input de respuesta
 - mostrar sugerencias de lenguajes
-- conectar los botones y el envio del intento
-- mostrar historial de intentos
-- mostrar el estado de victoria cuando se acierte
-- asegurarse de que al recargar se reconstruye bien la interfaz con el zoom correcto
+- montar el historial visual de intentos
+- coordinar la interfaz general del modo logo
+- integrar la parte visual principal con el trabajo de David
 
 ### David
+
+- apoyar a Cesar en el frontend del modo logo
+- conectar la pantalla con `POST /logo/crear_partida`
+- conectar la pantalla con `POST /logo/guess`
+- consumir `GET /logo/{partida_id}` para reconstruir la sesion
+- mostrar la imagen usando `logoUrl`
+- implementar el comportamiento del zoom segun `intentos_usados`
+- mostrar el nombre y logo del lenguaje intentado cuando el usuario falle
+- mostrar el estado de victoria cuando se acierte
+- validar que al recargar se reconstruye correctamente el estado del juego
+- apoyar en las pruebas de integracion frontend-backend
+
+### Backend de apoyo
 
 - implementar `POST /logo/crear_partida`
 - hacer la seleccion aleatoria de un lenguaje con logo
