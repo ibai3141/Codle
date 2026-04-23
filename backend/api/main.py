@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.login import auth
 from api.getData import getData
 from api.clasico import clasico
+from api.logo import logo
 
 # App principal de FastAPI (punto de entrada del backend).
 app = FastAPI()
@@ -31,6 +32,8 @@ app.include_router(auth.router)
 app.include_router(getData.router)
 
 app.include_router(clasico.router)
+
+app.include_router(logo.router)
 
 
 @app.get("/test")
