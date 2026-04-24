@@ -1,23 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-function normalizarLenguaje(lenguaje) {
-  if (!lenguaje) {
-    return null;
-  }
-
-  return {
-    id: lenguaje.id,
-    nombre: lenguaje.nombre,
-    anioCreacion: lenguaje.anioCreacion ?? lenguaje.anio_creacion,
-    ejecucion: lenguaje.ejecucion,
-    paradigma: lenguaje.paradigma,
-    tipadoTiempo: lenguaje.tipadoTiempo ?? lenguaje.tipado_tiempo,
-    fortalezaTipado: lenguaje.fortalezaTipado ?? lenguaje.fortaleza_tipado,
-    creadores: lenguaje.creadores ?? [],
-    logoUrl: lenguaje.logoUrl ?? lenguaje.logo_path ?? null,
-  };
-}
-
 // Helper comun para todas las peticiones HTTP al backend.
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
@@ -69,55 +51,41 @@ export async function crearPartida(token) {
 
 export async function obtenerPartida(partidaId, token) {
     // Obtiene el estado de una partida existente y su historial de intentos.
-    const data = await request(`/clasico/${partidaId}`, {
+    return request(`/clasico/${partidaId}`, {
         token: token,
     });
-
-    return {
-        ...data,
-        intentos: (data.intentos ?? []).map(function (intento) {
-            return {
-                ...intento,
-                lenguaje: normalizarLenguaje(intento.lenguaje),
-            };
-        }),
-    };
 }
 
 
 export async function obtenerLenguajeById(id) {
     // Obtiene los datos completos de un lenguaje por su ID.
-    const data = await request(`/getData/lengById?id=${id}`);
-    return Array.isArray(data) ? data.map(normalizarLenguaje) : normalizarLenguaje(data);
+    return request(`/getData/lengById?id=${id}`);
 }
 
 
 export async function obtenerLenguajeByAlias(alias) {
     // Obtiene los datos completos de un lenguaje usando alias (ej: "js" para JavaScript).
-    const data = await request(`/getData/lengByAlias?alias=${encodeURIComponent(alias)}`);
-    return Array.isArray(data) ? data.map(normalizarLenguaje) : normalizarLenguaje(data);
+    return request(`/getData/lengByAlias?alias=${encodeURIComponent(alias)}`);
 }
 
 
 export async function obtenerLenguajeByNom(nombre) {
     // Obtiene los datos completos de un lenguaje por su nombre exacto.
-    const data = await request(`/getData/lengByNom?nom=${encodeURIComponent(nombre)}`);
-    return Array.isArray(data) ? data.map(normalizarLenguaje) : normalizarLenguaje(data);
+    return request(`/getData/lengByNom?nom=${encodeURIComponent(nombre)}`);
 }
 
 
 export async function obtenerLenguajesActivos() {
     // Obtiene la lista completa de todos los lenguajes activos disponibles para jugar.
     // Devuelve un array con los datos completos de cada lenguaje.
-    const data = await request("/getData/lengAll");
-    return (data ?? []).map(normalizarLenguaje);
+    return request("/getData/lengAll");
 }
 
 
 export async function enviarIntento(partidaId, respuesta, token) {
     // Envía un intento de respuesta al backend. El servidor valida, busca el lenguaje,
     // calcula el feedback, persiste el intento en BD y devuelve el resultado oficial.
-    const data = await request("/clasico/guess", {
+    return request("/clasico/guess", {
         method: "POST",
         token: token,
         body: {
@@ -125,9 +93,34 @@ export async function enviarIntento(partidaId, respuesta, token) {
             respuesta: respuesta,
         },
     });
+}
 
-    return {
-        ...data,
-        lenguaje_intentado: normalizarLenguaje(data.lenguaje_intentado),
-    };
+
+export async function crearPartidaLogo(token) {
+    // Crea una partida en modo logo. Requiere token autenticado.
+    return request("/logo/crear_partida", {
+        method: "POST",
+        token: token,
+    });
+}
+
+
+export async function obtenerPartidaLogo(partidaId, token) {
+    // Obtiene el estado de una partida de logo y su historial de intentos.
+    return request(`/logo/${partidaId}`, {
+        token: token,
+    });
+}
+
+
+export async function enviarIntentoLogo(partidaId, respuesta, token) {
+    // Envía un intento al modo logo. El backend valida y guarda el intento.
+    return request("/logo/guess", {
+        method: "POST",
+        token: token,
+        body: {
+            partida_id: partidaId,
+            respuesta: respuesta,
+        },
+    });
 }
