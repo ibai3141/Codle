@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login as loginApi } from "../api/api";
+import { guardarToken } from "../src/utils/session";
 import "./Login.css";
 
 export default function Login() {
@@ -22,7 +23,7 @@ export default function Login() {
         // Si el backend devuelve token, lo guardamos para futuras rutas protegidas.
         const data = await loginApi(email, password);
         if (data?.access_token) {
-            localStorage.setItem("access_token", data.access_token);
+            guardarToken(data.access_token);
         }
         navigate("/home");  
         } catch (error) {

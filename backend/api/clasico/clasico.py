@@ -236,6 +236,23 @@ def guess_clasico(datos: SolicitudGuess, Authorization: str = Header(...)):
 
     # Recupera el lenguaje secreto guardado en la partida para compararlo con el intento.
     lenguaje_objetivo = obtener_lenguaje_objetivo(supabase, partida["lenguaje_objetivo_id"])
+
+    # Evita repetir el mismo lenguaje dentro de una misma partida aunque el usuario
+    # lo escriba otra vez con otra capitalizacion o lo resuelva por alias.
+    try:
+        intento_existente = (
+            supabase.table("intento_lenguaje")
+            .select("id")
+            .eq("partida_id", datos.partida_id)
+            .eq("lenguaje_intentado_id", lenguaje_intentado["id"])
+            .execute()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al comprobar intentos repetidos: {str(e)}")
+
+    if intento_existente.data:
+        raise HTTPException(status_code=400, detail="Ese lenguaje ya ha sido intentado en esta partida")
+
     creadores_intentado = obtener_creadores_lenguaje(lenguaje_intentado["id"])
     creadores_objetivo = obtener_creadores_lenguaje(lenguaje_objetivo["id"])
     feedback = construir_feedback(

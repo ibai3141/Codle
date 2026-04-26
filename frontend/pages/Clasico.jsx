@@ -6,11 +6,11 @@ import {
   obtenerLenguajesActivos,
   enviarIntento as enviarIntentoApi,
 } from "../api/api";
+import { obtenerClavePartidaModo, obtenerTokenValido } from "../src/utils/session";
 import "./Clasico.css";
 
 // Clave de localStorage usada para recordar la partida en curso del modo clásico.
 // Así si el usuario recarga la página podemos recuperar la sesión y el historial.
-const PARTIDA_STORAGE_KEY = "clasico_partida_id";
 
 // Array de modos disponibles para poder cambiar entre ellos.
 const MODOS = [
@@ -90,6 +90,12 @@ function CeldaLenguaje(props) {
   );
 }
 
+function buscarLenguajeExacto(lista, texto) {
+  return lista.find(function (lenguaje) {
+    return lenguaje.nombre.toLowerCase() === texto.toLowerCase();
+  });
+}
+
 export default function Clasico() {
   const navegar = useNavigate();
 
@@ -137,24 +143,27 @@ export default function Clasico() {
     function () {
       async function inicializarPartida() {
         try {
-          const tokenGuardado = localStorage.getItem("access_token");
+          const tokenGuardado = obtenerTokenValido();
           if (!tokenGuardado) {
             setMensajeError("No estás autenticado. Redirigiendo a login...");
             setTimeout(function () {
-              navegar("/");
-            }, 2000);
+              navegar("/login");
+            }, 1200);
             setCargando(false);
             return;
           }
 
           setToken(tokenGuardado);
+          const partidaStorageKey = obtenerClavePartidaModo("clasico", tokenGuardado);
 
           // Cargar el catálogo de lenguajes activos. Se usa para sugerencias y validación visual.
           const lenguajesActivos = await obtenerLenguajesActivos();
           setCatalogoLenguajes(lenguajesActivos);
 
           // Intentar recuperar una partida anterior guardada en localStorage.
-          const partidaGuardada = localStorage.getItem(PARTIDA_STORAGE_KEY);
+          const partidaGuardada = partidaStorageKey
+            ? localStorage.getItem(partidaStorageKey)
+            : null;
           let partidaActiva = null;
 
           if (partidaGuardada) {
@@ -162,7 +171,9 @@ export default function Clasico() {
               partidaActiva = await obtenerPartida(partidaGuardada, tokenGuardado);
             } catch (error) {
               // Si la partida guardada ya no existe o falla, la descartamos y empezamos otra.
-              localStorage.removeItem(PARTIDA_STORAGE_KEY);
+              if (partidaStorageKey) {
+                localStorage.removeItem(partidaStorageKey);
+              }
               partidaActiva = null;
             }
           }
@@ -171,7 +182,9 @@ export default function Clasico() {
             // Si no había partida activa, crear una nueva en backend.
             const respuestaPartida = await crearPartida(tokenGuardado);
             const nuevaPartidaId = respuestaPartida.partida_id;
-            localStorage.setItem(PARTIDA_STORAGE_KEY, String(nuevaPartidaId));
+            if (partidaStorageKey) {
+              localStorage.setItem(partidaStorageKey, String(nuevaPartidaId));
+            }
 
             setPartidaId(nuevaPartidaId);
             setIntentos([]);
@@ -187,7 +200,9 @@ export default function Clasico() {
           // Si el backend ya marca la partida como ganada, mostramos el mensaje y limpiamos storage.
           if (partidaActiva.partida.estado === "ganada") {
             setMensajeAcierto("¡Has acertado el lenguaje!");
-            localStorage.removeItem(PARTIDA_STORAGE_KEY);
+            if (partidaStorageKey) {
+              localStorage.removeItem(partidaStorageKey);
+            }
           }
 
           setCargando(false);
@@ -296,7 +311,10 @@ export default function Clasico() {
       // Si el intento es correcto, mostrar mensaje de acierto y cerrar la partida local.
       if (resultadoServidor.resultado.correcto) {
         setMensajeAcierto("¡Has acertado el lenguaje!");
-        localStorage.removeItem(PARTIDA_STORAGE_KEY);
+        const partidaStorageKey = obtenerClavePartidaModo("clasico", token);
+        if (partidaStorageKey) {
+          localStorage.removeItem(partidaStorageKey);
+        }
       }
     } catch (error) {
       console.error("Error al enviar intento:", error);
@@ -309,6 +327,45 @@ export default function Clasico() {
   // Maneja cuando el usuario presiona Enter o hace click en el botón de enviar.
   // Si coincide exactamente con un nombre visible, usamos ese nombre; si no, mandamos
   // el texto tal cual para que el backend pueda resolver aliases como "js", "py", etc.
+  function resolverIntentoDesdeEntrada() {
+    const textoNormalizado = textoBusqueda.trim();
+    if (!textoNormalizado) {
+      return null;
+    }
+
+    const intentoYaHecho = buscarLenguajeExacto(
+      intentos.map(function (intento) {
+        return intento.lenguaje;
+      }),
+      textoNormalizado,
+    );
+
+    if (intentoYaHecho) {
+      setMensajeError("Ese lenguaje ya ha sido intentado en esta partida.");
+      return null;
+    }
+
+    const coincidenciaExactaDisponible = buscarLenguajeExacto(
+      lenguajesDisponibles,
+      textoNormalizado,
+    );
+    if (coincidenciaExactaDisponible) {
+      return coincidenciaExactaDisponible.nombre;
+    }
+
+    if (sugerencias.length === 1) {
+      return sugerencias[0].nombre;
+    }
+
+    if (sugerencias.length > 1) {
+      setMensajeError("Selecciona un lenguaje de la lista antes de enviar.");
+      return null;
+    }
+
+    setMensajeError("Selecciona un lenguaje valido de la lista.");
+    return null;
+  }
+
   function enviarFormulario(evento) {
     evento.preventDefault();
 
@@ -317,21 +374,12 @@ export default function Clasico() {
       return;
     }
 
-    const textoNormalizado = textoBusqueda.trim();
-    if (!textoNormalizado) {
+    const lenguajeSeleccionado = resolverIntentoDesdeEntrada();
+    if (!lenguajeSeleccionado) {
       return;
     }
 
-    const coincidenciaExacta = lenguajesDisponibles.find(function (lenguaje) {
-      return lenguaje.nombre.toLowerCase() === textoNormalizado.toLowerCase();
-    });
-
-    if (coincidenciaExacta) {
-      procesarIntento(coincidenciaExacta.nombre);
-      return;
-    }
-
-    procesarIntento(textoNormalizado);
+    procesarIntento(lenguajeSeleccionado);
   }
 
   // Solo mostramos el desplegable de sugerencias si hay texto escrito y tenemos coincidencias.
