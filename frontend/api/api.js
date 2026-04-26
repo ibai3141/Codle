@@ -1,4 +1,9 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+import {
+  cerrarSesionCompleta,
+  obtenerTokenValido,
+  tokenHaExpirado,
+} from "../src/utils/session";
 
 function normalizarLenguaje(lenguaje) {
   if (!lenguaje) {
@@ -20,11 +25,18 @@ function normalizarLenguaje(lenguaje) {
 
 // Helper comun para todas las peticiones HTTP al backend.
 async function request(path, options = {}) {
+  let token = options.token ?? obtenerTokenValido();
+  if (token && tokenHaExpirado(token)) {
+    cerrarSesionCompleta();
+    window.location.assign("/login");
+    throw new Error("La sesion ha expirado. Vuelve a iniciar sesion.");
+  }
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: options.method ?? "GET",
     headers: {
       "Content-Type": "application/json",
-      ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options.headers ?? {}),
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
@@ -32,6 +44,12 @@ async function request(path, options = {}) {
 
   const isJson = response.headers.get("content-type")?.includes("application/json");
   const data = isJson ? await response.json() : null;
+
+  if (response.status === 401) {
+    cerrarSesionCompleta();
+    window.location.assign("/login");
+    throw new Error("La sesion ha expirado. Vuelve a iniciar sesion.");
+  }
 
   if (!response.ok) {
     throw new Error(data?.detail ?? "Ha ocurrido un error en la peticion");

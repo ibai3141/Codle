@@ -6,6 +6,7 @@ import Clasico from "../pages/Clasico";
 import Logo from "../pages/Logo";
 import Codigo from "../pages/Codigo";
 import CodeBackdrop from "./components/CodeBackdrop";
+import { tieneSesionActiva } from "./utils/session";
 import "./AppPage.css";
 
 
@@ -25,10 +26,6 @@ function AuthHome() {
       </div>
     </section>
   );
-}
-
-function tieneSesionActiva() {
-  return Boolean(localStorage.getItem("access_token"));
 }
 
 function RutaProtegida({ children }) {
