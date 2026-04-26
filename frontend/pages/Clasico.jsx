@@ -90,6 +90,12 @@ function CeldaLenguaje(props) {
   );
 }
 
+function buscarLenguajeExacto(lista, texto) {
+  return lista.find(function (lenguaje) {
+    return lenguaje.nombre.toLowerCase() === texto.toLowerCase();
+  });
+}
+
 export default function Clasico() {
   const navegar = useNavigate();
 
@@ -321,6 +327,45 @@ export default function Clasico() {
   // Maneja cuando el usuario presiona Enter o hace click en el botón de enviar.
   // Si coincide exactamente con un nombre visible, usamos ese nombre; si no, mandamos
   // el texto tal cual para que el backend pueda resolver aliases como "js", "py", etc.
+  function resolverIntentoDesdeEntrada() {
+    const textoNormalizado = textoBusqueda.trim();
+    if (!textoNormalizado) {
+      return null;
+    }
+
+    const intentoYaHecho = buscarLenguajeExacto(
+      intentos.map(function (intento) {
+        return intento.lenguaje;
+      }),
+      textoNormalizado,
+    );
+
+    if (intentoYaHecho) {
+      setMensajeError("Ese lenguaje ya ha sido intentado en esta partida.");
+      return null;
+    }
+
+    const coincidenciaExactaDisponible = buscarLenguajeExacto(
+      lenguajesDisponibles,
+      textoNormalizado,
+    );
+    if (coincidenciaExactaDisponible) {
+      return coincidenciaExactaDisponible.nombre;
+    }
+
+    if (sugerencias.length === 1) {
+      return sugerencias[0].nombre;
+    }
+
+    if (sugerencias.length > 1) {
+      setMensajeError("Selecciona un lenguaje de la lista antes de enviar.");
+      return null;
+    }
+
+    setMensajeError("Selecciona un lenguaje valido de la lista.");
+    return null;
+  }
+
   function enviarFormulario(evento) {
     evento.preventDefault();
 
@@ -329,21 +374,12 @@ export default function Clasico() {
       return;
     }
 
-    const textoNormalizado = textoBusqueda.trim();
-    if (!textoNormalizado) {
+    const lenguajeSeleccionado = resolverIntentoDesdeEntrada();
+    if (!lenguajeSeleccionado) {
       return;
     }
 
-    const coincidenciaExacta = lenguajesDisponibles.find(function (lenguaje) {
-      return lenguaje.nombre.toLowerCase() === textoNormalizado.toLowerCase();
-    });
-
-    if (coincidenciaExacta) {
-      procesarIntento(coincidenciaExacta.nombre);
-      return;
-    }
-
-    procesarIntento(textoNormalizado);
+    procesarIntento(lenguajeSeleccionado);
   }
 
   // Solo mostramos el desplegable de sugerencias si hay texto escrito y tenemos coincidencias.
