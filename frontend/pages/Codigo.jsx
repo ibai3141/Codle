@@ -1,3 +1,3 @@
-export default function Codigo(){
+export default function Codigo() {
     
 }
