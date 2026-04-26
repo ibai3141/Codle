@@ -159,7 +159,7 @@ export default function Clasico() {
 
           if (partidaGuardada) {
             try {
-              partidaActiva = await obtenerPartida(partidaGuardada, tokenGuardado);
+              partidaActiva = await obtenerPartida(partidaGuardada, tokenGuardado, 'clasico');
             } catch (error) {
               // Si la partida guardada ya no existe o falla, la descartamos y empezamos otra.
               localStorage.removeItem(PARTIDA_STORAGE_KEY);
@@ -169,7 +169,7 @@ export default function Clasico() {
 
           if (!partidaActiva) {
             // Si no había partida activa, crear una nueva en backend.
-            const respuestaPartida = await crearPartida(tokenGuardado);
+            const respuestaPartida = await crearPartida(tokenGuardado, 'clasico');
             const nuevaPartidaId = respuestaPartida.partida_id;
             localStorage.setItem(PARTIDA_STORAGE_KEY, String(nuevaPartidaId));
 
@@ -251,6 +251,7 @@ export default function Clasico() {
         partidaId,
         respuestaNormalizada,
         token,
+        'clasico',
       );
 
       // Adaptamos la respuesta del servidor al formato que usa la UI.

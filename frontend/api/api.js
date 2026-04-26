@@ -57,19 +57,19 @@ export async function register(payload) {
 }
 
 
-export async function crearPartida(token) {
+export async function crearPartida(token, modo) {
     // Crea una partida en modo clásico. Requiere token autenticado.
     // Devuelve partida_id, modo y estado.
-    return request("/clasico/crear_partida", {
+    return request(`/${modo}/crear_partida`, {
         method: "POST",
         token: token,
     });
 }
 
 
-export async function obtenerPartida(partidaId, token) {
+export async function obtenerPartida(partidaId, token, modo) {
     // Obtiene el estado de una partida existente y su historial de intentos.
-    const data = await request(`/clasico/${partidaId}`, {
+    const data = await request(`/${modo}/${partidaId}`, {
         token: token,
     });
 
@@ -114,10 +114,10 @@ export async function obtenerLenguajesActivos() {
 }
 
 
-export async function enviarIntento(partidaId, respuesta, token) {
+export async function enviarIntento(partidaId, respuesta, token, modo) {
     // Envía un intento de respuesta al backend. El servidor valida, busca el lenguaje,
     // calcula el feedback, persiste el intento en BD y devuelve el resultado oficial.
-    const data = await request("/clasico/guess", {
+    const data = await request(`/${modo}/guess`, {
         method: "POST",
         token: token,
         body: {
