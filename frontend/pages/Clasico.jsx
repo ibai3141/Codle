@@ -353,13 +353,8 @@ export default function Clasico() {
       return coincidenciaExactaDisponible.nombre;
     }
 
-    if (sugerencias.length === 1) {
+    if (sugerencias.length >= 1) {
       return sugerencias[0].nombre;
-    }
-
-    if (sugerencias.length > 1) {
-      setMensajeError("Selecciona un lenguaje de la lista antes de enviar.");
-      return null;
     }
 
     setMensajeError("Selecciona un lenguaje valido de la lista.");

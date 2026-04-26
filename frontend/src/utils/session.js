@@ -45,7 +45,6 @@ export function limpiarPartidasGuardadas() {
 
 export function cerrarSesionCompleta() {
   localStorage.removeItem(TOKEN_KEY);
-  limpiarPartidasGuardadas();
 }
 
 export function guardarToken(token) {
