@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
 	crearPartida,
+	obtenerPartidaActivaPorModo,
 	obtenerPartida,
 	obtenerLenguajesActivos,
 	enviarIntento as enviarIntentoApi,
@@ -120,13 +121,20 @@ export default function Clasico() {
 					const lenguajesActivos = await obtenerLenguajesActivos();
 					setCatalogoLenguajes(lenguajesActivos);
 
-					// Intentar recuperar una partida anterior guardada en localStorage.
+					// Primero se consulta al backend por si ese usuario ya tiene una partida
+					// activa en curso, incluso aunque venga de otro navegador o dispositivo.
+					const partidaActivaResumen = await obtenerPartidaActivaPorModo("clasico", tokenGuardado);
 					const partidaGuardada = partidaStorageKey
 						? localStorage.getItem(partidaStorageKey)
 						: null;
 					let partidaActiva = null;
 
-					if (partidaGuardada) {
+					if (partidaActivaResumen?.id) {
+						partidaActiva = await obtenerPartida(partidaActivaResumen.id, tokenGuardado);
+						if (partidaStorageKey) {
+							localStorage.setItem(partidaStorageKey, String(partidaActivaResumen.id));
+						}
+					} else if (partidaGuardada) {
 						try {
 							partidaActiva = await obtenerPartida(partidaGuardada, tokenGuardado);
 						} catch {

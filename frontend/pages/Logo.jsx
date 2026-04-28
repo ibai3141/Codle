@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
 	crearPartidaLogo,
+	obtenerPartidaActivaPorModo,
 	obtenerPartidaLogo,
 	obtenerLenguajesActivos,
 	enviarIntentoLogo,
@@ -99,13 +100,20 @@ export default function Logo() {
 					const lenguajesActivos = await obtenerLenguajesActivos();
 					setCatalogoLenguajes(lenguajesActivos);
 
-					// Intentar recuperar una partida anterior guardada en localStorage.
+					// Se pregunta primero al backend por una partida activa para que la
+					// reanudacion funcione tambien desde otros navegadores.
+					const partidaActivaResumen = await obtenerPartidaActivaPorModo("logo", tokenGuardado);
 					const partidaGuardada = partidaStorageKey
 						? localStorage.getItem(partidaStorageKey)
 						: null;
 					let partidaActiva = null;
 
-					if (partidaGuardada) {
+					if (partidaActivaResumen?.id) {
+						partidaActiva = await obtenerPartidaLogo(partidaActivaResumen.id, tokenGuardado);
+						if (partidaStorageKey) {
+							localStorage.setItem(partidaStorageKey, String(partidaActivaResumen.id));
+						}
+					} else if (partidaGuardada) {
 						try {
 							partidaActiva = await obtenerPartidaLogo(partidaGuardada, tokenGuardado);
 						} catch {

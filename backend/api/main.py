@@ -5,6 +5,7 @@ from api.login import auth
 from api.getData import getData
 from api.clasico import clasico
 from api.logo import logo
+from api.partidas import partidas
 
 # App principal de FastAPI (punto de entrada del backend).
 app = FastAPI()
@@ -34,6 +35,8 @@ app.include_router(getData.router)
 app.include_router(clasico.router)
 
 app.include_router(logo.router)
+
+app.include_router(partidas.router)
 
 
 @app.get("/test")

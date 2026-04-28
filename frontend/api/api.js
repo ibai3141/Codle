@@ -115,6 +115,16 @@ export async function obtenerPartidaPorModo(modo, partidaId, token) {
 }
 
 
+export async function obtenerPartidaActivaPorModo(modo, token) {
+  const modoNormalizado = normalizarModoJuego(modo);
+  const data = await request(`/partidas/activa/${modoNormalizado}`, {
+    token: token,
+  });
+
+  return data?.partida ?? null;
+}
+
+
 export async function enviarIntentoPorModo(modo, partidaId, respuesta, token) {
   // Envía un intento para el modo indicado. El backend devuelve el resultado oficial.
   const modoNormalizado = normalizarModoJuego(modo);
