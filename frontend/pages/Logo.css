@@ -1,0 +1,43 @@
+.logo-results {
+  width: min(100%, 610px);
+  margin: 0.7rem auto 0;
+  gap: 0.35rem;
+}
+
+.logo-intento-item {
+  width: 100%;
+  margin-bottom: 0.35rem;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  text-align: left;
+  padding-inline: 0.7rem;
+  font-size: 0.84rem;
+}
+
+.logo-intento-item span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+@media (max-width: 680px) {
+  .logo-intento-item {
+    font-size: 0.8rem;
+    min-height: 2.85rem;
+  }
+}
+
+
+.zoom-container{
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+
+    margin: 0 auto;
+}
+
+
+.zoom-image{
+    width: 200px;
+    height: 200px;
+}

@@ -5,6 +5,17 @@ import {
   tokenHaExpirado,
 } from "../src/utils/session";
 
+const MODOS_JUEGO_VALIDOS = ["clasico", "logo", "codigo"];
+
+function normalizarModoJuego(modo) {
+  const modoNormalizado = String(modo ?? "").trim().toLowerCase();
+  if (!MODOS_JUEGO_VALIDOS.includes(modoNormalizado)) {
+    throw new Error(`Modo de juego no soportado: ${modo}`);
+  }
+
+  return modoNormalizado;
+}
+
 function normalizarLenguaje(lenguaje) {
   if (!lenguaje) {
     return null;
@@ -75,21 +86,22 @@ export async function register(payload) {
 }
 
 
-export async function crearPartida(token) {
-    // Crea una partida en modo clásico. Requiere token autenticado.
-    // Devuelve partida_id, modo y estado.
-    return request("/clasico/crear_partida", {
-        method: "POST",
-        token: token,
-    });
+export async function crearPartidaPorModo(modo, token) {
+  // Crea una partida para el modo indicado (clasico, logo o codigo).
+  const modoNormalizado = normalizarModoJuego(modo);
+  return request(`/${modoNormalizado}/crear_partida`, {
+    method: "POST",
+    token: token,
+  });
 }
 
 
-export async function obtenerPartida(partidaId, token) {
-    // Obtiene el estado de una partida existente y su historial de intentos.
-    const data = await request(`/clasico/${partidaId}`, {
-        token: token,
-    });
+export async function obtenerPartidaPorModo(modo, partidaId, token) {
+  // Obtiene el estado de una partida existente y su historial para el modo indicado.
+  const modoNormalizado = normalizarModoJuego(modo);
+  const data = await request(`/${modoNormalizado}/${partidaId}`, {
+    token: token,
+  });
 
     return {
         ...data,
@@ -100,6 +112,37 @@ export async function obtenerPartida(partidaId, token) {
             };
         }),
     };
+}
+
+
+export async function enviarIntentoPorModo(modo, partidaId, respuesta, token) {
+  // Envía un intento para el modo indicado. El backend devuelve el resultado oficial.
+  const modoNormalizado = normalizarModoJuego(modo);
+  const data = await request(`/${modoNormalizado}/guess`, {
+    method: "POST",
+    token: token,
+    body: {
+    partida_id: partidaId,
+    respuesta: respuesta,
+    },
+  });
+
+  return {
+    ...data,
+    lenguaje_intentado: normalizarLenguaje(data.lenguaje_intentado),
+  };
+}
+
+
+export async function crearPartida(token) {
+  // Compatibilidad: mantiene el contrato actual del modo clásico.
+  return crearPartidaPorModo("clasico", token);
+}
+
+
+export async function obtenerPartida(partidaId, token) {
+  // Compatibilidad: mantiene el contrato actual del modo clásico.
+  return obtenerPartidaPorModo("clasico", partidaId, token);
 }
 
 
@@ -133,19 +176,32 @@ export async function obtenerLenguajesActivos() {
 
 
 export async function enviarIntento(partidaId, respuesta, token) {
-    // Envía un intento de respuesta al backend. El servidor valida, busca el lenguaje,
-    // calcula el feedback, persiste el intento en BD y devuelve el resultado oficial.
-    const data = await request("/clasico/guess", {
-        method: "POST",
-        token: token,
-        body: {
-            partida_id: partidaId,
-            respuesta: respuesta,
-        },
-    });
+    // Compatibilidad: mantiene el contrato actual del modo clásico.
+    return enviarIntentoPorModo("clasico", partidaId, respuesta, token);
+}
 
-    return {
-        ...data,
-        lenguaje_intentado: normalizarLenguaje(data.lenguaje_intentado),
-    };
+
+// Helpers explícitos para modos no clásicos.
+export async function crearPartidaLogo(token) {
+  return crearPartidaPorModo("logo", token);
+}
+
+export async function obtenerPartidaLogo(partidaId, token) {
+  return obtenerPartidaPorModo("logo", partidaId, token);
+}
+
+export async function enviarIntentoLogo(partidaId, respuesta, token) {
+  return enviarIntentoPorModo("logo", partidaId, respuesta, token);
+}
+
+export async function crearPartidaCodigo(token) {
+  return crearPartidaPorModo("codigo", token);
+}
+
+export async function obtenerPartidaCodigo(partidaId, token) {
+  return obtenerPartidaPorModo("codigo", partidaId, token);
+}
+
+export async function enviarIntentoCodigo(partidaId, respuesta, token) {
+  return enviarIntentoPorModo("codigo", partidaId, respuesta, token);
 }
