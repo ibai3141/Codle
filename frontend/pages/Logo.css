@@ -26,3 +26,18 @@
     min-height: 2.85rem;
   }
 }
+
+
+.zoom-container{
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+
+    margin: 0 auto;
+}
+
+
+.zoom-image{
+    width: 200px;
+    height: 200px;
+}

@@ -5,6 +5,7 @@ import {
 	obtenerPartidaLogo,
 	obtenerLenguajesActivos,
 	enviarIntentoLogo,
+	obtenerPartidaPorModo,
 } from "../api/api";
 import { obtenerClavePartidaModo, obtenerTokenValido } from "../src/utils/session";
 import SelectorModos from "../src/components/juego/SelectorModos";
@@ -52,6 +53,12 @@ export default function Logo() {
 	const [cargando, setCargando] = useState(true);
 	// Evita dobles envíos mientras se procesa un intento.
 	const [enviandoIntento, setEnviandoIntento] = useState(false);
+
+	// url del logo objetivo
+	const [urlLogo, setUrlLogo] = useState(null);
+	// zoom
+	const [zoom, setZoom] = useState(2.5)
+
 
 	// Lista derivada de lenguajes que aún no se han intentado.
 	const lenguajesDisponibles = useMemo(
@@ -141,6 +148,7 @@ export default function Logo() {
 					setMensajeError(error.message || "Error al cargar la partida de logo. Intenta de nuevo.");
 					setCargando(false);
 				}
+
 			}
 
 			inicializarPartida();
@@ -211,12 +219,15 @@ export default function Logo() {
 				if (partidaStorageKey) {
 					localStorage.removeItem(partidaStorageKey);
 				}
+				setZoom(1)
 			}
+
 		} catch (error) {
 			console.error("Error al enviar intento en modo logo:", error);
 			setMensajeError(error.message || "Error al procesar el intento. Intenta de nuevo.");
 		} finally {
 			setEnviandoIntento(false);
+			updateZoom();
 		}
 	}
 
@@ -293,6 +304,29 @@ export default function Logo() {
 		);
 	}
 
+
+	async function updateUrlLogo(){
+		let data = await obtenerPartidaPorModo('logo', partidaId, token);
+		//dirIcono = data['logoUrl']
+		setUrlLogo(data['logoUrl'])
+	}
+
+	updateUrlLogo();
+	
+
+	async function updateZoom(){
+		console.log(intentos.length);
+
+		if(intentos.length < 5){
+			setZoom(2.5 - 0.2 * intentos.length);
+		}
+		else if (intentos.length >= 5) setZoom(1);
+
+		console.log(zoom)
+	}
+	
+
+
 	return (
 		<section className="classic-page">
 			{/* Selector de modos (Clasico / Logo / Codigo) */}
@@ -302,6 +336,18 @@ export default function Logo() {
 			<article className="classic-intro-box">
 				<h1>¡Adivina el lenguaje!</h1>
 			</article>
+
+			{/* Imagen con el logo a buscar y con funcion de zoom */}
+			<div className='zoom-container'>
+                <img 
+                    src= {urlLogo}
+                    alt= "zoom"
+                    className="zoom-image"
+                    style={{
+                        transform: `scale(${zoom})`
+                    }}
+                />
+            </div>
 
 			{/* Buscador: input, botón y lista de sugerencias */}
 			<form className="classic-search-wrap" onSubmit={enviarFormulario}>
