@@ -18,6 +18,9 @@ class SolicitudLogin(BaseModel):
     email: EmailStr
     password: str
 
+class SolicitudGoogle(BaseModel):
+    token: str
+
 
 # Ruta para registrar un nuevo usuario
 @router.post("/register")
@@ -75,8 +78,8 @@ def iniciar_sesion(datos: SolicitudLogin):
 
 
 router.post("/google-login")
-def login_google(datos: dict):
-    token_google = datos.get("token")
+def login_google(datos: SolicitudGoogle):
+    token_google = datos.token
     
     try:
         # Por seguridad, validamos que el token de verificación viene de Google y que sea para nuestra app en específico
@@ -96,7 +99,7 @@ def login_google(datos: dict):
         else:
             usuario = resultado.data[0]
             
-        # Le damos NUESTRO token de FastAPI para continuar con nuestros tokens y poder definir nuestra propia expiración
+        # Le damos nuestro token de FastAPI para continuar con nuestros tokens y poder definir nuestra propia expiración
         token = crear_token_acceso({"sub": str(usuario["id"]), "email": usuario["email"]})
         return {"access_token": token, "token_type": "bearer"}
         

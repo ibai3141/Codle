@@ -70,6 +70,8 @@ async function request(path, options = {}) {
 }
 
 
+// Funciones para el login y registro
+
 export async function login(email, password) {
     // Login con email/password contra el endpoint de auth.
     return request("/auth/login", {
@@ -85,6 +87,16 @@ export async function register(payload) {
     
 }
 
+export async function loginConGoogle(tokenGoogle) {
+  // Usamos vuestro helper request para mantener la coherencia
+  return request("/auth/google-login", {
+    method: "POST",
+    body: { token: tokenGoogle },
+  });
+}
+
+
+//Funciones globales para modos 
 
 export async function crearPartidaPorModo(modo, token) {
   // Crea una partida para el modo indicado (clasico, logo o codigo).
@@ -144,18 +156,22 @@ export async function enviarIntentoPorModo(modo, partidaId, respuesta, token) {
 }
 
 
+//Funciones modo clasico
 export async function crearPartida(token) {
-  // Compatibilidad: mantiene el contrato actual del modo clásico.
   return crearPartidaPorModo("clasico", token);
 }
 
 
 export async function obtenerPartida(partidaId, token) {
-  // Compatibilidad: mantiene el contrato actual del modo clásico.
   return obtenerPartidaPorModo("clasico", partidaId, token);
 }
 
+export async function enviarIntento(partidaId, respuesta, token) {
+    return enviarIntentoPorModo("clasico", partidaId, respuesta, token);
+}
 
+
+// Funciones para obtener datos de los lenguajes
 export async function obtenerLenguajeById(id) {
     // Obtiene los datos completos de un lenguaje por su ID.
     const data = await request(`/getData/lengById?id=${id}`);
@@ -184,11 +200,6 @@ export async function obtenerLenguajesActivos() {
     return (data ?? []).map(normalizarLenguaje);
 }
 
-
-export async function enviarIntento(partidaId, respuesta, token) {
-    // Compatibilidad: mantiene el contrato actual del modo clásico.
-    return enviarIntentoPorModo("clasico", partidaId, respuesta, token);
-}
 
 
 // Helpers explícitos para modos no clásicos.
