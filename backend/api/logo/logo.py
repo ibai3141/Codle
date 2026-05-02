@@ -43,6 +43,10 @@ def buscar_lenguaje():
         raise HTTPException(status_code=404, detail="No hay lenguajes activos con logo disponibles para crear la partida")
 
     return random.choice(resul.data)
+
+
+
+
 # Este endpoint crea una nueva partida en modo logo y devuelve la
 # informacion minima necesaria para que el frontend empiece a jugar.
 @router.post("/crear_partida")

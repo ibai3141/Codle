@@ -34,6 +34,8 @@ def buscar_lenguaje():
 
     lenguaje_elegido = random.choice(resul.data)
     return lenguaje_elegido["id"]
+
+
 @lru_cache(maxsize=256)
 def obtener_nombre_catalogo(tabla: str, identificador: int):
     try:
