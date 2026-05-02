@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Header
 from pydantic import BaseModel
-from supabase import create_client
 from api.utils.keys import SUPABASE_URL, SUPABASE_KEY
+from supabase import create_client
 from api.utils.helpers import (
     buscar_lenguaje_por_respuesta,
     construir_logo_url,
@@ -15,27 +15,29 @@ import json
 from datetime import datetime, timezone
 
 
-router = APIRouter(prefix="/logo", tags=["logo"])
+
+router = APIRouter(prefix="/codigo", tags=["codigo"])
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+@router.get("/test")
+def test():
+    return {"mensaje": "esto es un test"}
 
-class SolicitudGuess(BaseModel):
-    partida_id: int
-    respuesta: str
+
+
+
+
+#
+
+
 
 
 # Busca un lenguaje activo que tenga logo disponible para usarlo
 # como objetivo del modo logo.
-def buscar_lenguaje():
+def buscar_reto_codigo_random():
     try:
-        resul = (
-            supabase.table("lenguaje")
-            .select("id, logo_path")
-            .eq("activo", True)
-            .not_.is_("logo_path", "null")
-            .neq("logo_path", "")
-            .execute()
-        )
+        resul = (supabase.table("reto_codigo").select("id", "lenguaje_id").eq("activo", True).execute())
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al buscar un lenguaje objetivo: {str(e)}")
 
@@ -47,12 +49,13 @@ def buscar_lenguaje():
 
 
 
-# Este endpoint crea una nueva partida en modo logo y devuelve la
-# informacion minima necesaria para que el frontend empiece a jugar.
+
+
+
 @router.post("/crear_partida")
 def crear_partida(Authorization: str = Header(...)):
-    id_usuario = obtener_usuario_desde_token(Authorization)
-    lenguaje = buscar_lenguaje()
+    id_usuario  = obtener_usuario_desde_token(Authorization)
+    reto_codigo = buscar_reto_codigo_random()
 
     try:
         result = (
@@ -60,10 +63,10 @@ def crear_partida(Authorization: str = Header(...)):
             .insert(
                 {
                     "usuario_id": id_usuario,
-                    "modo": "LOGO",
-                    "lenguaje_objetivo_id": lenguaje["id"],
+                    "modo": "CODIGO",
+                    "lenguaje_objetivo_id": reto_codigo["lenguaje_id"],
+                    "reto_codigo_id": reto_codigo["id"],
                     "estado": "en_curso",
-                    "fase_actual": "logo",
                     "max_intentos": None,
                     "intentos_usados": 0,
                     "puntuacion": 0,
@@ -82,13 +85,19 @@ def crear_partida(Authorization: str = Header(...)):
         "partida_id": partida["id"],
         "modo": partida["modo"],
         "estado": partida["estado"],
-        "logoUrl": construir_logo_url(lenguaje["logo_path"]),
+        "reto_codigo_id": reto_codigo["id"],
     }
+
+
+
+
+
+
 # Formatea cada intento para que el frontend pueda pintar el historial del modo logo.
 def formatear_intento_para_frontend(intento: dict):
     try:
         lenguaje_resultado = (
-            supabase.table("lenguaje")
+            supabase.table("codigo")
             .select("*")
             .eq("id", intento["lenguaje_intentado_id"])
             .execute()
@@ -105,19 +114,28 @@ def formatear_intento_para_frontend(intento: dict):
         "lenguaje": {
             "id": lenguaje["id"],
             "nombre": lenguaje["nombre"],
-            "logoUrl": construir_logo_url(lenguaje["logo_path"]),
         },
         "correcto": intento["es_correcto"],
     }
 
 
+
+
+@router.get("/test/{id}")
+def buscar_reto_codigo(id: int):
+    reto_codigo = supabase.table("reto_codigo").select("*").eq("id", id).execute()
+    return reto_codigo.data[0]
+
+
+
 @router.get("/{partida_id}")
-def obtener_partida(partida_id: int, Authorization: str = Header(...)):
-    id_usuario = obtener_usuario_desde_token(Authorization)
+def obtener_partida(partida_id: int):
+    id_usuario = 7#obtener_usuario_desde_token(Authorization)
     partida = obtener_partida_usuario(supabase, partida_id, id_usuario)
-    # Se devuelve el logo del lenguaje objetivo y el historial ya realizado.
+    # Se devuelve el snippet del lenguaje objetivo y el historial ya realizado.
     intentos = historial_partidas(supabase, partida_id)
-    logo_lenguaje = obtener_lenguaje_objetivo(supabase, partida["lenguaje_objetivo_id"])
+
+    reto_codigo = buscar_reto_codigo(partida["reto_codigo_id"])
 
     return {
         "partida": {
@@ -125,59 +143,57 @@ def obtener_partida(partida_id: int, Authorization: str = Header(...)):
             "modo": partida["modo"],
             "estado": partida["estado"],
             "intentos_usados": partida["intentos_usados"],
+            "reto_codigo_id": reto_codigo["id"]
         },
-        "logoUrl": construir_logo_url(logo_lenguaje["logo_path"]),
         "intentos": [formatear_intento_para_frontend(intento) for intento in intentos.data],
     }
 
 
-@router.post("/guess")
-def guess_logo(datos: SolicitudGuess, Authorization: str = Header(...)):
-    # Se valida el usuario y se comprueba que la partida realmente le pertenece.
-    id_usuario = obtener_usuario_desde_token(Authorization)
-    partida = obtener_partida_usuario(supabase, datos.partida_id, id_usuario)
 
-    if partida["modo"] != "LOGO":
+
+
+
+
+class SolicitudGuess(BaseModel):
+    partida_id: int
+    respuesta: str
+
+@router.post("/guess")
+def guess_codigo(datos: SolicitudGuess):
+    # Se valida el usuario y se comprueba que la partida realmente le pertenece.
+    id_usuario = 7#obtener_usuario_desde_token(Authorization)
+    partida = obtener_partida_usuario(supabase, datos.partida_id, id_usuario)
+    print(partida)
+
+    if partida["modo"] != "CODIGO":
         raise HTTPException(status_code=400, detail="La partida no pertenece al modo logo")
 
     if partida["estado"] != "en_curso":
         raise HTTPException(status_code=400, detail="La partida ya no esta en curso")
 
-    # Se resuelve el texto introducido y se compara con el lenguaje del logo mostrado.
-    lenguaje_intentado = buscar_lenguaje_por_respuesta(supabase, datos.respuesta)
-    lenguaje_objetivo = obtener_lenguaje_objetivo(supabase, partida["lenguaje_objetivo_id"])
 
-    correcto = lenguaje_intentado["id"] == lenguaje_objetivo["id"]
+    reto_codigo = buscar_reto_codigo(partida["reto_codigo_id"])
     numero_intento = partida["intentos_usados"] + 1
 
-    feedback = {
-        "correcto": correcto,
-        "lenguaje_intentado": {
-            "id": lenguaje_intentado["id"],
-            "nombre": lenguaje_intentado["nombre"],
-            "logo_path": lenguaje_intentado.get("logo_path"),
-            "logoUrl": construir_logo_url(lenguaje_intentado.get("logo_path")),
-        },
-    }
+    correcto = datos.respuesta == reto_codigo["salida_esperada"]
 
     try:
         # Se guarda el intento con un feedback simple: nombre e imagen del lenguaje escrito.
         intento = (
-            supabase.table("intento_lenguaje")
+            supabase.table("intento_codigo")
             .insert(
                 {
                     "partida_id": datos.partida_id,
                     "numero_intento": numero_intento,
-                    "lenguaje_intentado_id": lenguaje_intentado["id"],
+                    "respuesta_usuario": datos.respuesta,
                     "es_correcto": correcto,
-                    "feedback_json": json.dumps(feedback, ensure_ascii=False),
                 }
             )
             .execute()
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al guardar el intento: {str(e)}")
-
+    
     # El contador siempre avanza; si acierta, la partida ya queda cerrada.
     update_data = {"intentos_usados": numero_intento}
     if correcto:
@@ -195,10 +211,11 @@ def guess_logo(datos: SolicitudGuess, Authorization: str = Header(...)):
         "estado_partida": "ganada" if correcto else "en_curso",
         "correcto": correcto,
         "intentos_usados": numero_intento,
-        "lenguaje_intentado": {
-            "id": lenguaje_intentado["id"],
-            "nombre": lenguaje_intentado["nombre"],
-            "logoUrl": construir_logo_url(lenguaje_intentado.get("logo_path")),
+        "respuesta_intentado": {
+            "salida_codigo": datos.respuesta,
         },
         "intento": intento.data[0] if intento.data else None,
     }
+
+
+
