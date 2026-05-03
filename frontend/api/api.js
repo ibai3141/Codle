@@ -34,6 +34,36 @@ function normalizarLenguaje(lenguaje) {
   };
 }
 
+function normalizarIntentoCodigo(intento) {
+  if (!intento) {
+    return null;
+  }
+
+  return {
+    numeroIntento: intento.numeroIntento ?? intento.numero_intento,
+    respuestaUsuario: intento.respuestaUsuario ?? intento.respuesta_usuario,
+    respuestaNormalizada:
+      intento.respuestaNormalizada ?? intento.respuesta_normalizada,
+    correcto: Boolean(intento.correcto ?? intento.es_correcto),
+    creadoEn: intento.creadoEn ?? intento.creado_en ?? null,
+  };
+}
+
+function normalizarPartidaCodigo(data) {
+  return {
+    ...data,
+    reto: data?.reto
+      ? {
+          id: data.reto.id,
+          titulo: data.reto.titulo,
+          snippet: data.reto.snippet,
+          explicacion: data.reto.explicacion ?? null,
+        }
+      : null,
+    intentos: (data?.intentos ?? []).map(normalizarIntentoCodigo),
+  };
+}
+
 // Helper comun para todas las peticiones HTTP al backend.
 async function request(path, options = {}) {
   let token = options.token ?? obtenerTokenValido();
@@ -205,13 +235,31 @@ export async function enviarIntentoLogo(partidaId, respuesta, token) {
 }
 
 export async function crearPartidaCodigo(token) {
-  return crearPartidaPorModo("codigo", token);
+  const data = await crearPartidaPorModo("codigo", token);
+
+  return {
+    ...data,
+    reto: data?.reto
+      ? {
+          id: data.reto.id,
+          titulo: data.reto.titulo,
+          snippet: data.reto.snippet,
+          explicacion: data.reto.explicacion ?? null,
+        }
+      : null,
+  };
 }
 
 export async function obtenerPartidaCodigo(partidaId, token) {
-  return obtenerPartidaPorModo("codigo", partidaId, token);
+  const data = await obtenerPartidaPorModo("codigo", partidaId, token);
+  return normalizarPartidaCodigo(data);
 }
 
 export async function enviarIntentoCodigo(partidaId, respuesta, token) {
-  return enviarIntentoPorModo("codigo", partidaId, respuesta, token);
+  const data = await enviarIntentoPorModo("codigo", partidaId, respuesta, token);
+
+  return {
+    ...data,
+    intento: normalizarIntentoCodigo(data?.intento),
+  };
 }

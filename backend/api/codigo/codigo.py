@@ -131,7 +131,7 @@ def crear_partida(Authorization: str = Header(...)):
         "partida_id": partida["id"],
         "modo": partida["modo"],
         "estado": partida["estado"],
-        "max_intentos": partida["max_intentos"],
+        "max_intentos": partida["max_intentos"] or MAX_INTENTOS_CODIGO,
         "intentos_usados": partida["intentos_usados"],
         "reto": {
             "id": reto_codigo["id"],
@@ -161,7 +161,7 @@ def obtener_partida(partida_id: int, Authorization: str = Header(...)):
             "modo": partida["modo"],
             "estado": partida["estado"],
             "fase_actual": partida.get("fase_actual"),
-            "max_intentos": partida["max_intentos"],
+            "max_intentos": partida["max_intentos"] or MAX_INTENTOS_CODIGO,
             "intentos_usados": partida["intentos_usados"],
             "puntuacion": partida["puntuacion"],
             "iniciada_en": partida.get("iniciada_en"),
