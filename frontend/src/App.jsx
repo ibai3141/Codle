@@ -8,7 +8,7 @@ import Clasico from "../pages/Clasico";
 import Logo from "../pages/Logo";
 import Codigo from "../pages/Codigo";
 import CodeBackdrop from "./components/CodeBackdrop";
-import { tieneSesionActiva } from "./utils/session";
+import { guardarToken, tieneSesionActiva } from "./utils/session";
 import "./AppPage.css";
 import { loginConGoogle } from "../api/api";
 
@@ -26,8 +26,8 @@ function AuthHome() {
 			// Y nos devuelve uno de nuestros tokens
             const data = await loginConGoogle(credentialResponse.credential);
             
-            // Guardamos el token en localStorage
-            localStorage.setItem("token", data.access_token);
+			// Guardamos el token en el acceso local
+			guardarToken(data.access_token);
             
             // Si todo va correcto, redirigimos al usuario a la pantalla principal
             navegar("/home");

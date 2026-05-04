@@ -77,7 +77,7 @@ def iniciar_sesion(datos: SolicitudLogin):
 
 
 
-router.post("/google-login")
+@router.post("/google-login")
 def login_google(datos: SolicitudGoogle):
     token_google = datos.token
     
