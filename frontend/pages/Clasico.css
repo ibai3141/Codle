@@ -1,9 +1,13 @@
 .classic-page {
   width: min(100%, 980px);
-  margin: 0.9rem auto 1.8rem;
+  margin: auto;
   padding: 0.35rem 0.75rem 1.5rem;
   box-sizing: border-box;
   color: #e6edf3;
+  min-height: calc(100svh - 2rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .classic-mode-strip {
@@ -397,12 +401,17 @@
 
 @media (max-width: 680px) {
   .classic-page {
-    margin-top: 0.7rem;
+    min-height: calc(100svh - 1.1rem);
     padding-inline: 0.72rem;
   }
 
   .classic-intro-box h1 {
     font-size: 1.38rem;
+  }
+
+  .classic-results-header,
+  .classic-results-row {
+    min-width: 680px;
   }
 
   .classic-input-shell input {
@@ -422,6 +431,7 @@
 
 @media (max-width: 520px) {
   .classic-page {
+    min-height: calc(100svh - 0.9rem);
     padding-inline: 0.55rem;
   }
 

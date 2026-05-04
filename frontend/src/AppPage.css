@@ -1,6 +1,6 @@
 .auth-home {
   width: min(100%, 500px);
-  margin: 4rem auto;
+  margin: auto;
   padding: 2.5rem 2rem;
   box-sizing: border-box;
   border: 1px solid #2a3240;
@@ -137,7 +137,7 @@
 @media (max-width: 640px) {
   .auth-home {
     width: auto;
-    margin: 1.1rem 0.9rem;
+    margin: auto 0.9rem;
     padding: 1.4rem 1.05rem;
     border-radius: 20px;
   }
@@ -166,7 +166,7 @@
 
 @media (max-width: 420px) {
   .auth-home {
-    margin-inline: 0.7rem;
+    margin: auto 0.7rem;
     padding: 1.15rem 0.9rem;
     border-radius: 18px;
   }

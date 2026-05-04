@@ -1,6 +1,6 @@
 .home-page {
   width: min(100%, 460px);
-  margin: 0 auto;
+  margin: auto;
   padding: 2.5rem 2rem;
   box-sizing: border-box;
   border: 1px solid #2a3240;
@@ -92,7 +92,7 @@
 @media (max-width: 640px) {
   .home-page {
     width: auto;
-    margin: 0 1rem;
+    margin: auto 1rem;
     padding: 1.5rem 1.05rem;
     border-radius: 20px;
   }
@@ -115,7 +115,7 @@
 
 @media (max-width: 420px) {
   .home-page {
-    margin-inline: 0.7rem;
+    margin: auto 0.7rem;
     padding: 1.15rem 0.9rem;
     border-radius: 18px;
   }

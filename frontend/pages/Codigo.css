@@ -240,6 +240,13 @@
   .codigo-snippet {
     padding: 0.82rem;
     font-size: 0.88rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: hidden;
+  }
+
+  .codigo-snippet code {
+    min-width: 0;
   }
 
   .codigo-reto-head {
@@ -272,7 +279,7 @@
 
   .codigo-results-header,
   .codigo-results-row {
-    min-width: 540px;
+    min-width: 460px;
   }
 }
 
