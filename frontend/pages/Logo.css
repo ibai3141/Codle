@@ -61,3 +61,27 @@
     font-weight: 700;
     text-align: center;
 }
+
+@media (max-width: 680px) {
+    .zoom-container {
+        width: min(100%, 220px);
+        height: 220px;
+        margin-top: 0.7rem;
+    }
+
+    .zoom-image {
+        padding: 0.85rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .zoom-container {
+        width: min(100%, 190px);
+        height: 190px;
+        border-radius: 16px;
+    }
+
+    .zoom-image {
+        padding: 0.72rem;
+    }
+}

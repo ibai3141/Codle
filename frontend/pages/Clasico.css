@@ -10,6 +10,8 @@
   width: fit-content;
   margin: 0 auto 0.75rem;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.45rem;
   padding: 0.32rem;
   border-radius: 999px;
@@ -67,6 +69,7 @@
   font-size: 1.7rem;
   letter-spacing: -0.05em;
   color: #f1f5f9;
+  line-height: 1.05;
 }
 
 .classic-search-wrap {
@@ -394,8 +397,8 @@
 
 @media (max-width: 680px) {
   .classic-page {
-    margin-top: 0.8rem;
-    padding-inline: 0.75rem;
+    margin-top: 0.7rem;
+    padding-inline: 0.72rem;
   }
 
   .classic-intro-box h1 {
@@ -414,5 +417,65 @@
 
   .classic-legend ul {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .classic-page {
+    padding-inline: 0.55rem;
+  }
+
+  .classic-mode-strip {
+    width: 100%;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    padding-inline: 0.38rem;
+  }
+
+  .classic-mode-pill {
+    flex: 0 0 auto;
+    min-height: 1.95rem;
+    padding: 0.28rem 0.62rem;
+    font-size: 0.9rem;
+  }
+
+  .classic-intro-box,
+  .classic-search-wrap,
+  .classic-error,
+  .classic-success,
+  .classic-empty-state-api,
+  .classic-legend {
+    width: 100%;
+  }
+
+  .classic-intro-box {
+    padding: 0.72rem 0.82rem;
+  }
+
+  .classic-intro-box h1 {
+    font-size: 1.24rem;
+  }
+
+  .classic-input-shell input {
+    padding: 0.62rem 0.72rem;
+    font-size: 0.92rem;
+  }
+
+  .classic-submit {
+    width: 2.85rem;
+  }
+
+  .classic-legend {
+    padding: 0.62rem 0.68rem;
+  }
+
+  .classic-legend h2 {
+    font-size: 1.05rem;
+  }
+
+  .classic-legend ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

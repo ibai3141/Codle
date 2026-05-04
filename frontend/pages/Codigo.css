@@ -228,6 +228,20 @@
 }
 
 @media (max-width: 680px) {
+  .codigo-reto-card,
+  .codigo-answer-form,
+  .codigo-solution-card,
+  .codigo-explicacion-card {
+    width: 100%;
+    margin-top: 0.7rem;
+    padding: 0.82rem 0.82rem 0.9rem;
+  }
+
+  .codigo-snippet {
+    padding: 0.82rem;
+    font-size: 0.88rem;
+  }
+
   .codigo-reto-head {
     flex-direction: column;
   }
@@ -246,6 +260,11 @@
     align-items: flex-start;
   }
 
+  .codigo-answer-input {
+    min-height: 110px;
+    font-size: 0.94rem;
+  }
+
   .codigo-results {
     overflow-x: auto;
     padding-bottom: 0.2rem;
@@ -254,5 +273,19 @@
   .codigo-results-header,
   .codigo-results-row {
     min-width: 540px;
+  }
+}
+
+@media (max-width: 420px) {
+  .codigo-answer-meta,
+  .codigo-answer-label {
+    font-size: 0.88rem;
+  }
+
+  .codigo-snippet,
+  .codigo-solution-output,
+  .codigo-explicacion-texto,
+  .codigo-intento-respuesta pre {
+    font-size: 0.85rem;
   }
 }

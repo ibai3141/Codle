@@ -14,7 +14,6 @@ import { loginConGoogle } from "../api/api";
 
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID_DE_GOOGLE;
-console.log("Mi Client ID es:", GOOGLE_CLIENT_ID);
 // Pantalla de entrada para elegir entre login o registro.
 function AuthHome() {
 	const navegar = useNavigate();
@@ -38,7 +37,11 @@ function AuthHome() {
 
 	return (
 		<section className="auth-home">
-			<h1>Bienvenido a Codle</h1>
+			<img
+				src="/codle-wordmark.png"
+				alt="Codle"
+				className="auth-home-logo"
+			/>
 			<div className="auth-home-actions">
 				<Link to="/login">
 					<button type="button">Iniciar sesion</button>

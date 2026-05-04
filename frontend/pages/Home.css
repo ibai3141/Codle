@@ -19,6 +19,7 @@
   color: #e6edf3;
   font-size: 3rem;
   letter-spacing: -0.08em;
+  line-height: 0.96;
 }
 
 .home-actions {
@@ -90,12 +91,36 @@
 
 @media (max-width: 640px) {
   .home-page {
+    width: auto;
     margin: 0 1rem;
-    padding: 1.7rem 1.2rem;
+    padding: 1.5rem 1.05rem;
     border-radius: 20px;
   }
 
   .home-page h1 {
-    font-size: 2.3rem;
+    font-size: 2.1rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .home-actions {
+    gap: 0.8rem;
+  }
+
+  .home-actions button {
+    min-height: 3rem;
+    padding: 0.9rem 1rem;
+    font-size: 0.98rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .home-page {
+    margin-inline: 0.7rem;
+    padding: 1.15rem 0.9rem;
+    border-radius: 18px;
+  }
+
+  .home-page h1 {
+    font-size: 1.9rem;
   }
 }

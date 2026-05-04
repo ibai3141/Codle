@@ -19,6 +19,20 @@
   font-size: 3rem;
   letter-spacing: -0.08em;
   color: #e6edf3;
+  line-height: 0.96;
+}
+
+.auth-home-logo {
+  display: block;
+  width: 116%;
+  max-width: none;
+  margin: 0 0 1.8rem -8%;
+  height: auto;
+  filter:
+    brightness(1.22)
+    saturate(1.15)
+    drop-shadow(0 0 18px rgba(37, 99, 235, 0.2))
+    drop-shadow(0 0 10px rgba(168, 85, 247, 0.16));
 }
 
 .auth-home-actions {
@@ -110,14 +124,59 @@
   justify-content: center;
 }
 
+.auth-error-msg {
+  margin-top: 0.35rem;
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.35);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.92rem;
+}
+
 @media (max-width: 640px) {
   .auth-home {
-    margin: 1.5rem 1rem;
-    padding: 1.7rem 1.2rem;
+    width: auto;
+    margin: 1.1rem 0.9rem;
+    padding: 1.4rem 1.05rem;
     border-radius: 20px;
   }
 
   .auth-home h1 {
-    font-size: 2.3rem;
+    font-size: 2.15rem;
+    margin-bottom: 1rem;
+  }
+
+  .auth-home-logo {
+    width: 108%;
+    max-width: none;
+    margin: 0 0 1.2rem -4%;
+  }
+
+  .auth-home-actions {
+    gap: 0.75rem;
+  }
+
+  .auth-home-actions button {
+    min-height: 3rem;
+    padding: 0.88rem 1rem;
+    font-size: 0.98rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .auth-home {
+    margin-inline: 0.7rem;
+    padding: 1.15rem 0.9rem;
+    border-radius: 18px;
+  }
+
+  .auth-home h1 {
+    font-size: 1.9rem;
+  }
+
+  .auth-home-logo {
+    width: 110%;
+    margin: 0 0 1rem -5%;
   }
 }

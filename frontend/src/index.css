@@ -56,6 +56,7 @@ body {
   background:
     radial-gradient(circle at top, rgba(88, 166, 255, 0.18), transparent 32%),
     linear-gradient(180deg, #1a2740 0%, #121c2f 28%, #0d1424 58%, #090f1b 100%);
+  overflow-x: hidden;
 }
 
 #root {
@@ -86,6 +87,7 @@ body {
   flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
+  padding: 1rem 0;
 }
 
 .code-backdrop {
@@ -96,6 +98,25 @@ body {
   pointer-events: none;
   opacity: 0.9;
   z-index: 0;
+}
+
+@media (max-width: 900px) {
+  .app-content {
+    justify-content: flex-start;
+    padding: 0.9rem 0 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    background:
+      radial-gradient(circle at top, rgba(88, 166, 255, 0.14), transparent 28%),
+      linear-gradient(180deg, #17233a 0%, #11192b 34%, #0c1321 68%, #090f1b 100%);
+  }
+
+  .app-content {
+    padding: 0.55rem 0 1.15rem;
+  }
 }
 
 h1,
