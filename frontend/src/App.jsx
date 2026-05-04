@@ -47,12 +47,20 @@ function AuthHome() {
 					<button type="button">Registrar</button>
 				</Link>
 
+				<div className="auth-divider">
+					<span>o</span>
+				</div>
+
 				<div className="google-btn-wrapper">
-                    <GoogleLogin
-                        onSuccess={manejarLoginGoogle}
-                        onError={() => setError("El inicio de sesión con Google ha fallado.")}
-                        text="Continuar con Google" 
-                    />
+					<GoogleLogin
+						onSuccess={manejarLoginGoogle}
+						onError={() => setError("El inicio de sesión con Google ha fallado.")}
+						text="continue_with"
+						theme="outline"
+						shape="pill"
+						size="large"
+						locale="es"
+					/>
                 </div>
 
                 {error && <p className="auth-error-msg">{error}</p>}
