@@ -14,6 +14,12 @@ import random
 import json
 from datetime import datetime, timezone
 from functools import lru_cache
+from utils import scoring
+
+
+config = scoring.obtener_config_puntuacion("CLASICO")
+PUNTUACION_INICIAL = config.get("puntuacion_inicial")
+
 
 router = APIRouter(prefix="/clasico", tags=["clasico"])
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -203,7 +209,7 @@ def crear_partida(Authorization: str = Header(...)):
             "fase_actual": "lenguaje",
             "max_intentos": None,
             "intentos_usados": 0,
-            "puntuacion": 0
+            "puntuacion": PUNTUACION_INICIAL
         }).execute()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al crear la partida: {str(e)}")

@@ -7,11 +7,14 @@ from supabase import create_client
 
 from api.utils.helpers import obtener_partida_usuario, obtener_usuario_desde_token
 from api.utils.keys import SUPABASE_KEY, SUPABASE_URL
+from utils import scoring
 
+config = scoring.obtener_config_puntuacion("CODIGO")
+PUNTUACION_INICIAL = config.get("puntuacion_inicial")
+MAX_INTENTOS = config.get("max_intentos")
 
 router = APIRouter(prefix="/codigo", tags=["codigo"])
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-MAX_INTENTOS_CODIGO = 10
 
 
 class SolicitudGuess(BaseModel):
@@ -113,9 +116,9 @@ def crear_partida(Authorization: str = Header(...)):
                     "reto_codigo_id": reto_codigo["id"],
                     "estado": "en_curso",
                     "fase_actual": "salida",
-                    "max_intentos": MAX_INTENTOS_CODIGO,
+                    "max_intentos": MAX_INTENTOS,
                     "intentos_usados": 0,
-                    "puntuacion": 0,
+                    "puntuacion": PUNTUACION_INICIAL,
                 }
             )
             .execute()
@@ -131,7 +134,7 @@ def crear_partida(Authorization: str = Header(...)):
         "partida_id": partida["id"],
         "modo": partida["modo"],
         "estado": partida["estado"],
-        "max_intentos": partida["max_intentos"] or MAX_INTENTOS_CODIGO,
+        "max_intentos": partida["max_intentos"] or MAX_INTENTOS,
         "intentos_usados": partida["intentos_usados"],
         "reto": {
             "id": reto_codigo["id"],
@@ -161,7 +164,7 @@ def obtener_partida(partida_id: int, Authorization: str = Header(...)):
             "modo": partida["modo"],
             "estado": partida["estado"],
             "fase_actual": partida.get("fase_actual"),
-            "max_intentos": partida["max_intentos"] or MAX_INTENTOS_CODIGO,
+            "max_intentos": partida["max_intentos"] or MAX_INTENTOS,
             "intentos_usados": partida["intentos_usados"],
             "puntuacion": partida["puntuacion"],
             "iniciada_en": partida.get("iniciada_en"),
@@ -221,7 +224,7 @@ def guess_codigo(datos: SolicitudGuess, Authorization: str = Header(...)):
         update_data["estado"] = "ganada"
         update_data["finalizada_en"] = datetime.now(timezone.utc).isoformat()
         estado_partida = "ganada"
-    elif numero_intento >= (partida["max_intentos"] or MAX_INTENTOS_CODIGO):
+    elif numero_intento >= (partida["max_intentos"] or MAX_INTENTOS):
         update_data["estado"] = "perdida"
         update_data["finalizada_en"] = datetime.now(timezone.utc).isoformat()
         estado_partida = "perdida"
@@ -237,7 +240,7 @@ def guess_codigo(datos: SolicitudGuess, Authorization: str = Header(...)):
         "estado_partida": estado_partida,
         "correcto": correcto,
         "intentos_usados": numero_intento,
-        "intentos_restantes": max((partida["max_intentos"] or MAX_INTENTOS_CODIGO) - numero_intento, 0),
+        "intentos_restantes": max((partida["max_intentos"] or MAX_INTENTOS) - numero_intento, 0),
         "respuesta_usuario": datos.respuesta,
         "respuesta_normalizada": respuesta_normalizada,
         "salida_esperada": reto_codigo["salida_esperada"] if correcto or estado_partida == "perdida" else None,

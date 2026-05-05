@@ -13,7 +13,10 @@ from api.utils.helpers import (
 import random
 import json
 from datetime import datetime, timezone
+from utils import scoring
 
+config = scoring.obtener_config_puntuacion("LOGO")
+PUNTUACION_INICIAL = config.get("puntuacion_inicial")
 
 router = APIRouter(prefix="/logo", tags=["logo"])
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -66,7 +69,7 @@ def crear_partida(Authorization: str = Header(...)):
                     "fase_actual": "logo",
                     "max_intentos": None,
                     "intentos_usados": 0,
-                    "puntuacion": 0,
+                    "puntuacion": PUNTUACION_INICIAL,
                 }
             )
             .execute()
