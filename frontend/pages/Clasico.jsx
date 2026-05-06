@@ -81,6 +81,8 @@ export default function Clasico() {
 	const [enviandoIntento, setEnviandoIntento] = useState(false);
 	// Puntuación calculada según el número de intentos realizados.
 	const[puntuacion, setPuntuacion] = useState();
+	// Controla si se muestra el ranking al finalizar la partida.
+	const [mostrarRanking, setMostrarRanking] = useState(false);
 
 	// Lista derivada de lenguajes que aún no se han intentado.
 	// Se calcula restando del catálogo completo los IDs que ya aparecen en el historial.
@@ -172,6 +174,7 @@ export default function Clasico() {
 					// Si el backend ya marca la partida como ganada, mostramos el mensaje y limpiamos storage.
 					if (partidaActiva.partida.estado === "ganada") {
 						setMensajeAcierto("¡Has acertado el lenguaje!");
+						setMostrarRanking(true);
 						if (partidaStorageKey) {
 							localStorage.removeItem(partidaStorageKey);
 						}
@@ -276,6 +279,7 @@ export default function Clasico() {
 			if (resultadoServidor.resultado.correcto) {
 				setMensajeAcierto("¡Has acertado el lenguaje!");
 				const partidaStorageKey = obtenerClavePartidaModo("clasico", token);
+				setMostrarRanking(true);
 				if (partidaStorageKey) {
 					localStorage.removeItem(partidaStorageKey);
 				}
@@ -517,6 +521,12 @@ export default function Clasico() {
 					</li>
 				</ul>
 			</aside>
+
+		{
+			mostrarRanking && (
+				<div><p>hola</p></div>
+			)
+		}
 		</section>
 	);
 }

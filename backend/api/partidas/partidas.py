@@ -38,3 +38,33 @@ def obtener_partida_activa(modo: str, Authorization: str = Header(...)):
         return {"partida": None}
 
     return {"partida": resultado.data[0]}
+
+
+
+@router.get("/ranking/{modo}")
+def obtener_ranking_usuario(modo: str, Authorization: str = Header(...)):
+    modo_normalizado = modo.strip().lower()
+    if modo_normalizado not in MODOS_VALIDOS:
+        raise HTTPException(status_code=400, detail="Modo no soportado")
+
+
+    usuario_id = obtener_usuario_desde_token(Authorization)
+
+
+    try:
+        resultado = (
+            supabase.table("partida")
+            .select("puntuacion,intentos_usados,finalizada_en")
+            .eq("usuario_id", usuario_id)
+            .eq("modo", MODOS_VALIDOS[modo_normalizado])
+            .neq("estado", "en_curso")
+            .order("puntuacion", desc=True)
+            .order("intentos_usados")
+            .order("finalizada_en", desc=True)
+            .execute()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener el ranking: {str(e)}")
+
+
+    return resultado.data or []
