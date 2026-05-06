@@ -7,7 +7,7 @@ from supabase import create_client
 
 from api.utils.helpers import obtener_partida_usuario, obtener_usuario_desde_token
 from api.utils.keys import SUPABASE_KEY, SUPABASE_URL
-from utils import scoring
+from api.utils import scoring
 
 config = scoring.obtener_config_puntuacion("CODIGO")
 PUNTUACION_INICIAL = config.get("puntuacion_inicial")
@@ -136,6 +136,7 @@ def crear_partida(Authorization: str = Header(...)):
         "estado": partida["estado"],
         "max_intentos": partida["max_intentos"] or MAX_INTENTOS,
         "intentos_usados": partida["intentos_usados"],
+        "puntuacion": partida["puntuacion"],
         "reto": {
             "id": reto_codigo["id"],
             "titulo": reto_codigo["titulo"],
@@ -224,10 +225,17 @@ def guess_codigo(datos: SolicitudGuess, Authorization: str = Header(...)):
         update_data["estado"] = "ganada"
         update_data["finalizada_en"] = datetime.now(timezone.utc).isoformat()
         estado_partida = "ganada"
-    elif numero_intento >= (partida["max_intentos"] or MAX_INTENTOS):
+    elif numero_intento >= (MAX_INTENTOS):
         update_data["estado"] = "perdida"
         update_data["finalizada_en"] = datetime.now(timezone.utc).isoformat()
         estado_partida = "perdida"
+        # Si pierde igualmente hay que calcular la puntuación
+        nueva_puntuacion = scoring.calcular_puntuacion("CODIGO", numero_intento)
+        update_data["puntuacion"] = nueva_puntuacion
+    else:
+        # Si falla, se recalcula la puntuacion restando la penalizacion por intento.
+        nueva_puntuacion = scoring.calcular_puntuacion("CODIGO", numero_intento)
+        update_data["puntuacion"] = nueva_puntuacion
 
     try:
         supabase.table("partida").update(update_data).eq("id", datos.partida_id).execute()
@@ -238,6 +246,7 @@ def guess_codigo(datos: SolicitudGuess, Authorization: str = Header(...)):
         "partida_id": datos.partida_id,
         "numero_intento": numero_intento,
         "estado_partida": estado_partida,
+        "puntuacion": partida["puntuacion"] if correcto else update_data.get("puntuacion"),
         "correcto": correcto,
         "intentos_usados": numero_intento,
         "intentos_restantes": max((partida["max_intentos"] or MAX_INTENTOS) - numero_intento, 0),

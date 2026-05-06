@@ -50,6 +50,8 @@ export default function Codigo() {
 	const [salidaCorrecta, setSalidaCorrecta] = useState("");
 	const [cargando, setCargando] = useState(true);
 	const [enviandoIntento, setEnviandoIntento] = useState(false);
+	// Puntuación calculada según el número de intentos realizados.
+	const[puntuacion, setPuntuacion] = useState();
 
 	useEffect(
 		function () {
@@ -112,6 +114,7 @@ export default function Codigo() {
 						setIntentos([]);
 						setMensajeEstado("");
 						setSalidaCorrecta("");
+						setPuntuacion(nuevaPartida.puntuacion);
 						setCargando(false);
 						return;
 					}
@@ -119,6 +122,7 @@ export default function Codigo() {
 					setPartidaId(partidaActiva.partida?.id ?? null);
 					setReto(partidaActiva.reto ?? null);
 					setIntentos((partidaActiva.intentos ?? []).map(normalizarIntentoCodigo));
+					setPuntuacion(partidaActiva.partida.puntuacion);
 					setPartidaInfo(partidaActiva.partida ?? null);
 					setMensajeEstado(construirMensajeEstado(partidaActiva.partida?.estado));
 
@@ -194,6 +198,8 @@ export default function Codigo() {
 				return [nuevoIntento, ...anterior];
 			});
 
+			setPuntuacion(resultadoServidor.puntuacion);
+
 			setPartidaInfo(function (anterior) {
 				return {
 					...(anterior ?? {}),
@@ -249,6 +255,8 @@ export default function Codigo() {
 			<article className="classic-intro-box">
 				<h1>{reto.titulo || "Reto de codigo"}</h1>
 			</article>
+
+			<p>Puntuacion: {puntuacion}</p>
 
 			<section className="codigo-reto-card" aria-label="Fragmento de codigo">
 				<pre className="codigo-snippet">

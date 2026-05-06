@@ -59,6 +59,8 @@ export default function Logo() {
 	const [urlLogo, setUrlLogo] = useState(null);
 	// Nivel de zoom aplicado al logo para aumentar la dificultad al principio.
 	const [zoom, setZoom] = useState(ZOOM_INICIAL_LOGO);
+	// Puntuación calculada según el número de intentos realizados.
+	const[puntuacion, setPuntuacion] = useState();
 
 	// Lista derivada de lenguajes que aún no se han intentado.
 	const lenguajesDisponibles = useMemo(
@@ -138,6 +140,7 @@ export default function Logo() {
 						setMensajeAcierto("");
 						setZoom(ZOOM_INICIAL_LOGO);
 						setCargando(false);
+						setPuntuacion(respuestaPartida.puntuacion);
 						return;
 					}
 
@@ -145,6 +148,7 @@ export default function Logo() {
 					setPartidaId(partidaActiva.partida?.id ?? null);
 					setUrlLogo(partidaActiva.logoUrl ?? null);
 					setIntentos((partidaActiva.intentos ?? []).map(normalizarIntentoLogo));
+					setPuntuacion(partidaActiva.partida.puntuacion);
 
 					if (partidaActiva.partida?.estado === "ganada") {
 						setMensajeAcierto("Has acertado el lenguaje.");
@@ -238,6 +242,7 @@ export default function Logo() {
 				return [intentoData, ...anterior];
 			});
 
+			setPuntuacion(resultadoServidor.puntuacion);
 			setTextoBusqueda("");
 
 			if (resultadoServidor.correcto) {
@@ -338,6 +343,8 @@ export default function Logo() {
 			<article className="classic-intro-box">
 				<h1>Adivina el lenguaje</h1>
 			</article>
+			
+			<p>Puntuacion: {puntuacion}</p>
 
 			{/* Imagen con el logo a buscar y con función de zoom */}
 			<div className="zoom-container">

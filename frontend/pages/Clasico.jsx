@@ -79,6 +79,8 @@ export default function Clasico() {
 	const [cargando, setCargando] = useState(true);
 	// Evita dobles clics o dobles Enter mientras el intento se está enviando.
 	const [enviandoIntento, setEnviandoIntento] = useState(false);
+	// Puntuación calculada según el número de intentos realizados.
+	const[puntuacion, setPuntuacion] = useState();
 
 	// Lista derivada de lenguajes que aún no se han intentado.
 	// Se calcula restando del catálogo completo los IDs que ya aparecen en el historial.
@@ -158,12 +160,14 @@ export default function Clasico() {
 						setIntentos([]);
 						setMensajeAcierto("");
 						setCargando(false);
+						setPuntuacion(respuestaPartida.puntuacion);
 						return;
 					}
 
 					// Si sí había partida activa, restauramos ID e historial.
 					setPartidaId(partidaActiva.partida.id);
 					setIntentos(partidaActiva.intentos ?? []);
+					setPuntuacion(partidaActiva.partida.puntuacion);
 
 					// Si el backend ya marca la partida como ganada, mostramos el mensaje y limpiamos storage.
 					if (partidaActiva.partida.estado === "ganada") {
@@ -262,6 +266,8 @@ export default function Clasico() {
 
 				return [intentoData, ...anterior];
 			});
+
+			setPuntuacion(resultadoServidor.puntuacion);
 
 			// Limpiar el buscador para preparar el siguiente intento.
 			setTextoBusqueda("");
@@ -435,6 +441,8 @@ export default function Clasico() {
 			{lenguajesDisponibles.length === 0 && !mensajeAcierto ? (
 				<p className="classic-empty-state-api">Ya no quedan lenguajes disponibles.</p>
 			) : null}
+			
+			<p>Puntuacion: {puntuacion}</p>
 
 			{/* Historial de intentos: tabla con resultados de cada intento. Cada fila representa
           un intento y usa las clases `classic-*` para colorear los estados según `estados`. */}
