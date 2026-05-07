@@ -6,11 +6,13 @@ import {
 	obtenerPartida,
 	obtenerLenguajesActivos,
 	enviarIntento as enviarIntentoApi,
+	obtenerRankingPorModo
 } from "../api/api";
 import { obtenerClavePartidaModo, obtenerTokenValido } from "../src/utils/session";
 import LogoLenguaje from "../src/components/lenguajes/LogoLenguaje";
 import SelectorModos from "../src/components/juego/SelectorModos";
 import "./Clasico.css";
+import Ranking from "../src/components/ranking/Ranking";
 
 // Clave de localStorage usada para recordar la partida en curso del modo clásico.
 // Así si el usuario recarga la página podemos recuperar la sesión y el historial.
@@ -83,6 +85,8 @@ export default function Clasico() {
 	const[puntuacion, setPuntuacion] = useState();
 	// Controla si se muestra el ranking al finalizar la partida.
 	const [mostrarRanking, setMostrarRanking] = useState(false);
+	// Lista de partidas anteriores del usuario para mostrar en el ranking al ganar.
+	const [ranking, setRanking] = useState([]);
 
 	// Lista derivada de lenguajes que aún no se han intentado.
 	// Se calcula restando del catálogo completo los IDs que ya aparecen en el historial.
@@ -124,6 +128,9 @@ export default function Clasico() {
 					// Cargar el catálogo de lenguajes activos. Se usa para sugerencias y validación visual.
 					const lenguajesActivos = await obtenerLenguajesActivos();
 					setCatalogoLenguajes(lenguajesActivos);
+
+					const rankingData = await obtenerRankingPorModo("CLASICO",tokenGuardado);
+					setRanking(rankingData);
 
 					// Primero se consulta al backend por si ese usuario ya tiene una partida
 					// activa en curso, incluso aunque venga de otro navegador o dispositivo.
@@ -279,6 +286,9 @@ export default function Clasico() {
 			if (resultadoServidor.resultado.correcto) {
 				setMensajeAcierto("¡Has acertado el lenguaje!");
 				const partidaStorageKey = obtenerClavePartidaModo("clasico", token);
+				// Al ganar obtenemos el nuevo ranking
+				const nuevoRanking = await obtenerRankingPorModo("CLASICO", token);
+				setRanking(nuevoRanking);
 				setMostrarRanking(true);
 				if (partidaStorageKey) {
 					localStorage.removeItem(partidaStorageKey);
@@ -524,7 +534,11 @@ export default function Clasico() {
 
 		{
 			mostrarRanking && (
-				<div><p>hola</p></div>
+				<Ranking 
+					abierto={mostrarRanking}
+					alCerrar={() => setMostrarRanking(false)}
+					listaRanking={ranking} 
+				/>
 			)
 		}
 		</section>

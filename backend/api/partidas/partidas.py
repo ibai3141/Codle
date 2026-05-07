@@ -54,7 +54,7 @@ def obtener_ranking_usuario(modo: str, Authorization: str = Header(...)):
     try:
         resultado = (
             supabase.table("partida")
-            .select("puntuacion,intentos_usados,finalizada_en")
+            .select("id,puntuacion,intentos_usados,finalizada_en")
             .eq("usuario_id", usuario_id)
             .eq("modo", MODOS_VALIDOS[modo_normalizado])
             .neq("estado", "en_curso")

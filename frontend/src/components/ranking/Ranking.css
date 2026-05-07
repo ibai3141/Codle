@@ -1,0 +1,19 @@
+.ranking-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+}
+
+.ranking-tabla th,
+.ranking-tabla td {
+    padding: 10px 12px;
+    text-align: left;
+}
+
+.ranking-tabla thead tr {
+    border-bottom: 1px solid #555;
+}
+
+.ranking-tabla tbody tr {
+    border-bottom: 1px solid #333;
+}
