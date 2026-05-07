@@ -14,14 +14,17 @@ function formatDate(dateString) {
 }
 
 
-export default function Ranking({ abierto, alCerrar, listaRanking }) {
+export default function Ranking({ abierto, alCerrar, listaRanking, idPartidaActual, puntuacion }) {
     if (!abierto) return null;
 
     return (
-        <div className="ranking-overlay">
-            <div className="ranking-modal" role="dialog" aria-modal="true">
-                <h2>¡Has ganado!</h2>
-                <p>Ranking de tus partidas</p>
+        <div className="ranking-overlay" onClick={alCerrar}>
+            <button className="ranking-cerrar" onClick={alCerrar} aria-label="Cerrar ranking" type="button"> × </button>
+            <div className="ranking-modal" role="dialog" aria-modal="true" aria-labelledby="ranking-titulo" onClick={(e) => e.stopPropagation()}>
+                <div className="ranking-exito">
+                    <h2 id="ranking-titulo">¡Has ganado con {puntuacion} puntos!</h2>
+                </div>
+                <h2><b>Ranking de tus partidas</b></h2>
 
                 {listaRanking.length === 0 ? (
                     <p>No hay partidas todavía.</p>
@@ -38,7 +41,8 @@ export default function Ranking({ abierto, alCerrar, listaRanking }) {
 
                         <tbody>
                             {listaRanking.map((partida, index) => (
-                                <tr key={partida.id}>
+                                <tr key={partida.id}
+                                className={partida.id === idPartidaActual ? "fila-destacada" : ""}>
                                     <td>{index + 1}</td>
                                     <td>{partida.puntuacion}</td>
                                     <td>{partida.intentos_usados}</td>
@@ -48,8 +52,6 @@ export default function Ranking({ abierto, alCerrar, listaRanking }) {
                         </tbody>
                     </table>
                 )}
-
-                <button onClick={alCerrar}>Cerrar</button>
             </div>
         </div>
     );

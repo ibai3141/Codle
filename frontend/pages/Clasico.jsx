@@ -87,6 +87,8 @@ export default function Clasico() {
 	const [mostrarRanking, setMostrarRanking] = useState(false);
 	// Lista de partidas anteriores del usuario para mostrar en el ranking al ganar.
 	const [ranking, setRanking] = useState([]);
+	// Indica si la partida actual ya ha sido ganada. 
+	const [partidaGanada, setPartidaGanada] = useState(false);
 
 	// Lista derivada de lenguajes que aún no se han intentado.
 	// Se calcula restando del catálogo completo los IDs que ya aparecen en el historial.
@@ -169,6 +171,7 @@ export default function Clasico() {
 						setIntentos([]);
 						setMensajeAcierto("");
 						setCargando(false);
+						setPartidaGanada(false)
 						setPuntuacion(respuestaPartida.puntuacion);
 						return;
 					}
@@ -182,9 +185,13 @@ export default function Clasico() {
 					if (partidaActiva.partida.estado === "ganada") {
 						setMensajeAcierto("¡Has acertado el lenguaje!");
 						setMostrarRanking(true);
+						setPartidaGanada(true);
 						if (partidaStorageKey) {
 							localStorage.removeItem(partidaStorageKey);
 						}
+					}
+					else{
+						setPartidaGanada(false);
 					}
 
 					setCargando(false);
@@ -290,6 +297,7 @@ export default function Clasico() {
 				const nuevoRanking = await obtenerRankingPorModo("CLASICO", token);
 				setRanking(nuevoRanking);
 				setMostrarRanking(true);
+				setPartidaGanada(true);
 				if (partidaStorageKey) {
 					localStorage.removeItem(partidaStorageKey);
 				}
@@ -538,7 +546,15 @@ export default function Clasico() {
 					abierto={mostrarRanking}
 					alCerrar={() => setMostrarRanking(false)}
 					listaRanking={ranking} 
+					idPartidaActual={partidaId}
+					puntuacion={puntuacion}
 				/>
+				
+			)
+		}
+		{
+			partidaGanada && (
+			<	button className="boton-ver-ranking" type = "button" onClick={() => setMostrarRanking(true)}>Ranking</button>	
 			)
 		}
 		</section>
