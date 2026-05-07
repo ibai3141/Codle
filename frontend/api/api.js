@@ -117,6 +117,13 @@ export async function register(payload) {
     
 }
 
+export async function reenviarVerificacion(email) {
+  return request("/auth/resend-verification", {
+    method: "POST",
+    body: { email },
+  });
+}
+
 export async function loginConGoogle(tokenGoogle) {
   // Usamos vuestro helper request para mantener la coherencia
   return request("/auth/google-login", {
