@@ -86,7 +86,7 @@ async function request(path, options = {}) {
   const isJson = response.headers.get("content-type")?.includes("application/json");
   const data = isJson ? await response.json() : null;
 
-  if (response.status === 401) {
+  if (response.status === 401 && token) {
     cerrarSesionCompleta();
     window.location.assign("/login");
     throw new Error("La sesion ha expirado. Vuelve a iniciar sesion.");
