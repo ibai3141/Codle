@@ -44,7 +44,9 @@ def buscar_usuario_auth_por_email(email: str):
         )
 
     usuarios = []
-    if hasattr(respuesta, "users"):
+    if isinstance(respuesta, list):
+        usuarios = respuesta
+    elif hasattr(respuesta, "users"):
         usuarios = respuesta.users or []
     elif isinstance(respuesta, dict):
         usuarios = respuesta.get("users", []) or []
