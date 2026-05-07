@@ -71,6 +71,13 @@ def correo_esta_verificado(usuario_auth) -> bool:
     if confirmado is None and isinstance(usuario_auth, dict):
         confirmado = usuario_auth.get("email_confirmed_at")
 
+    # Algunas respuestas del SDK tambien pueden traer la confirmacion en
+    # confirmed_at, asi que la usamos como respaldo.
+    if not confirmado:
+        confirmado = getattr(usuario_auth, "confirmed_at", None)
+        if confirmado is None and isinstance(usuario_auth, dict):
+            confirmado = usuario_auth.get("confirmed_at")
+
     return bool(confirmado)
 
 # Ruta para registrar un nuevo usuario
@@ -191,14 +198,10 @@ def iniciar_sesion(datos: SolicitudLogin):
         )
 
     # Comprobamos en Supabase Auth si el correo ya ha sido verificado.
+    # Si el usuario no existe ahi, permitimos el acceso como compatibilidad
+    # para cuentas antiguas creadas antes de anadir esta verificacion.
     usuario_auth = buscar_usuario_auth_por_email(datos.email)
-    if not usuario_auth:
-        raise HTTPException(
-            status_code=401,
-            detail="No se encontro la cuenta de autenticacion para este email",
-        )
-
-    if not correo_esta_verificado(usuario_auth):
+    if usuario_auth and not correo_esta_verificado(usuario_auth):
         raise HTTPException(
             status_code=401,
             detail="Debes verificar tu correo antes de iniciar sesion",
