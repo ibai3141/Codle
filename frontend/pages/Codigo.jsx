@@ -5,6 +5,7 @@ import {
 	enviarIntentoCodigo,
 	obtenerPartidaActivaPorModo,
 	obtenerPartidaCodigo,
+	borrarPartida,
 } from "../api/api";
 import SelectorModos from "../src/components/juego/SelectorModos";
 import { obtenerClavePartidaModo, obtenerTokenValido } from "../src/utils/session";
@@ -242,6 +243,14 @@ export default function Codigo() {
 		);
 	}
 
+	async function otroCodigo() {
+		// borra la partida
+		borrarPartida(partidaId, token);
+
+		// reinicia la pagina
+		window.location.reload();
+	}
+
 	return (
 		<section className="classic-page">
 			<SelectorModos modoActivo="codigo" onNavegar={navegar} />
@@ -339,6 +348,8 @@ export default function Codigo() {
 					})
 				)}
 			</section>
+
+			<button onClick={otroCodigo}>Otro codigo</button>
 		</section>
 	);
 }

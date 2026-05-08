@@ -1,8 +1,12 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Header
 from api.utils.keys import SUPABASE_URL, SUPABASE_KEY
 from supabase import create_client
 from urllib.parse import quote
-
+from api.utils.helpers import (
+    construir_logo_url,
+    obtener_usuario_desde_token,
+    borra_partida_usuario,
+)
 
 router = APIRouter(prefix="/getData", tags=["datos"])
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -210,6 +214,12 @@ def lengIdByAlias(alias: str):
     return alias_conseguido[0]["lenguaje_id"]
 
 
+@router.delete("/borraPartida/{partida_id}")
+def borra_partida(partida_id, Authorization: str = Header(...)):
+    id_usuario = obtener_usuario_desde_token(Authorization)
+    result = borra_partida_usuario(supabase, partida_id, id_usuario)
+
+    return result
 
 
 #----------------------------------------------------------------------------------------------------

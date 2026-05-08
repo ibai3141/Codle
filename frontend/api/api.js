@@ -281,3 +281,13 @@ export async function enviarIntentoCodigo(partidaId, respuesta, token) {
     intento: normalizarIntentoCodigo(data?.intento),
   };
 }
+
+
+
+export async function borrarPartida(partida_id, token) {
+  
+  return request(`/getData/borraPartida/${partida_id}`, {
+    method: "DELETE",
+    token: token,
+  });
+}
