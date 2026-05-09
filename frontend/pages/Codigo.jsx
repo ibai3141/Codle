@@ -245,7 +245,12 @@ export default function Codigo() {
 
 	async function otroCodigo() {
 		// borra la partida
-		borrarPartida(partidaId, token);
+		if (partidaInfo.estado !== "ganada"){
+			await borrarPartida(partidaId, token);
+		}
+			
+		// borra el idPartida
+		setPartidaId(null);
 
 		// reinicia la pagina
 		window.location.reload();
@@ -264,6 +269,10 @@ export default function Codigo() {
 					<code>{reto.snippet}</code>
 				</pre>
 			</section>
+
+			<button onClick={otroCodigo} className="codigo_boton_otroCodigo">
+				Otro codigo
+			</button>
 
 			<form className="codigo-answer-form" onSubmit={enviarRespuesta}>
 				<div className="codigo-answer-head">
@@ -299,6 +308,8 @@ export default function Codigo() {
 					</button>
 				</div>
 			</form>
+
+			
 
 			{mensajeError ? <p className="classic-error">{mensajeError}</p> : null}
 			{mensajeEstado ? <p className="classic-success">{mensajeEstado}</p> : null}
@@ -349,7 +360,7 @@ export default function Codigo() {
 				)}
 			</section>
 
-			<button onClick={otroCodigo}>Otro codigo</button>
+			
 		</section>
 	);
 }
