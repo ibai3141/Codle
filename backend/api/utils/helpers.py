@@ -123,3 +123,18 @@ def construir_logo_url(logo_path):
         return logo_limpio
 
     return f"{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_LOGOS_BUCKET}/{quote(logo_limpio)}"
+
+
+def borra_partida_usuario(supabase, partida_id: int, usuario_id: int):
+    try:
+        result = (
+            supabase.table("partida")
+            .delete()
+            .eq("id", partida_id)
+            .eq("usuario_id", usuario_id)
+            .execute()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al borrar la partida: {str(e)}")
+    
+    return result.data[0]

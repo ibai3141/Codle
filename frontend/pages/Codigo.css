@@ -227,6 +227,21 @@
   line-height: 1.35;
 }
 
+.codigo_boton_otroCodigo {
+  color: white;
+  background-color: black;
+  min-width: 20%;
+  max-width: 30%;
+  align-self: center;
+  padding: 5px;
+  border-radius: 10px;
+  margin-top: 0.7rem;
+  cursor: pointer;
+}
+.codigo_boton_otroCodigo:hover {
+  background-color: red;
+}
+
 @media (max-width: 680px) {
   .codigo-reto-card,
   .codigo-answer-form,
