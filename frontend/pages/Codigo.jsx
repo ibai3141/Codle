@@ -264,15 +264,15 @@ export default function Codigo() {
 				<h1>{reto.titulo || "Reto de codigo"}</h1>
 			</article>
 
+			<button onClick={otroCodigo} className="codigo_boton_otroCodigo">Otro codigo</button>
+
 			<section className="codigo-reto-card" aria-label="Fragmento de codigo">
 				<pre className="codigo-snippet">
 					<code>{reto.snippet}</code>
 				</pre>
 			</section>
 
-			<button onClick={otroCodigo} className="codigo_boton_otroCodigo">
-				Otro codigo
-			</button>
+
 
 			<form className="codigo-answer-form" onSubmit={enviarRespuesta}>
 				<div className="codigo-answer-head">
