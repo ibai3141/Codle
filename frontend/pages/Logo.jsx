@@ -6,9 +6,11 @@ import {
 	obtenerPartidaLogo,
 	obtenerLenguajesActivos,
 	enviarIntentoLogo,
+	obtenerRankingPorModo,
 } from "../api/api";
 import { obtenerClavePartidaModo, obtenerTokenValido } from "../src/utils/session";
 import SelectorModos from "../src/components/juego/SelectorModos";
+import Ranking from "../src/components/ranking/Ranking";
 import "./Clasico.css";
 import "./Logo.css";
 
@@ -61,6 +63,12 @@ export default function Logo() {
 	const [zoom, setZoom] = useState(ZOOM_INICIAL_LOGO);
 	// Puntuación calculada según el número de intentos realizados.
 	const[puntuacion, setPuntuacion] = useState();
+	// Controla si se muestra el ranking al finalizar la partida.
+	const [mostrarRanking, setMostrarRanking] = useState(false);
+	// Lista de partidas anteriores del usuario para mostrar en el ranking al ganar.
+	const [ranking, setRanking] = useState([]);
+	// Indica si la partida actual ya ha sido ganada.
+	const [partidaGanada, setPartidaGanada] = useState(false);
 
 	// Lista derivada de lenguajes que aún no se han intentado.
 	const lenguajesDisponibles = useMemo(
@@ -102,6 +110,9 @@ export default function Logo() {
 
 					const lenguajesActivos = await obtenerLenguajesActivos();
 					setCatalogoLenguajes(lenguajesActivos);
+
+					const rankingData = await obtenerRankingPorModo("LOGO", tokenGuardado);
+					setRanking(rankingData);
 					
 					// Se pregunta primero al backend por una partida activa para que la
 					// reanudacion funcione tambien desde otros navegadores.
@@ -141,6 +152,7 @@ export default function Logo() {
 						setZoom(ZOOM_INICIAL_LOGO);
 						setCargando(false);
 						setPuntuacion(respuestaPartida.puntuacion);
+						setPartidaGanada(false);
 						return;
 					}
 
@@ -152,12 +164,15 @@ export default function Logo() {
 
 					if (partidaActiva.partida?.estado === "ganada") {
 						setMensajeAcierto("Has acertado el lenguaje.");
+						setMostrarRanking(true);
+						setPartidaGanada(true);
 						if (partidaStorageKey) {
 							localStorage.removeItem(partidaStorageKey);
 						}
 						setZoom(1);
 					} else {
 						setZoom(ZOOM_INICIAL_LOGO);
+						setPartidaGanada(false);
 					}
 
 					setCargando(false);
@@ -248,6 +263,10 @@ export default function Logo() {
 			if (resultadoServidor.correcto) {
 				setMensajeAcierto("Has acertado el lenguaje.");
 				const partidaStorageKey = obtenerClavePartidaModo("logo", token);
+				const nuevoRanking = await obtenerRankingPorModo("LOGO", token);
+				setRanking(nuevoRanking);
+				setMostrarRanking(true);
+				setPartidaGanada(true);
 				if (partidaStorageKey) {
 					localStorage.removeItem(partidaStorageKey);
 				}
@@ -432,6 +451,29 @@ export default function Logo() {
 					})
 				)}
 			</section>
+
+			{
+				mostrarRanking && (
+					<Ranking
+						abierto={mostrarRanking}
+						alCerrar={() => setMostrarRanking(false)}
+						listaRanking={ranking}
+						idPartidaActual={partidaId}
+						puntuacion={puntuacion}
+					/>
+				)
+			}
+			{
+				partidaGanada && (
+					<button
+						className="boton-ver-ranking"
+						type="button"
+						onClick={() => setMostrarRanking(true)}
+					>
+						Ranking
+					</button>
+				)
+			}
 		</section>
 	);
 }

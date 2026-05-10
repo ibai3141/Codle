@@ -5,9 +5,11 @@ import {
 	enviarIntentoCodigo,
 	obtenerPartidaActivaPorModo,
 	obtenerPartidaCodigo,
+	obtenerRankingPorModo,
 } from "../api/api";
 import SelectorModos from "../src/components/juego/SelectorModos";
 import { obtenerClavePartidaModo, obtenerTokenValido } from "../src/utils/session";
+import Ranking from "../src/components/ranking/Ranking";
 import "./Clasico.css";
 import "./Codigo.css";
 
@@ -50,8 +52,14 @@ export default function Codigo() {
 	const [salidaCorrecta, setSalidaCorrecta] = useState("");
 	const [cargando, setCargando] = useState(true);
 	const [enviandoIntento, setEnviandoIntento] = useState(false);
-	// Puntuación calculada según el número de intentos realizados.
+	// Puntuación calculada según el número de intentos realizados
 	const[puntuacion, setPuntuacion] = useState();
+	// Estado para controlar si se ha ganado la partida
+	const [partidaGanada, setPartidaGanada] = useState(false);
+	// Controla si se muestra el ranking al finalizar la partida.
+	const [mostrarRanking, setMostrarRanking] = useState(false);
+	// Lista de partidas anteriores del usuario para mostrar en el ranking.
+	const [ranking, setRanking] = useState([]);
 
 	useEffect(
 		function () {
@@ -72,6 +80,9 @@ export default function Codigo() {
 					const partidaGuardada = partidaStorageKey
 						? localStorage.getItem(partidaStorageKey)
 						: null;
+
+					const rankingData = await obtenerRankingPorModo("CODIGO", tokenGuardado);
+					setRanking(rankingData);
 
 					const partidaActivaResumen = await obtenerPartidaActivaPorModo(
 						"codigo",
@@ -113,8 +124,10 @@ export default function Codigo() {
 						});
 						setIntentos([]);
 						setMensajeEstado("");
+						setPartidaGanada(false)
 						setSalidaCorrecta("");
 						setPuntuacion(nuevaPartida.puntuacion);
+						setMostrarRanking(false);
 						setCargando(false);
 						return;
 					}
@@ -128,6 +141,12 @@ export default function Codigo() {
 
 					if (partidaActiva.partida?.estado !== "en_curso" && partidaStorageKey) {
 						localStorage.removeItem(partidaStorageKey);
+						setPartidaGanada(true);
+						setMostrarRanking(true);
+					}
+					else{
+						setPartidaGanada(false);
+						setMostrarRanking(false);
 					}
 
 					setCargando(false);
@@ -218,6 +237,10 @@ export default function Codigo() {
 
 			if (resultadoServidor.estado_partida !== "en_curso") {
 				const partidaStorageKey = obtenerClavePartidaModo("codigo", token);
+				const nuevoRanking = await obtenerRankingPorModo("CODIGO", token);
+				setRanking(nuevoRanking);
+				setMostrarRanking(true);
+				setPartidaGanada(true);
 				if (partidaStorageKey) {
 					localStorage.removeItem(partidaStorageKey);
 				}
@@ -347,6 +370,29 @@ export default function Codigo() {
 					})
 				)}
 			</section>
+
+			{
+				mostrarRanking && (
+					<Ranking
+						abierto={mostrarRanking}
+						alCerrar={() => setMostrarRanking(false)}
+						listaRanking={ranking}
+						idPartidaActual={partidaId}
+						puntuacion={puntuacion}
+					/>
+				)
+			}
+			{
+				partidaGanada && (
+					<button
+						className="boton-ver-ranking"
+						type="button"
+						onClick={() => setMostrarRanking(true)}
+					>
+						Ranking
+					</button>
+				)
+			}
 		</section>
 	);
 }
