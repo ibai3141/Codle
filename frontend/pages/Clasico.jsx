@@ -6,11 +6,13 @@ import {
 	obtenerPartida,
 	obtenerLenguajesActivos,
 	enviarIntento as enviarIntentoApi,
+	obtenerRankingPorModo
 } from "../api/api";
 import { obtenerClavePartidaModo, obtenerTokenValido } from "../src/utils/session";
 import LogoLenguaje from "../src/components/lenguajes/LogoLenguaje";
 import SelectorModos from "../src/components/juego/SelectorModos";
 import "./Clasico.css";
+import Ranking from "../src/components/ranking/Ranking";
 
 // Clave de localStorage usada para recordar la partida en curso del modo clásico.
 // Así si el usuario recarga la página podemos recuperar la sesión y el historial.
@@ -79,6 +81,14 @@ export default function Clasico() {
 	const [cargando, setCargando] = useState(true);
 	// Evita dobles clics o dobles Enter mientras el intento se está enviando.
 	const [enviandoIntento, setEnviandoIntento] = useState(false);
+	// Puntuación calculada según el número de intentos realizados.
+	const[puntuacion, setPuntuacion] = useState();
+	// Controla si se muestra el ranking al finalizar la partida.
+	const [mostrarRanking, setMostrarRanking] = useState(false);
+	// Lista de partidas anteriores del usuario para mostrar en el ranking al ganar.
+	const [ranking, setRanking] = useState([]);
+	// Indica si la partida actual ya ha sido ganada. 
+	const [partidaGanada, setPartidaGanada] = useState(false);
 
 	// Lista derivada de lenguajes que aún no se han intentado.
 	// Se calcula restando del catálogo completo los IDs que ya aparecen en el historial.
@@ -121,6 +131,9 @@ export default function Clasico() {
 					const lenguajesActivos = await obtenerLenguajesActivos();
 					setCatalogoLenguajes(lenguajesActivos);
 
+					const rankingData = await obtenerRankingPorModo("CLASICO",tokenGuardado);
+					setRanking(rankingData);
+
 					// Primero se consulta al backend por si ese usuario ya tiene una partida
 					// activa en curso, incluso aunque venga de otro navegador o dispositivo.
 					const partidaActivaResumen = await obtenerPartidaActivaPorModo("clasico", tokenGuardado);
@@ -158,19 +171,27 @@ export default function Clasico() {
 						setIntentos([]);
 						setMensajeAcierto("");
 						setCargando(false);
+						setPartidaGanada(false)
+						setPuntuacion(respuestaPartida.puntuacion);
 						return;
 					}
 
 					// Si sí había partida activa, restauramos ID e historial.
 					setPartidaId(partidaActiva.partida.id);
 					setIntentos(partidaActiva.intentos ?? []);
+					setPuntuacion(partidaActiva.partida.puntuacion);
 
 					// Si el backend ya marca la partida como ganada, mostramos el mensaje y limpiamos storage.
 					if (partidaActiva.partida.estado === "ganada") {
 						setMensajeAcierto("¡Has acertado el lenguaje!");
+						setMostrarRanking(true);
+						setPartidaGanada(true);
 						if (partidaStorageKey) {
 							localStorage.removeItem(partidaStorageKey);
 						}
+					}
+					else{
+						setPartidaGanada(false);
 					}
 
 					setCargando(false);
@@ -263,6 +284,8 @@ export default function Clasico() {
 				return [intentoData, ...anterior];
 			});
 
+			setPuntuacion(resultadoServidor.puntuacion);
+
 			// Limpiar el buscador para preparar el siguiente intento.
 			setTextoBusqueda("");
 
@@ -270,6 +293,11 @@ export default function Clasico() {
 			if (resultadoServidor.resultado.correcto) {
 				setMensajeAcierto("¡Has acertado el lenguaje!");
 				const partidaStorageKey = obtenerClavePartidaModo("clasico", token);
+				// Al ganar obtenemos el nuevo ranking
+				const nuevoRanking = await obtenerRankingPorModo("CLASICO", token);
+				setRanking(nuevoRanking);
+				setMostrarRanking(true);
+				setPartidaGanada(true);
 				if (partidaStorageKey) {
 					localStorage.removeItem(partidaStorageKey);
 				}
@@ -435,6 +463,8 @@ export default function Clasico() {
 			{lenguajesDisponibles.length === 0 && !mensajeAcierto ? (
 				<p className="classic-empty-state-api">Ya no quedan lenguajes disponibles.</p>
 			) : null}
+			
+			<p>Puntuacion: {puntuacion}</p>
 
 			{/* Historial de intentos: tabla con resultados de cada intento. Cada fila representa
           un intento y usa las clases `classic-*` para colorear los estados según `estados`. */}
@@ -509,6 +539,24 @@ export default function Clasico() {
 					</li>
 				</ul>
 			</aside>
+
+		{
+			mostrarRanking && (
+				<Ranking 
+					abierto={mostrarRanking}
+					alCerrar={() => setMostrarRanking(false)}
+					listaRanking={ranking} 
+					idPartidaActual={partidaId}
+					puntuacion={puntuacion}
+				/>
+				
+			)
+		}
+		{
+			partidaGanada && (
+			<	button className="boton-ver-ranking" type = "button" onClick={() => setMostrarRanking(true)}>Ranking</button>	
+			)
+		}
 		</section>
 	);
 }

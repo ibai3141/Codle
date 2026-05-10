@@ -283,6 +283,16 @@ export async function enviarIntentoCodigo(partidaId, respuesta, token) {
 }
 
 
+// Obtener el ranking del modo indicado, individual para cada jugador
+export async function obtenerRankingPorModo(modo, token) {
+  const modoNormalizado = normalizarModoJuego(modo);
+  const data = await request(`/partidas/ranking/${modoNormalizado}`, {
+    token: token,
+  });
+
+
+  return data;
+}
 
 export async function borrarPartida(partida_id, token) {
   

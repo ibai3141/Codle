@@ -14,6 +14,12 @@ import random
 import json
 from datetime import datetime, timezone
 from functools import lru_cache
+from api.utils import scoring
+
+
+config = scoring.obtener_config_puntuacion("CLASICO")
+PUNTUACION_INICIAL = config.get("puntuacion_inicial")
+
 
 router = APIRouter(prefix="/clasico", tags=["clasico"])
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -203,7 +209,7 @@ def crear_partida(Authorization: str = Header(...)):
             "fase_actual": "lenguaje",
             "max_intentos": None,
             "intentos_usados": 0,
-            "puntuacion": 0
+            "puntuacion": PUNTUACION_INICIAL
         }).execute()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al crear la partida: {str(e)}")
@@ -215,7 +221,8 @@ def crear_partida(Authorization: str = Header(...)):
         return {
             "partida_id": partida["id"],
             "modo": partida["modo"],
-            "estado": partida["estado"]
+            "estado": partida["estado"],
+            "puntuacion": partida["puntuacion"],
             }
     else:
         raise HTTPException(status_code=500, detail="No se pudo crear la partida")
@@ -287,6 +294,10 @@ def guess_clasico(datos: SolicitudGuess, Authorization: str = Header(...)):
     if feedback["correcto"]:
         update_data["estado"] = "ganada"
         update_data["finalizada_en"] = datetime.now(timezone.utc).isoformat()
+    else:
+        # Si falla, se recalcula la puntuacion restando la penalizacion por intento.
+        nueva_puntuacion = scoring.calcular_puntuacion("CLASICO", numero_intento)
+        update_data["puntuacion"] = nueva_puntuacion
 
     try:
         supabase.table("partida").update(update_data).eq("id", datos.partida_id).execute()
@@ -300,7 +311,9 @@ def guess_clasico(datos: SolicitudGuess, Authorization: str = Header(...)):
         "intento": intento.data[0] if intento.data else None,
         "lenguaje_intentado": formatear_lenguaje_para_frontend(lenguaje_intentado, creadores_intentado),
         "resultado": feedback,
+        "puntuacion": partida["puntuacion"] if feedback["correcto"] else update_data.get("puntuacion")
     }
+
 @router.get("/{partida_id}")
 def obtener_partida(partida_id: int, Authorization: str = Header(...)):
     id_usuario = obtener_usuario_desde_token(Authorization)

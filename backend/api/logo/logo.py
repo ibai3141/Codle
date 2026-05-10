@@ -13,7 +13,10 @@ from api.utils.helpers import (
 import random
 import json
 from datetime import datetime, timezone
+from api.utils import scoring
 
+config = scoring.obtener_config_puntuacion("LOGO")
+PUNTUACION_INICIAL = config.get("puntuacion_inicial")
 
 router = APIRouter(prefix="/logo", tags=["logo"])
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -66,7 +69,7 @@ def crear_partida(Authorization: str = Header(...)):
                     "fase_actual": "logo",
                     "max_intentos": None,
                     "intentos_usados": 0,
-                    "puntuacion": 0,
+                    "puntuacion": PUNTUACION_INICIAL,
                 }
             )
             .execute()
@@ -83,6 +86,7 @@ def crear_partida(Authorization: str = Header(...)):
         "modo": partida["modo"],
         "estado": partida["estado"],
         "logoUrl": construir_logo_url(lenguaje["logo_path"]),
+        "puntuacion": partida["puntuacion"],
     }
 # Formatea cada intento para que el frontend pueda pintar el historial del modo logo.
 def formatear_intento_para_frontend(intento: dict):
@@ -124,6 +128,7 @@ def obtener_partida(partida_id: int, Authorization: str = Header(...)):
             "id": partida["id"],
             "modo": partida["modo"],
             "estado": partida["estado"],
+            "puntuacion": partida["puntuacion"],
             "intentos_usados": partida["intentos_usados"],
         },
         "logoUrl": construir_logo_url(logo_lenguaje["logo_path"]),
@@ -183,6 +188,10 @@ def guess_logo(datos: SolicitudGuess, Authorization: str = Header(...)):
     if correcto:
         update_data["estado"] = "ganada"
         update_data["finalizada_en"] = datetime.now(timezone.utc).isoformat()
+    else:
+        # Si falla, se recalcula la puntuacion restando la penalizacion por intento.
+        nueva_puntuacion = scoring.calcular_puntuacion("LOGO", numero_intento)
+        update_data["puntuacion"] = nueva_puntuacion
 
     try:
         supabase.table("partida").update(update_data).eq("id", datos.partida_id).execute()
@@ -194,6 +203,7 @@ def guess_logo(datos: SolicitudGuess, Authorization: str = Header(...)):
         "numero_intento": numero_intento,
         "estado_partida": "ganada" if correcto else "en_curso",
         "correcto": correcto,
+        "puntuacion": partida["puntuacion"] if feedback["correcto"] else update_data.get("puntuacion"),
         "intentos_usados": numero_intento,
         "lenguaje_intentado": {
             "id": lenguaje_intentado["id"],
