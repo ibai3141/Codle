@@ -6,6 +6,7 @@ import {
 	obtenerPartidaActivaPorModo,
 	obtenerPartidaCodigo,
 	obtenerRankingPorModo,
+	borrarPartida,
 } from "../api/api";
 import SelectorModos from "../src/components/juego/SelectorModos";
 import { obtenerClavePartidaModo, obtenerTokenValido } from "../src/utils/session";
@@ -271,6 +272,19 @@ export default function Codigo() {
 		);
 	}
 
+	async function otroCodigo() {
+		// borra la partida
+		if (partidaInfo.estado !== "ganada"){
+			await borrarPartida(partidaId, token);
+		}
+			
+		// borra el idPartida
+		setPartidaId(null);
+
+		// reinicia la pagina
+		window.location.reload();
+	}
+
 	return (
 		<section className="classic-page">
 			<SelectorModos modoActivo="codigo" onNavegar={navegar} />
@@ -279,6 +293,8 @@ export default function Codigo() {
 				<h1>{reto.titulo || "Reto de codigo"}</h1>
 			</article>
 
+			<button onClick={otroCodigo} className="codigo_boton_otroCodigo">Otro codigo</button>
+
 			<p>Puntuacion: {puntuacion}</p>
 
 			<section className="codigo-reto-card" aria-label="Fragmento de codigo">
@@ -286,6 +302,8 @@ export default function Codigo() {
 					<code>{reto.snippet}</code>
 				</pre>
 			</section>
+
+
 
 			<form className="codigo-answer-form" onSubmit={enviarRespuesta}>
 				<div className="codigo-answer-head">
@@ -321,6 +339,8 @@ export default function Codigo() {
 					</button>
 				</div>
 			</form>
+
+			
 
 			{mensajeError ? <p className="classic-error">{mensajeError}</p> : null}
 			{mensajeEstado ? <p className="classic-success">{mensajeEstado}</p> : null}

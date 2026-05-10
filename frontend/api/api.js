@@ -86,7 +86,7 @@ async function request(path, options = {}) {
   const isJson = response.headers.get("content-type")?.includes("application/json");
   const data = isJson ? await response.json() : null;
 
-  if (response.status === 401) {
+  if (response.status === 401 && token) {
     cerrarSesionCompleta();
     window.location.assign("/login");
     throw new Error("La sesion ha expirado. Vuelve a iniciar sesion.");
@@ -115,6 +115,13 @@ export async function register(payload) {
     // Registro de un nuevo usuario.
     return request("/auth/register", {method:"POST", body:payload})
     
+}
+
+export async function reenviarVerificacion(email) {
+  return request("/auth/resend-verification", {
+    method: "POST",
+    body: { email },
+  });
 }
 
 export async function loginConGoogle(tokenGoogle) {
@@ -287,3 +294,10 @@ export async function obtenerRankingPorModo(modo, token) {
   return data;
 }
 
+export async function borrarPartida(partida_id, token) {
+  
+  return request(`/getData/borraPartida/${partida_id}`, {
+    method: "DELETE",
+    token: token,
+  });
+}
