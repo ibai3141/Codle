@@ -4,6 +4,7 @@
 .codigo-explicacion-card {
   width: min(100%, 610px);
   margin: 0.8rem auto 0;
+  box-sizing: border-box;
   border-radius: 14px;
   border: 1px solid rgba(96, 165, 250, 0.4);
   background: rgba(15, 23, 42, 0.94);
@@ -113,6 +114,8 @@
 .codigo-answer-shell {
   display: flex;
   align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
   border: 2px solid #06b6d4;
   border-radius: 12px;
   overflow: hidden;
@@ -122,6 +125,7 @@
 
 .codigo-answer-input {
   width: 100%;
+  min-width: 0;
   min-height: 132px;
   resize: vertical;
   border: none;
@@ -140,6 +144,7 @@
 
 .codigo-submit-arrow {
   width: 3.45rem;
+  flex: 0 0 3.45rem;
   border: none;
   border-left: 2px solid #06b6d4;
   background: #fbbf24;
@@ -189,6 +194,7 @@
 .codigo-results {
   width: min(100%, 610px);
   margin: 0.8rem auto 0;
+  box-sizing: border-box;
 }
 
 .codigo-results-header,
@@ -227,19 +233,36 @@
   line-height: 1.35;
 }
 
+.codigo-top-actions {
+  width: min(100%, 610px);
+  margin: 0.7rem auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  box-sizing: border-box;
+}
+
 .codigo_boton_otroCodigo {
   color: white;
-  background-color: black;
-  min-width: 20%;
-  max-width: 30%;
-  align-self: center;
-  padding: 5px;
-  border-radius: 10px;
-  margin-top: 0.7rem;
+  background: linear-gradient(180deg, #111827, #020617);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  min-width: 140px;
+  max-width: 190px;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
   cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  box-shadow: 0 10px 22px rgba(2, 6, 23, 0.28);
 }
+
 .codigo_boton_otroCodigo:hover {
-  background-color: red;
+  background: linear-gradient(180deg, #1f2937, #111827);
+}
+
+.codigo-score-badge {
+  margin: 0;
 }
 
 @media (max-width: 680px) {
@@ -255,13 +278,13 @@
   .codigo-snippet {
     padding: 0.82rem;
     font-size: 0.88rem;
-    white-space: pre-wrap;
-    word-break: break-word;
-    overflow-x: hidden;
+    white-space: pre;
+    word-break: normal;
+    overflow-x: auto;
   }
 
   .codigo-snippet code {
-    min-width: 0;
+    min-width: max-content;
   }
 
   .codigo-reto-head {
@@ -274,6 +297,7 @@
 
   .codigo-submit-arrow {
     width: 3rem;
+    flex-basis: 3rem;
     font-size: 1.2rem;
   }
 
@@ -287,18 +311,131 @@
     font-size: 0.94rem;
   }
 
+  .codigo-top-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .codigo_boton_otroCodigo {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .codigo-score-badge {
+    width: 100%;
+    margin: 0;
+  }
+
   .codigo-results {
-    overflow-x: auto;
-    padding-bottom: 0.2rem;
+    overflow: visible;
+    padding-bottom: 0;
   }
 
   .codigo-results-header,
   .codigo-results-row {
-    min-width: 460px;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .codigo-reto-card,
+  .codigo-answer-form,
+  .codigo-solution-card,
+  .codigo-explicacion-card,
+  .codigo-results,
+  .codigo-top-actions {
+    width: 100%;
+  }
+
+  .codigo-reto-card,
+  .codigo-answer-form,
+  .codigo-solution-card,
+  .codigo-explicacion-card {
+    margin-top: 0.65rem;
+    padding: 0.78rem 0.72rem 0.82rem;
+  }
+
+  .codigo-reto-head h2 {
+    font-size: 1.08rem;
+    line-height: 1.2;
+  }
+
+  .codigo-status-pill {
+    font-size: 0.76rem;
+    padding: 0.3rem 0.55rem;
+  }
+
+  .codigo-snippet {
+    padding: 0.72rem;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    border-radius: 10px;
+  }
+
+  .codigo-answer-shell {
+    min-height: 165px;
+  }
+
+  .codigo-answer-input {
+    padding: 0.72rem 0.75rem;
+    font-size: 0.92rem;
+  }
+
+  .codigo-results-header {
+    display: none;
+  }
+
+  .codigo-results-row {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .codigo-intento-numero,
+  .codigo-intento-respuesta,
+  .codigo-results-row .classic-cell:last-child {
+    min-height: auto;
+    justify-content: flex-start;
+    text-align: left;
+    padding: 0.7rem 0.8rem;
+  }
+
+  .codigo-intento-numero span::before {
+    content: "Intento ";
+    font-weight: 800;
+  }
+
+  .codigo-intento-respuesta pre::before {
+    content: "Respuesta: ";
+    font-weight: 800;
+    display: block;
+    margin-bottom: 0.25rem;
+    font-family: inherit;
+  }
+
+  .codigo-results-row .classic-cell:last-child span::before {
+    content: "Estado: ";
+    font-weight: 800;
+  }
+
+  .codigo-submit-arrow {
+    width: 4rem;
+    flex-basis: 4rem;
   }
 }
 
 @media (max-width: 420px) {
+  .codigo-top-actions {
+    gap: 0.55rem;
+  }
+
+  .codigo_boton_otroCodigo {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.92rem;
+  }
+
   .codigo-answer-meta,
   .codigo-answer-label {
     font-size: 0.88rem;
@@ -309,5 +446,27 @@
   .codigo-explicacion-texto,
   .codigo-intento-respuesta pre {
     font-size: 0.85rem;
+  }
+
+  .codigo-submit-arrow {
+    width: 3.6rem;
+    flex-basis: 3.6rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .codigo-reto-card,
+  .codigo-answer-form,
+  .codigo-solution-card,
+  .codigo-explicacion-card {
+    padding-inline: 0.62rem;
+  }
+
+  .codigo-snippet {
+    font-size: 0.78rem;
+  }
+
+  .codigo-answer-input {
+    font-size: 0.9rem;
   }
 }

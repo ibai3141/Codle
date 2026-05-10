@@ -12,6 +12,7 @@
 .ranking-modal {
     position: relative;
     width: min(720px, 90vw);
+    box-sizing: border-box;
     max-height: 85vh;
     overflow-y: auto;
     background: #111827;
@@ -57,6 +58,11 @@
     margin: 0 auto;
 }
 
+.ranking-tabla-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
 .ranking-tabla th,
 .ranking-tabla td {
     padding: 12px 10px;
@@ -85,6 +91,16 @@
     margin: 0 0 6px;
     color: #dcfce7;
     font-size: 2rem;
+}
+
+.ranking-exito--neutral {
+    background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+    border-color: #60a5fa;
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.24);
+}
+
+.ranking-exito--neutral h2 {
+    color: #dbeafe;
 }
 
 .fila-destacada {
@@ -130,4 +146,75 @@
 .boton-ver-ranking:focus-visible {
     outline: 3px solid rgba(134, 239, 172, 0.9);
     outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+    .ranking-overlay {
+        padding: 12px;
+        align-items: flex-end;
+    }
+
+    .ranking-modal {
+        width: min(100%, 560px);
+        max-height: 82vh;
+        border-radius: 18px 18px 0 0;
+        padding: 22px 14px 18px;
+    }
+
+    .ranking-modal h2 {
+        font-size: 1.15rem;
+    }
+
+    .ranking-exito {
+        margin-bottom: 16px;
+        padding: 14px 14px;
+    }
+
+    .ranking-exito h2 {
+        font-size: 1.3rem;
+        line-height: 1.2;
+    }
+
+    .ranking-tabla {
+        min-width: 440px;
+    }
+
+    .ranking-tabla th,
+    .ranking-tabla td {
+        padding: 10px 8px;
+        font-size: 0.9rem;
+    }
+
+    .ranking-cerrar {
+        top: 10px;
+        right: 10px;
+        width: 34px;
+        height: 34px;
+        font-size: 24px;
+    }
+
+    .boton-ver-ranking {
+        width: 100%;
+        max-width: 320px;
+    }
+}
+
+@media (max-width: 420px) {
+    .ranking-overlay {
+        padding: 8px;
+    }
+
+    .ranking-modal {
+        padding: 18px 12px 16px;
+    }
+
+    .ranking-tabla {
+        min-width: 400px;
+    }
+
+    .ranking-tabla th,
+    .ranking-tabla td {
+        padding: 9px 7px;
+        font-size: 0.84rem;
+    }
 }

@@ -55,7 +55,7 @@ export default function Codigo() {
 	const [enviandoIntento, setEnviandoIntento] = useState(false);
 	// Puntuación calculada según el número de intentos realizados
 	const[puntuacion, setPuntuacion] = useState();
-	// Estado para controlar si se ha ganado la partida
+	// Estado para controlar si la partida actual termino con victoria.
 	const [partidaGanada, setPartidaGanada] = useState(false);
 	// Controla si se muestra el ranking al finalizar la partida.
 	const [mostrarRanking, setMostrarRanking] = useState(false);
@@ -142,7 +142,7 @@ export default function Codigo() {
 
 					if (partidaActiva.partida?.estado !== "en_curso" && partidaStorageKey) {
 						localStorage.removeItem(partidaStorageKey);
-						setPartidaGanada(true);
+						setPartidaGanada(partidaActiva.partida?.estado === "ganada");
 						setMostrarRanking(true);
 					}
 					else{
@@ -241,7 +241,7 @@ export default function Codigo() {
 				const nuevoRanking = await obtenerRankingPorModo("CODIGO", token);
 				setRanking(nuevoRanking);
 				setMostrarRanking(true);
-				setPartidaGanada(true);
+				setPartidaGanada(resultadoServidor.estado_partida === "ganada");
 				if (partidaStorageKey) {
 					localStorage.removeItem(partidaStorageKey);
 				}
@@ -293,9 +293,10 @@ export default function Codigo() {
 				<h1>{reto.titulo || "Reto de codigo"}</h1>
 			</article>
 
-			<button onClick={otroCodigo} className="codigo_boton_otroCodigo">Otro codigo</button>
-
-			<p>Puntuacion: {puntuacion}</p>
+			<div className="codigo-top-actions">
+				<button onClick={otroCodigo} className="codigo_boton_otroCodigo">Otro codigo</button>
+				<p className="classic-score-badge codigo-score-badge">Puntuacion: {puntuacion}</p>
+			</div>
 
 			<section className="codigo-reto-card" aria-label="Fragmento de codigo">
 				<pre className="codigo-snippet">
@@ -399,6 +400,7 @@ export default function Codigo() {
 						listaRanking={ranking}
 						idPartidaActual={partidaId}
 						puntuacion={puntuacion}
+						partidaGanada={partidaGanada}
 					/>
 				)
 			}

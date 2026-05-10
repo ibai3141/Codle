@@ -363,7 +363,7 @@ export default function Logo() {
 				<h1>Adivina el lenguaje</h1>
 			</article>
 			
-			<p>Puntuacion: {puntuacion}</p>
+			<p className="classic-score-badge">Puntuacion: {puntuacion}</p>
 
 			{/* Imagen con el logo a buscar y con función de zoom */}
 			<div className="zoom-container">
@@ -460,6 +460,7 @@ export default function Logo() {
 						listaRanking={ranking}
 						idPartidaActual={partidaId}
 						puntuacion={puntuacion}
+						partidaGanada={partidaGanada}
 					/>
 				)
 			}

@@ -464,7 +464,7 @@ export default function Clasico() {
 				<p className="classic-empty-state-api">Ya no quedan lenguajes disponibles.</p>
 			) : null}
 			
-			<p>Puntuacion: {puntuacion}</p>
+			<p className="classic-score-badge">Puntuacion: {puntuacion}</p>
 
 			{/* Historial de intentos: tabla con resultados de cada intento. Cada fila representa
           un intento y usa las clases `classic-*` para colorear los estados según `estados`. */}
@@ -548,6 +548,7 @@ export default function Clasico() {
 					listaRanking={ranking} 
 					idPartidaActual={partidaId}
 					puntuacion={puntuacion}
+					partidaGanada={partidaGanada}
 				/>
 				
 			)
