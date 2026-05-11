@@ -1,6 +1,8 @@
 .login-page {
   width: min(100%, 430px);
-  margin: 4rem auto;
+  margin-block: auto;
+  margin-inline: auto;
+  align-self: center;
   padding: 2.25rem 2rem;
   box-sizing: border-box;
   border: 1px solid #2a3240;
@@ -17,9 +19,10 @@
 .login-page h1 {
   margin: 0 0 1.75rem;
   font-size: 2.75rem;
-  letter-spacing: -0.08em;
+  letter-spacing: -0.045em;
   text-align: center;
   color: #e6edf3;
+  line-height: 1.06;
 }
 
 .login-page form {
@@ -110,6 +113,23 @@
   opacity: 0.72;
 }
 
+.login-forgot-link {
+  margin: -0.15rem 0 0.55rem;
+  text-align: right;
+}
+
+.login-forgot-link a {
+  color: #7dd3fc;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.login-forgot-link a:hover {
+  color: #bae6fd;
+  text-decoration: underline;
+}
+
 .login-back {
   margin-top: 0.85rem;
 }
@@ -141,7 +161,9 @@
 
 @media (max-width: 640px) {
   .login-page {
-    margin: 1.5rem 1rem;
+    width: min(calc(100% - 1.4rem), 430px);
+    margin-block: auto;
+    margin-inline: auto;
     padding: 1.6rem 1.15rem;
     border-radius: 20px;
   }

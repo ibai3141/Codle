@@ -124,6 +124,20 @@ export async function reenviarVerificacion(email) {
   });
 }
 
+export async function solicitarRecuperacionContrasena(email, redirectTo) {
+  return request("/auth/forgot-password", {
+    method: "POST",
+    body: { email, redirect_to: redirectTo },
+  });
+}
+
+export async function cambiarContrasenaRecuperacion(accessToken, password) {
+  return request("/auth/reset-password", {
+    method: "POST",
+    body: { access_token: accessToken, password },
+  });
+}
+
 export async function loginConGoogle(tokenGoogle) {
   // Usamos vuestro helper request para mantener la coherencia
   return request("/auth/google-login", {

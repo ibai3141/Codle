@@ -7,6 +7,8 @@ import Home from "../pages/Home";
 import Clasico from "../pages/Clasico";
 import Logo from "../pages/Logo";
 import Codigo from "../pages/Codigo";
+import ContraseniaOlvidada from "../pages/ContraseniaOlvidada";
+import ResetContrasenia from "../pages/ResetContrasenia";
 import CodeBackdrop from "./components/CodeBackdrop";
 import { guardarToken, tieneSesionActiva } from "./utils/session";
 import "./AppPage.css";
@@ -114,6 +116,30 @@ function App() {
 										<Register />
 									</RutaPublica>
 								}
+							/>
+							<Route
+								path="/contrasenia-olvidada"
+								element={
+									<RutaPublica>
+										<ContraseniaOlvidada />
+									</RutaPublica>
+								}
+							/>
+							<Route
+								path="/forgot-password"
+								element={
+									<RutaPublica>
+										<ContraseniaOlvidada />
+									</RutaPublica>
+								}
+							/>
+							<Route
+								path="/reset-contrasenia"
+								element={<ResetContrasenia />}
+							/>
+							<Route
+								path="/reset-password"
+								element={<ResetContrasenia />}
 							/>
 							<Route
 								path="/clasico"

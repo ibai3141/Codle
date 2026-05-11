@@ -1,6 +1,8 @@
 .register-page {
   width: min(100%, 430px);
-  margin: 4rem auto;
+  margin-block: auto;
+  margin-inline: auto;
+  align-self: center;
   padding: 2.25rem 2rem;
   box-sizing: border-box;
   border: 1px solid #2a3240;
@@ -177,7 +179,9 @@
 
 @media (max-width: 640px) {
   .register-page {
-    margin: 1.5rem 1rem;
+    width: min(calc(100% - 1.4rem), 430px);
+    margin-block: auto;
+    margin-inline: auto;
     padding: 1.6rem 1.15rem;
     border-radius: 20px;
   }

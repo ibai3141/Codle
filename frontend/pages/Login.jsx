@@ -59,6 +59,11 @@ export default function Login() {
 					className="login-input"
 				/>
 
+				{/* Enlace para iniciar el flujo de recuperacion solo en cuentas normales */}
+				<p className="login-forgot-link">
+					<Link to="/contrasenia-olvidada">He olvidado mi contrasena</Link>
+				</p>
+
 				<button type="submit" disabled={loading}>
 					{loading ? "Entrando..." : "Entrar"}
 				</button>

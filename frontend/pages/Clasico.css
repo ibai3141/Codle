@@ -11,9 +11,54 @@
   gap: 0;
 }
 
+.classic-topbar {
+  width: min(100%, 760px);
+  margin: 0 auto 0.75rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.65rem;
+  box-sizing: border-box;
+}
+
+.classic-home-button {
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  border: 1px solid rgba(34, 211, 238, 0.45);
+  background: rgba(12, 18, 30, 0.9);
+  color: #e2e8f0;
+  box-shadow: 0 10px 22px rgba(2, 6, 23, 0.38);
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.classic-home-button:hover {
+  transform: translateY(-1px);
+  border-color: #67e8f9;
+  background: rgba(15, 23, 42, 0.98);
+}
+
+.classic-home-button:focus-visible {
+  outline: 3px solid rgba(34, 211, 238, 0.35);
+  outline-offset: 3px;
+}
+
+.classic-home-button-icon {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
 .classic-mode-strip {
   width: min(100%, 680px);
-  margin: 0 auto 0.75rem;
+  margin: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.45rem;
@@ -441,6 +486,10 @@
     justify-content: flex-start;
   }
 
+  .classic-topbar {
+    width: min(100%, 680px);
+  }
+
   .classic-intro-box h1 {
     font-size: 1.38rem;
   }
@@ -472,6 +521,11 @@
     padding-inline: 0.55rem;
   }
 
+  .classic-topbar {
+    width: 100%;
+    gap: 0.45rem;
+  }
+
   .classic-mode-strip {
     width: 100%;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -484,6 +538,12 @@
     padding: 0.28rem 0.45rem;
     font-size: 0.82rem;
     gap: 0.18rem;
+  }
+
+  .classic-home-button {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 12px;
   }
 
   .classic-mode-icon {
@@ -625,6 +685,10 @@
     padding-inline: 0.42rem;
   }
 
+  .classic-topbar {
+    gap: 0.38rem;
+  }
+
   .classic-mode-pill {
     min-height: 1.85rem;
     padding-inline: 0.34rem;
@@ -633,6 +697,16 @@
 
   .classic-intro-box {
     padding: 0.65rem 0.72rem;
+  }
+
+  .classic-home-button {
+    width: 2.55rem;
+    height: 2.55rem;
+  }
+
+  .classic-home-button-icon {
+    width: 1.15rem;
+    height: 1.15rem;
   }
 
   .classic-intro-box h1 {

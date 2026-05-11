@@ -8,7 +8,8 @@ from api.utils.tokens import (
     crear_token_acceso,
 )
 from google.oauth2 import id_token
-from google.auth.transport import requests
+from google.auth.transport import requests as google_requests
+import requests
 
 router = APIRouter(prefix="/auth", tags=["autenticacion"])
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -30,6 +31,16 @@ class SolicitudGoogle(BaseModel):
 
 class SolicitudReenvioVerificacion(BaseModel):
     email: EmailStr
+
+
+class SolicitudRecuperacionContrasena(BaseModel):
+    email: EmailStr
+    redirect_to: str
+
+
+class SolicitudCambioContrasena(BaseModel):
+    access_token: str
+    password: str
 
 
 def buscar_usuario_auth_por_email(email: str):
@@ -79,6 +90,35 @@ def correo_esta_verificado(usuario_auth) -> bool:
             confirmado = usuario_auth.get("confirmed_at")
 
     return bool(confirmado)
+
+
+def obtener_usuario_bd_por_email(email: str):
+    resultado = supabase.table("usuario").select("*").eq("email", email).execute()
+    if not resultado.data:
+        return None
+
+    return resultado.data[0]
+
+
+def obtener_usuario_auth_desde_token_recuperacion(access_token: str):
+    # Usamos el token temporal del enlace de recuperacion para pedir a Supabase
+    # los datos del usuario que esta intentando cambiar la contrasena.
+    respuesta = requests.get(
+        f"{SUPABASE_URL}/auth/v1/user",
+        headers={
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {access_token}",
+        },
+        timeout=15,
+    )
+
+    if respuesta.status_code != 200:
+        raise HTTPException(
+            status_code=401,
+            detail="El enlace de recuperacion no es valido o ha expirado",
+        )
+
+    return respuesta.json()
 
 # Ruta para registrar un nuevo usuario
 @router.post("/register")
@@ -177,6 +217,92 @@ def reenviar_verificacion(datos: SolicitudReenvioVerificacion):
 
     return {"message": "Correo de verificacion reenviado correctamente"}
 
+
+@router.post("/forgot-password")
+def solicitar_recuperacion_contrasena(datos: SolicitudRecuperacionContrasena):
+    # Este flujo solo existe para cuentas normales. Las cuentas de Google no
+    # gestionan la contrasena dentro de nuestra aplicacion.
+    usuario = obtener_usuario_bd_por_email(datos.email)
+    if not usuario:
+        raise HTTPException(status_code=404, detail="No existe ninguna cuenta con ese email")
+
+    if usuario["password_hash"] == "GOOGLE_OAUTH":
+        raise HTTPException(
+            status_code=400,
+            detail="Esa cuenta usa Google y no puede recuperar contrasena desde aqui",
+        )
+
+    try:
+        supabase.auth.reset_password_email(
+            datos.email,
+            {"redirect_to": datos.redirect_to},
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"No se pudo enviar el correo de recuperacion: {str(e)}",
+        )
+
+    return {"message": "Te hemos enviado un enlace para cambiar tu contrasena"}
+
+
+@router.post("/reset-password")
+def cambiar_contrasena(datos: SolicitudCambioContrasena):
+    # Primero identificamos al usuario usando el token temporal de recuperacion
+    # que Supabase deja en la URL tras pulsar el enlace del correo.
+    usuario_auth = obtener_usuario_auth_desde_token_recuperacion(datos.access_token)
+    email_usuario = usuario_auth.get("email")
+
+    if not email_usuario:
+        raise HTTPException(
+            status_code=400,
+            detail="No se ha podido identificar al usuario del enlace de recuperacion",
+        )
+
+    usuario_bd = obtener_usuario_bd_por_email(email_usuario)
+    if not usuario_bd:
+        raise HTTPException(status_code=404, detail="No existe ninguna cuenta con ese email")
+
+    if usuario_bd["password_hash"] == "GOOGLE_OAUTH":
+        raise HTTPException(
+            status_code=400,
+            detail="Esa cuenta usa Google y no puede cambiar la contrasena desde aqui",
+        )
+
+    # Actualizamos la contrasena en Supabase Auth para que el enlace quede
+    # consumido y el usuario pueda volver a entrar con la nueva clave.
+    respuesta_auth = requests.put(
+        f"{SUPABASE_URL}/auth/v1/user",
+        headers={
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {datos.access_token}",
+            "Content-Type": "application/json",
+        },
+        json={"password": datos.password},
+        timeout=15,
+    )
+
+    if respuesta_auth.status_code != 200:
+        raise HTTPException(
+            status_code=400,
+            detail="No se ha podido actualizar la contrasena. El enlace puede haber expirado",
+        )
+
+    # Mantenemos sincronizada la tabla propia de la aplicacion, que es donde
+    # seguimos validando la contrasena para el login normal.
+    nuevo_hash = hashear_contrasenia(datos.password)
+    try:
+        supabase.table("usuario").update({"password_hash": nuevo_hash}).eq(
+            "email", email_usuario
+        ).execute()
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"La contrasena se cambio en Auth pero no en la base de datos: {str(e)}",
+        )
+
+    return {"message": "Contrasena actualizada correctamente"}
+
 # Ruta para iniciar sesion, al iniciar sesion se obtiene un token de acceso
 @router.post("/login")
 def iniciar_sesion(datos: SolicitudLogin):
@@ -225,7 +351,7 @@ def login_google(datos: SolicitudGoogle):
         # Por seguridad, validamos que el token de verificacion viene de Google
         # y que sea para nuestra app en especifico.
         info_usuario = id_token.verify_oauth2_token(
-            token_google, requests.Request(), CLIENT_ID_DE_GOOGLE
+            token_google, google_requests.Request(), CLIENT_ID_DE_GOOGLE
         )
         email = info_usuario["email"]
 
