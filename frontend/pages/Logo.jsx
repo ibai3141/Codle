@@ -378,6 +378,7 @@ export default function Logo() {
 					<div className="logo-placeholder">Cargando logo...</div>
 				)}
 			</div>
+			<br />
 
 			{/* Buscador: input, botón y lista de sugerencias */}
 			<form className="classic-search-wrap" onSubmit={enviarFormulario}>
